@@ -144,6 +144,7 @@
 (require 'pymacs)
 (pymacs-load "ropemacs" "rope-")
 (setq ropemacs-enable-autoimport t)
+(setq ropemacs-enable-shortcuts t)
 
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
