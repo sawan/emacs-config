@@ -1,0 +1,30 @@
+[user]
+	name = Sawan Vithlani
+	email = svithlani@fitness2live.com.au
+
+[alias]
+    co = checkout
+    st = status
+    stat = status
+    sta = stash
+    dt = difftool
+    lo = log --oneline --decorate
+
+[color]
+    ui = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+
+[color "status"]
+    added = yellow
+    changed = green bold
+    untracked = cyan
