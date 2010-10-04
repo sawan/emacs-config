@@ -267,12 +267,18 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 ;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-(setq smex-save-file "~/.emacs/smex-items")
+(setq smex-save-file "~/.emacs.d/smex-items")
 
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
 ;; hot damn.....
 (require 'undo-tree)
 (global-undo-tree-mode)
+
+;;multi-term.el
+(require 'multi-term)
+(setq multi-term-program "/bin/bash")
+(global-set-key (kbd "<f8>") 'multi-term)
+(global-set-key (kbd "<C-f8>") 'multi-term-prev)
 
 ;; Other general shortcuts
 (global-set-key (kbd "<C-f6>") 'linum-mode)
