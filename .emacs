@@ -3,6 +3,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/auto-complete-1.2")
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
+(add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -123,6 +124,11 @@
 (add-hook 'perl-mode-hook       'hs-minor-mode)
 (add-hook 'python-mode-hook     'hs-minor-mode)
 (add-hook 'sh-mode-hook         'hs-minor-mode)
+
+;; yasnippet
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets")
 
 ;; python.el
 (require 'python)
