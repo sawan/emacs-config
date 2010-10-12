@@ -288,3 +288,12 @@
 
 ;; Other general shortcuts
 (global-set-key (kbd "<C-f6>") 'linum-mode)
+
+;; display path to file in frame title
+;(setq-default mode-line-format
+(setq-default frame-title-format
+   (list '((buffer-file-name " %f"
+             (dired-directory
+              dired-directory
+              (revert-buffer-function " %b"
+              ("%b - Dir:  " default-directory)))))))
