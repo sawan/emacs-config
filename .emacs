@@ -321,3 +321,6 @@
         (isearch-forward regexp-p no-recursive-edit)))))
 
 (global-set-key (kbd "M-s") 'isearch-forward-at-point)
+
+;; re-builder
+(require 're-builder)
