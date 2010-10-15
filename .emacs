@@ -322,5 +322,7 @@
 
 (global-set-key (kbd "M-s") 'isearch-forward-at-point)
 
-;; re-builder
-(require 're-builder)
+;; re-builder+
+;; http://www.emacswiki.org/cgi-bin/emacs/ReBuilder
+(require 're-builder+)
+
