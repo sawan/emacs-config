@@ -4,6 +4,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
+(add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.23/")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
