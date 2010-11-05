@@ -326,3 +326,5 @@
 ;; http://www.emacswiki.org/cgi-bin/emacs/ReBuilder
 (require 're-builder+)
 
+(require 'saveplace)
+(setq-default save-place t)
