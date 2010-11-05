@@ -87,6 +87,9 @@
 (iswitchb-mode 1)
 ;(setq iswitchb-buffer-ignore '("^ " "*Buffer"))
 
+;; colums
+(column-number-mode 1)
+
 ;; ido mode
 (require 'ido)
 (ido-mode t)
@@ -332,5 +335,6 @@
 (setq-default save-place t)
 
 ;; DrewsLibraries from EmacsWiki
+; crosshairs
 (require 'crosshairs)
 (global-set-key (kbd "<M-f6>") 'flash-crosshairs)
