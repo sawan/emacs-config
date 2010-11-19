@@ -1,6 +1,6 @@
 [user]
 	name = Sawan Vithlani
-	email = svithlani@fitness2live.com.au
+	email = Sawan.Vithlani@medibankhealth.com.au
 
 [alias]
     co = checkout
@@ -9,7 +9,8 @@
     sta = stash
     dt = difftool
     lo = log --oneline --decorate
-    sdif= diff --ignore-all-space --name-status -C -M
+    sdif = diff --ignore-all-space --name-status -C -M
+    spop = stash pop
 
 [color]
     ui = auto

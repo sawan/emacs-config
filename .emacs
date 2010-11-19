@@ -71,7 +71,7 @@
                               (bm-buffer-save-all)
                               (bm-repository-save)))
 
-;; contol how Emacs backup files are handled
+;; control how Emacs backup files are handled
 (setq
   backup-directory-alist '(("." . "~/.emacs.d/saves"))
   delete-old-versions t
@@ -110,7 +110,7 @@
 ;; Split windows horizontally by default
 (setq split-width-threshold nil)
 
-;; contol how to move between windows
+;; control how to move between windows
 (windmove-default-keybindings 'meta)
 
 ;; code folding and hiding shortcuts ....
