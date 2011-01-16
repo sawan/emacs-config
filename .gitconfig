@@ -13,10 +13,9 @@
     sdif = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save
-    maspull = pull origin master
-    maspush = push origin master
+    maspull = ! git checkout master && git pull origin master
     pusho =   push origin HEAD
-    pullo =    pull origin HEAD
+    pullo =   pull origin HEAD
 
 [color]
     ui = auto
