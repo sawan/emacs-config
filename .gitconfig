@@ -10,12 +10,15 @@
     dt = difftool
     mt = mergetool
     lo = log --oneline --decorate
-    sdif = diff --ignore-all-space --name-status -C -M
+    sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save
+    stash-l = stash list
     maspull = ! git checkout master && git pull origin master
     pusho =   push origin HEAD
     pullo =   pull origin HEAD
+    mdiff = ! git sdiff master...
+    show-mdiff = ! git sdiff master... | sed -e 's/^[MAD]//' | git dt master...
 
 [color]
     ui = auto
