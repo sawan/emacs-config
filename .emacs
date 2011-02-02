@@ -5,6 +5,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
+(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -338,3 +339,9 @@
 ; crosshairs
 (require 'crosshairs)
 (global-set-key (kbd "<M-f6>") 'flash-crosshairs)
+
+
+(require 'exec-abbrev-cmd)
+(exec-abbrev-cmd-mode 1)
+(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
+
