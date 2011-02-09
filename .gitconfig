@@ -10,6 +10,7 @@
     dt = difftool
     mt = mergetool
     lo = log --oneline --decorate
+    commit-reuse = commit -a --reuse-message=HEAD
     sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save

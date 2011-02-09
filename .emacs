@@ -142,6 +142,10 @@
 ;; re-bind RET to newline and indent, mode defines C-j for doing this
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
+;; wrap lines at 80 columns
+(setq-default fill-column 80)
+(add-hook 'find-file-hook 'turn-on-auto-fill)
+
 ;; auto-complete config
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/vendors/auto-complete-1.2/dict")
@@ -344,4 +348,6 @@
 (require 'exec-abbrev-cmd)
 (exec-abbrev-cmd-mode 1)
 (global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
+
+
 
