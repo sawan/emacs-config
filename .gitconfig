@@ -20,6 +20,7 @@
     fall = fetch --all
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
+    commit-all = commit -a -m
     sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save
