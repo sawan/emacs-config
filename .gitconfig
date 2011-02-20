@@ -10,11 +10,13 @@
 
 [alias]
     co = checkout
+    cob = checkout -b
     st = status
     stat = status
     dt = difftool
     mt = mergetool
     lo = log --oneline --decorate
+    call = commit -a -m
     fall = fetch --all
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
@@ -24,8 +26,6 @@
     stash-l = stash list
     maspull = ! git checkout master && git pull origin master
     maspush = ! git checkout master && git push origin master
-    pusho =   push origin HEAD
-    pullo =   pull origin HEAD
     mdiff = ! git sdiff master...
     show-mdiff = ! git sdiff master... | sed -e 's/^[ADM][\t]//'| git dt master...
 
