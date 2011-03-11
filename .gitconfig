@@ -13,7 +13,7 @@
     cob = checkout -b
     st = status
     stat = status
-    dt = difftool
+    dt = difftool -y
     mt = mergetool
     lo = log --oneline --decorate
     call = commit -a -m
@@ -25,10 +25,13 @@
     stash-p = stash pop
     stash-s = stash save
     stash-l = stash list
-    maspull = ! git checkout master && git pull origin master
-    maspush = ! git checkout master && git push origin master
+    mpl = ! git checkout master && git pull origin master
+    mpu = ! git checkout master && git push origin master
+    mpl-b = ! ~/bin/git-maspull-back.sh
     mdiff = ! git sdiff master...
-    show-mdiff = ! git sdiff master... | sed -e 's/^[ADM][\t]//'| git dt master...
+    tmdiff = diff master...
+    gmdiff = difftool -y master...
+    show-mdiff = ! git mdiff | sed -e 's/^[ADM][\t]//'| git dt master...
 
 [color]
     ui = auto
