@@ -18,6 +18,7 @@
     lo = log --oneline --decorate
     call = commit -a -m
     fall = fetch --all
+    fb = ! git branch -a | ack-grep
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
     commit-all = commit -a -m
