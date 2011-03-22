@@ -344,10 +344,10 @@
 (require 'crosshairs)
 (global-set-key (kbd "<M-f6>") 'flash-crosshairs)
 
-
 (require 'exec-abbrev-cmd)
 (exec-abbrev-cmd-mode 1)
 (global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
 
-
-
+;; http://www.emacswiki.org/emacs/ThingEdit
+; copy and paste various types of data
+(require 'thing-edit)
