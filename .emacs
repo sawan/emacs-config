@@ -260,21 +260,6 @@
 (power-macros-mode)
 (pm-load)
 
-
-(defun xsteve-ido-choose-from-recentf ()
-  "Use ido to select a recently opened file from the `recentf-list'"
-  (interactive)
-  (let ((home (expand-file-name (getenv "HOME"))))
-    (find-file
-     (ido-completing-read "Recentf open: "
-                          (mapcar (lambda (path)
-                                    (replace-regexp-in-string home "~" path))
-                                  recentf-list)
-                          nil t))))
-
-(global-set-key (kbd "<C-f12>") 'xsteve-ido-choose-from-recentf)
-
-
 ;; http://github.com/nonsequitur/smex/
 (require 'smex)
 (smex-initialize)
@@ -351,3 +336,7 @@
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
 (require 'thing-edit)
+(global-set-key (kbd "<C-f12>") 'thing-copy-word)
+(global-set-key (kbd "<M-f12>") 'thing-copy-line)
+(global-set-key (kbd "<C-f11>") 'thing-copy-to-line-beginning)
+(global-set-key (kbd "<M-f11>") 'thing-copy-to-line-end)
