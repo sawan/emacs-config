@@ -5,6 +5,8 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
 (add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.23/")
+(add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
+(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -71,7 +73,7 @@
                               (bm-buffer-save-all)
                               (bm-repository-save)))
 
-;; contol how Emacs backup files are handled
+;; control how Emacs backup files are handled
 (setq
   backup-directory-alist '(("." . "~/.emacs.d/saves"))
   delete-old-versions t
@@ -86,6 +88,9 @@
 ;; switching buffers
 (iswitchb-mode 1)
 ;(setq iswitchb-buffer-ignore '("^ " "*Buffer"))
+
+;; colums
+(column-number-mode 1)
 
 ;; ido mode
 (require 'ido)
@@ -107,7 +112,7 @@
 ;; Split windows horizontally by default
 (setq split-width-threshold nil)
 
-;; contol how to move between windows
+;; control how to move between windows
 (windmove-default-keybindings 'meta)
 
 ;; code folding and hiding shortcuts ....
@@ -137,6 +142,10 @@
 (setq default-tab-width 4)
 ;; re-bind RET to newline and indent, mode defines C-j for doing this
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
+
+;; wrap lines at 80 columns
+(setq-default fill-column 80)
+(add-hook 'find-file-hook 'turn-on-auto-fill)
 
 ;; auto-complete config
 (require 'auto-complete-config)
@@ -252,21 +261,6 @@
 (power-macros-mode)
 (pm-load)
 
-
-(defun xsteve-ido-choose-from-recentf ()
-  "Use ido to select a recently opened file from the `recentf-list'"
-  (interactive)
-  (let ((home (expand-file-name (getenv "HOME"))))
-    (find-file
-     (ido-completing-read "Recentf open: "
-                          (mapcar (lambda (path)
-                                    (replace-regexp-in-string home "~" path))
-                                  recentf-list)
-                          nil t))))
-
-(global-set-key (kbd "<C-f12>") 'xsteve-ido-choose-from-recentf)
-
-
 ;; http://github.com/nonsequitur/smex/
 (require 'smex)
 (smex-initialize)
@@ -323,5 +317,27 @@
 
 (global-set-key (kbd "M-s") 'isearch-forward-at-point)
 
-;; re-builder
-(require 're-builder)
+;; re-builder+
+;; http://www.emacswiki.org/cgi-bin/emacs/ReBuilder
+(require 're-builder+)
+
+;; restore point at location upon file re-visit
+(require 'saveplace)
+(setq-default save-place t)
+
+;; DrewsLibraries from EmacsWiki
+; crosshairs
+(require 'crosshairs)
+(global-set-key (kbd "<M-f6>") 'flash-crosshairs)
+
+(require 'exec-abbrev-cmd)
+(exec-abbrev-cmd-mode 1)
+(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
+
+;; http://www.emacswiki.org/emacs/ThingEdit
+; copy and paste various types of data
+(require 'thing-edit)
+(global-set-key (kbd "<C-f12>") 'thing-copy-word)
+(global-set-key (kbd "<M-f12>") 'thing-copy-line)
+(global-set-key (kbd "<C-f11>") 'thing-copy-to-line-beginning)
+(global-set-key (kbd "<M-f11>") 'thing-copy-to-line-end)
