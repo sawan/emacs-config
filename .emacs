@@ -6,6 +6,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -107,6 +108,7 @@
 
 ;; use ibuffers for buffer listing
 (defalias 'list-buffers 'ibuffer)
+(setq ibuffer-default-sorting-mode 'major-mode)
 
 ;; Split windows horizontally by default
 (setq split-width-threshold nil)
@@ -340,3 +342,5 @@
 (global-set-key (kbd "<M-f12>") 'thing-copy-line)
 (global-set-key (kbd "<C-f11>") 'thing-copy-to-line-beginning)
 (global-set-key (kbd "<M-f11>") 'thing-copy-to-line-end)
+
+(require 'revbufs)
