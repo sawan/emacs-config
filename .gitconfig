@@ -4,12 +4,16 @@
 
 [diff]
     tool = meld
+    mnemonicprefix = true
 
 [merge]
     tool = meld
 
 [core]
     pager = most +s +'/---'
+
+[branch]
+    autosetupmerge = true
 
 [alias]
     co = checkout
@@ -24,6 +28,7 @@
     fb = ! git branch -a | ack-grep
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
+    commit-reuse-m = commit -a --reuse-message
     commit-all = commit -a -m
     sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
@@ -31,13 +36,11 @@
     stash-l = stash list
     mpl = ! git checkout master && git pull origin master
     mpu = ! git checkout master && git push origin master
-    mpl-b = ! ~/bin/git-maspull-back.sh
     mdiff = ! git sdiff master...
     mf = ! git mpl-b && git merge master
     tmdiff = diff master...
     gmdiff = difftool -y master...
     show-mdiff = ! git mdiff | sed -e 's/^[ADM][\t]//'| git dt master...
-    push-o = ! ~/bin/git-push-origin.sh
 
 [color]
     ui = auto
