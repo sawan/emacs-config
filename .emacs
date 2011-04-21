@@ -343,4 +343,21 @@
 (global-set-key (kbd "<C-f11>") 'thing-copy-to-line-beginning)
 (global-set-key (kbd "<M-f11>") 'thing-copy-to-line-end)
 
+;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
+
+(defun djcb-duplicate-line (&optional commentfirst)
+  "comment line at point; if COMMENTFIRST is non-nil, comment the original"
+  (interactive)
+  (beginning-of-line)
+  (push-mark)
+  (end-of-line)
+  (let ((str (buffer-substring (region-beginning) (region-end))))
+    (when commentfirst
+    (comment-region (region-beginning) (region-end)))
+    (insert-string
+      (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
+    (forward-line -1)))
+
+(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
+(global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
