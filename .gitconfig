@@ -22,14 +22,13 @@
     stat = status
     dt = difftool -y
     mt = mergetool
-    lo = log --oneline --decorate
+    lo = log --decorate --pretty='%Cblue %cn %Cgreen %s %Creset [%cr]: %h ' -20
     call = commit -a -m
     fall = fetch --all
     fb = ! git branch -a | ack-grep
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
     commit-reuse-m = commit -a --reuse-message
-    commit-all = commit -a -m
     sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save
