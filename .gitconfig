@@ -22,7 +22,7 @@
     stat = status
     dt = difftool -y
     mt = mergetool
-    lo = log --decorate --pretty='%Cblue %cn %Cgreen %s %Creset [%cr]: %h ' -20
+    lo = log --decorate --pretty='%Cblue %cn %Cgreen %s %Creset [%cr]: %h' -n 20
     call = commit -a -m
     fall = fetch --all
     fb = ! git branch -a | ack-grep
