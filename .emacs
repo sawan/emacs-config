@@ -7,6 +7,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.23/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -108,6 +109,7 @@
 
 ;; use ibuffers for buffer listing
 (defalias 'list-buffers 'ibuffer)
+(setq ibuffer-default-sorting-mode 'major-mode)
 
 ;; Split windows horizontally by default
 (setq split-width-threshold nil)
@@ -341,3 +343,22 @@
 (global-set-key (kbd "<M-f12>") 'thing-copy-line)
 (global-set-key (kbd "<C-f11>") 'thing-copy-to-line-beginning)
 (global-set-key (kbd "<M-f11>") 'thing-copy-to-line-end)
+
+;; revert all open buffers, useful when VC changes happen in the background
+(require 'revbufs)
+
+(defun djcb-duplicate-line (&optional commentfirst)
+  "comment line at point; if COMMENTFIRST is non-nil, comment the original"
+  (interactive)
+  (beginning-of-line)
+  (push-mark)
+  (end-of-line)
+  (let ((str (buffer-substring (region-beginning) (region-end))))
+    (when commentfirst
+    (comment-region (region-beginning) (region-end)))
+    (insert-string
+      (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
+    (forward-line -1)))
+
+(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
+(global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))

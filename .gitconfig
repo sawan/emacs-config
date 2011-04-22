@@ -4,9 +4,16 @@
 
 [diff]
     tool = meld
+    mnemonicprefix = true
 
 [merge]
     tool = meld
+
+[core]
+    pager = most +s +'/---'
+
+[branch]
+    autosetupmerge = true
 
 [alias]
     co = checkout
@@ -15,21 +22,21 @@
     stat = status
     dt = difftool -y
     mt = mergetool
-    lo = log --oneline --decorate
+    lo = log --decorate --pretty='%Cblue %cn %Cgreen %s %Creset [%cr]: %h' -n 20
     call = commit -a -m
     fall = fetch --all
     fb = ! git branch -a | ack-grep
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
-    commit-all = commit -a -m
+    commit-reuse-m = commit -a --reuse-message
     sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save
     stash-l = stash list
     mpl = ! git checkout master && git pull origin master
     mpu = ! git checkout master && git push origin master
-    mpl-b = ! ~/bin/git-maspull-back.sh
     mdiff = ! git sdiff master...
+    mf = ! git mpl-b && git merge master
     tmdiff = diff master...
     gmdiff = difftool -y master...
     show-mdiff = ! git mdiff | sed -e 's/^[ADM][\t]//'| git dt master...
