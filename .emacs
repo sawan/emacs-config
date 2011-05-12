@@ -140,6 +140,7 @@
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets")
 
+
 ;; python.el
 (require 'python)
 (setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
