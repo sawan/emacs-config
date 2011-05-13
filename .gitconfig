@@ -41,6 +41,7 @@
     stash-s = stash save
     stash-l = stash list
     pl-b = !sh -c 'CURRENT=$(git symbolic-ref HEAD |cut -d / -f 3) && git checkout $1 && git pull && git checkout $CURRENT' -
+    pl = !sh -c 'git checkout $1 && git pull' -
     mpl = ! git checkout master && git pull origin master
     mpu = ! git checkout master && git push origin master
     mdiff = ! git sdiff master...
