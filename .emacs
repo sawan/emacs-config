@@ -9,6 +9,13 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
 
+
+;; clean up ufter Tramp
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (tramp-cleanup-all-connections)
+                              (tramp-cleanup-all-buffers)
+                              ))
+
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
 
@@ -170,8 +177,11 @@
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 
-; flymake config to enable on the fly error checking for Python
-;http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
+;; pyflakes on OS X
+(add-to-list 'exec-path "/opt/local/bin/")
+
+;; flymake config to enable on the fly error checking for Python
+;; http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
 
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
