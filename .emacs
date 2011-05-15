@@ -8,6 +8,9 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
 
 
 ;; clean up ufter Tramp
@@ -145,12 +148,16 @@
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets")
 
+
 ;; python.el
 (require 'python)
 (setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
 (setq default-tab-width 4)
 ;; re-bind RET to newline and indent, mode defines C-j for doing this
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
+
+; come extra functions for Python code completion
+(require 'pycomplete)
 
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
@@ -349,10 +356,10 @@
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
 (require 'thing-edit)
-(global-set-key (kbd "<C-f12>") 'thing-copy-word)
-(global-set-key (kbd "<M-f12>") 'thing-copy-line)
-(global-set-key (kbd "<C-f11>") 'thing-copy-to-line-beginning)
-(global-set-key (kbd "<M-f11>") 'thing-copy-to-line-end)
+(global-set-key (kbd "<C-f11>") 'thing-copy-word)
+(global-set-key (kbd "<C-f12>") 'thing-copy-line)
+(global-set-key (kbd "<M-f11>") 'thing-copy-to-line-beginning)
+(global-set-key (kbd "<M-f12>") 'thing-copy-to-line-end)
 
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
@@ -372,3 +379,17 @@
 
 (global-set-key (kbd "C-c y") 'djcb-duplicate-line)
 (global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
+(global-set-key (kbd "C-c C") (lambda()(interactive)(line-uncomment)))
+
+(require 'extraedit)
+
+;; Set breadcrumbs in visited buffers for navigation
+(require 'breadcrumb)
+(global-set-key [(meta K)] 'bc-set)
+(global-set-key [(meta P)] 'bc-previous)
+(global-set-key [(meta J)] 'bc-next)
+;;(global-set-key [(meta up)]             'bc-local-previous) ;; M-up-arrow for local previous
+;;(global-set-key [(meta down)]           'bc-local-next)     ;; M-down-arrow for local next
+;;(global-set-key [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
+(global-set-key [(control x)(meta j)]     'bc-list)           ;; C-x M-j for the bookmark menu list
+

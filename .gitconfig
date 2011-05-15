@@ -3,11 +3,18 @@
 	email = Sawan.Vithlani@medibankhealth.com.au
 
 [diff]
-    tool = meld
-    mnemonicprefix = true
+     tool = p4merge
+     mnemonicprefix = true
 
 [merge]
-    tool = meld
+    keepBackup = false
+    tool = p4merge
+
+[mergetool "p4merge"]
+	cmd = p4merge "$BASE" "$LOCAL" "$REMOTE" "$MERGED" "$BASE"
+	keepTemporaries = false
+	trustExitCode = false
+	keepBackup = false
 
 [core]
     pager = most +s +'/---'
@@ -21,25 +28,28 @@
     st = status
     stat = status
     dt = difftool -y
-    mt = mergetool
+    mt = mergetool -y
     lo = log --decorate --pretty='%Cblue %cn %Cgreen %s %Creset [%cr]: %h' -n 20
-    call = commit -a -m
     fall = fetch --all
     fb = ! git branch -a | ack-grep
     mas = checkout master
     commit-reuse = commit -a --reuse-message=HEAD
     commit-reuse-m = commit -a --reuse-message
+    commit-all = commit -a -m
     sdiff = diff --ignore-all-space --name-status -C -M
     stash-p = stash pop
     stash-s = stash save
     stash-l = stash list
+    pl-b = !sh -c 'CURRENT=$(git symbolic-ref HEAD |cut -d / -f 3) && git checkout $1 && git pull && git checkout $CURRENT' -
+    pl = !sh -c 'git checkout $1 && git pull' -
     mpl = ! git checkout master && git pull origin master
     mpu = ! git checkout master && git push origin master
     mdiff = ! git sdiff master...
     mf = ! git mpl-b && git merge master
     tmdiff = diff master...
     gmdiff = difftool -y master...
-    show-mdiff = ! git mdiff | sed -e 's/^[ADM][\t]//'| git dt master...
+    show-mdiff = git dt master...
+    show-diff =  !sh -c 'git dt $1...' -
 
 [color]
     ui = auto
