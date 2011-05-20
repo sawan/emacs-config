@@ -10,6 +10,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/rainbow-delimiters.el")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -33,9 +34,6 @@
 
 ;; use y/n for all yes-no answers
 (defalias 'yes-or-no-p 'y-or-n-p)
-
-;; enable paren highliting for all files
-(add-hook 'find-file-hooks (lambda() (show-paren-mode t)))
 
 ;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -240,6 +238,12 @@
 (global-set-key (kbd "<C-f9>") 'highlight-symbol-next)
 (global-set-key (kbd "<S-f9>") 'highlight-symbol-prev)
 (global-set-key (kbd "<M-f9>") 'highlight-symbol-remove-all)
+
+;; enable paren highliting for all files
+(add-hook 'find-file-hooks (lambda() (show-paren-mode t)))
+
+(require 'rainbow-delimiters)
+(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
 
 
 ;; jump to matching parenthesis -- currently seems to support () and []
