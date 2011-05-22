@@ -12,7 +12,6 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
 
-
 ;; clean up ufter Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
