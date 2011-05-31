@@ -205,6 +205,8 @@
   ;; If there is more than one, they won't work right.
  '(ecb-layout-window-sizes (quote (("left8" (0.15053763440860216 . 0.2727272727272727) (0.15053763440860216 . 0.22727272727272727) (0.15053763440860216 . 0.29545454545454547) (0.15053763440860216 . 0.18181818181818182)))))
  '(ecb-options-version "2.40")
+ '(jde-jdk (quote ))
+ '(jde-jdk-registry (quote (("1.6.0.24" . "/usr/lib/jvm/java-6-sun/"))))
  '(power-macros-file "~/.emacs.d/power-macros")
  '(py-pychecker-command "~/bin/pychecker.sh")
  '(py-pychecker-command-args (quote ("")))
@@ -411,4 +413,13 @@
 (global-set-key "\M-p" 'sprint-forward)
 (global-set-key "\M-P" 'sprint-backward)
 
+;; JDE library for Java
+(setq defer-loading-jde t)
+(if defer-loading-jde
+    (progn
+      (autoload 'jde-mode "jde" "JDE mode." t)
+      (setq auto-mode-alist
+	    (append
+	     '(("\\.java\\'" . jde-mode))
+	     auto-mode-alist))))
 (require 'jde)
