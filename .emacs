@@ -11,6 +11,13 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/rainbow-delimiters.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/fastnav.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/eieio/")
+(add-to-list 'load-path "~/.emacs.d/vendors/semantic/")
+(add-to-list 'load-path "~/.emacs.d/vendors/jde/lisp/")
+(add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/")
+(add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/elib/")
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -207,7 +214,7 @@
 ;(set-default-font "DejaVu Sans Mono 9")
 
 ;; CEDT: required for ECB and speedbar
-(load-file "~/.emacs.d/vendors/cedet-1.0pre7/common/cedet.el")
+(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
 (global-ede-mode 1)                      ; Enable the Project management system
 (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
 (global-srecode-minor-mode 1)            ; Enable template insertion menu
@@ -386,3 +393,22 @@
 ;;(global-set-key [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
 (global-set-key [(control x)(meta j)]   'bc-list)           ;; C-x M-j for the bookmark menu list
 
+(require 'fastnav)
+(global-set-key "\M-z" 'zap-up-to-char-forward)
+(global-set-key "\M-Z" 'zap-up-to-char-backward)
+(global-set-key "\M-s" 'jump-to-char-forward)
+(global-set-key "\M-S" 'jump-to-char-backward)
+(global-set-key "\M-r" 'replace-char-forward)
+(global-set-key "\M-R" 'replace-char-backward)
+(global-set-key "\M-i" 'insert-at-char-forward)
+(global-set-key "\M-I" 'insert-at-char-backward)
+(global-set-key "\M-j" 'execute-at-char-forward)
+(global-set-key "\M-J" 'execute-at-char-backward)
+(global-set-key "\M-k" 'delete-char-forward)
+(global-set-key "\M-K" 'delete-char-backward)
+(global-set-key "\M-m" 'mark-to-char-forward)
+(global-set-key "\M-M" 'mark-to-char-backward)
+(global-set-key "\M-p" 'sprint-forward)
+(global-set-key "\M-P" 'sprint-backward)
+
+(require 'jde)
