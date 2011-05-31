@@ -4,6 +4,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
+(add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.23/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
@@ -18,6 +19,12 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/elib/")
+
+;; clean up ufter Tramp
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (tramp-cleanup-all-connections)
+                              (tramp-cleanup-all-buffers)
+                              ))
 
 ; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -181,8 +188,11 @@
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 
-; flymake config to enable on the fly error checking for Python
-;http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
+;; pyflakes on OS X
+(add-to-list 'exec-path "/opt/local/bin/")
+
+;; flymake config to enable on the fly error checking for Python
+;; http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
 
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
@@ -393,7 +403,7 @@
 ;;(global-set-key [(meta up)]             'bc-local-previous) ;; M-up-arrow for local previous
 ;;(global-set-key [(meta down)]           'bc-local-next)     ;; M-down-arrow for local next
 ;;(global-set-key [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
-(global-set-key [(control x)(meta j)]   'bc-list)           ;; C-x M-j for the bookmark menu list
+(global-set-key [(control x)(meta j)]     'bc-list)           ;; C-x M-j for the bookmark menu list
 
 (require 'fastnav)
 (global-set-key "\M-z" 'zap-up-to-char-forward)
