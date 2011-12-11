@@ -22,13 +22,14 @@
 (add-to-list 'load-path "~/emacs-config/vendors/semantic/")
 (add-to-list 'load-path "~/emacs-config/vendors/jde/lisp/")
 (add-to-list 'load-path "~/emacs-config/vendors/cedet-1.0/common/")
-(add-to-list 'load-path "~/emacs-config/vendors/cedet-1.0/common/cedet.el").gi
+(add-to-list 'load-path "~/emacs-config/vendors/cedet-1.0/common/cedet.el")
 (add-to-list 'load-path "~/emacs-config/vendors/elib/")
+(add-to-list 'load-path "~/emacs-config/vendors/full-ack.el")
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
 
-;; ; auto save desktop as well during buffer auto-save
+;; auto save desktop as well during buffer auto-save
 (require 'desktop)
 (setq desktop-path '("~/emacs-config/"))
 (setq desktop-dirname "~/emacs-config/")
@@ -363,6 +364,13 @@
 (defun sudo-find-file (file-name)
   (interactive "Find file (sudo): ")
   (find-file (concat "/sudo::" file-name)))
+
+
+;; http://nschum.de/src/emacs/full-ack/
+(autoload 'ack-same "full-ack" nil t)
+(autoload 'ack "full-ack" nil t)
+(autoload 'ack-find-same-file "full-ack" nil t)
+(autoload 'ack-find-file "full-ack" nil t)
 
 
 ;; ;; python.el
