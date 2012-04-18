@@ -4,7 +4,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
-(add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.23/")
+(add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.24b/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
@@ -19,17 +19,24 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/elib/")
+(add-to-list 'load-path "~/.emacs.d/vendors/full-ack.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/power-macros.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/undo-tree.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/csv-mode.el")
 
+;; start native Emacs server ready for client connections
+(add-hook 'after-init-hook 'server-start)
+
+;;Tramp
+(require 'tramp)
+(setq tramp-default-method "plink")
 ;; clean up ufter Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
                               (tramp-cleanup-all-buffers)
                               ))
 
-; start native Emacs server ready for client connections
-(add-hook 'after-init-hook 'server-start)
-
-; auto save desktop as well during buffer auto-save
+;; auto save desktop as well during buffer auto-save
 (require 'desktop)
 (setq desktop-path '("~/.emacs.d/"))
 (setq desktop-dirname "~/.emacs.d/")
@@ -53,7 +60,6 @@
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
 (global-set-key (kbd "C-c k") 'browse-kill-ring)
-
 
 ;; bm.el config -- bookmarks
 (setq bm-restore-repository-on-load t)
@@ -90,12 +96,12 @@
 
 ;; control how Emacs backup files are handled
 (setq
-  backup-directory-alist '(("." . "~/.emacs.d/saves"))
-  delete-old-versions t
-  kept-new-versions 6
-  kept-old-versions 2
-  version-control t
-  backup-by-copying t)
+ backup-directory-alist '(("." . "~/.emacs.d/saves"))
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t
+ backup-by-copying t)
 
 ;; delete trailing whitespace before file is saved
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -106,6 +112,7 @@
 
 ;; colums
 (column-number-mode 1)
+(display-time)
 
 ;; ido mode
 (require 'ido)
@@ -152,17 +159,6 @@
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets")
 
-
-;; python.el
-(require 'python)
-(setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
-(setq default-tab-width 4)
-;; re-bind RET to newline and indent, mode defines C-j for doing this
-(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
-
-; come extra functions for Python code completion
-(require 'pycomplete)
-
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
@@ -175,79 +171,6 @@
 ;; dotmode -- vi like command redo, bound to C-.
 (require 'dot-mode)
 (add-hook 'find-file-hooks 'dot-mode-on)
-
-;; pymacs and rope
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
-(setq ropemacs-enable-autoimport t)
-(setq ropemacs-enable-shortcuts t)
-
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-
-;; pyflakes on OS X
-(add-to-list 'exec-path "/opt/local/bin/")
-
-;; flymake config to enable on the fly error checking for Python
-;; http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
-
-(when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "pyflakes" (list local-file))))
-
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)))
-
-(add-hook 'find-file-hook 'flymake-find-file-hook)
-
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ecb-layout-window-sizes (quote (("left8" (0.15053763440860216 . 0.2727272727272727) (0.15053763440860216 . 0.22727272727272727) (0.15053763440860216 . 0.29545454545454547) (0.15053763440860216 . 0.18181818181818182)))))
- '(ecb-options-version "2.40")
- '(jde-jdk (quote ))
- '(jde-jdk-registry (quote (("1.6.0.24" . "/usr/lib/jvm/java-6-sun/"))))
- '(power-macros-file "~/.emacs.d/power-macros")
- '(py-pychecker-command "~/bin/pychecker.sh")
- '(py-pychecker-command-args (quote ("")))
- '(python-check-command "~/bin/pychecker.sh")
- '(safe-local-variable-values (quote ((test-case-name . formless\.test)))))
-
-;(set-default-font "DejaVu Sans Mono 9")
-
-;; CEDT: required for ECB and speedbar
-(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
-(global-ede-mode 1)                      ; Enable the Project management system
-(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
-(global-srecode-minor-mode 1)            ; Enable template insertion menu
-
-;; speedbar
-(speedbar 1)
-(global-set-key (kbd "<f6>") 'speedbar)
-
-;; ECB
-(require 'ecb)
-(require 'ecb-autoloads)
-;(setq  ecb-new-ecb-frame  1)
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
-
-(global-set-key (kbd "<f7>")   'ecb-activate)
-(global-set-key (kbd "<C-f7>") 'ecb-deactivate)
 
 ;; highlight symbols http://nschum.de/src/emacs/highlight-symbol/
 (add-to-list 'load-path "/path/to/highlight-symbol")
@@ -263,7 +186,6 @@
 
 (require 'rainbow-delimiters)
 (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
-
 
 ;; jump to matching parenthesis -- currently seems to support () and []
 (defun goto-match-paren (arg)
@@ -287,12 +209,11 @@
 
 (global-set-key (kbd "<C-f10>") 'goto-match-paren)
 
-;; Power Macros http://www.linuxjournal.com/article/3769?page=0,1
-(require 'power-macros)
-(power-macros-mode)
-(pm-load)
+;; unique names for duplicate buffer names
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;; http://github.com/nonsequitur/smex/
+;; Http://github.com/nonsequitur/smex/
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
@@ -300,11 +221,6 @@
 ;; This is your old M-x.
 ;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 (setq smex-save-file "~/.emacs.d/smex-items")
-
-;; http://www.dr-qubit.org/emacs.php#undo-tree
-;; hot damn.....
-(require 'undo-tree)
-(global-undo-tree-mode)
 
 ;;multi-term.el
 (require 'multi-term)
@@ -318,12 +234,11 @@
 ;; display path to file in frame title
 ;(setq-default mode-line-format
 (setq-default frame-title-format
-   (list '((buffer-file-name " %f"
-             (dired-directory
-              dired-directory
-              (revert-buffer-function " %b"
-              ("%b - Dir:  " default-directory)))))))
-
+              (list '((buffer-file-name " %f"
+                                        (dired-directory
+                                         dired-directory
+                                         (revert-buffer-function " %b"
+                                                                 ("%b - Dir:  " default-directory)))))))
 
 ;; I-search with initial contents -- current token at point
 ;; http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness
@@ -384,9 +299,9 @@
   (end-of-line)
   (let ((str (buffer-substring (region-beginning) (region-end))))
     (when commentfirst
-    (comment-region (region-beginning) (region-end)))
+      (comment-region (region-beginning) (region-end)))
     (insert-string
-      (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
+     (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
 (global-set-key (kbd "C-c y") 'djcb-duplicate-line)
@@ -408,8 +323,8 @@
 (require 'fastnav)
 (global-set-key "\M-z" 'zap-up-to-char-forward)
 (global-set-key "\M-Z" 'zap-up-to-char-backward)
-(global-set-key "\M-s" 'jump-to-char-forward)
-(global-set-key "\M-S" 'jump-to-char-backward)
+;(global-set-key "\M-s" 'jump-to-char-forward)
+;(global-set-key "\M-S" 'jump-to-char-backward)
 (global-set-key "\M-r" 'replace-char-forward)
 (global-set-key "\M-R" 'replace-char-backward)
 (global-set-key "\M-i" 'insert-at-char-forward)
@@ -423,13 +338,151 @@
 (global-set-key "\M-p" 'sprint-forward)
 (global-set-key "\M-P" 'sprint-backward)
 
-;; JDE library for Java
-(setq defer-loading-jde t)
-(if defer-loading-jde
-    (progn
-      (autoload 'jde-mode "jde" "JDE mode." t)
-      (setq auto-mode-alist
-	    (append
-	     '(("\\.java\\'" . jde-mode))
-	     auto-mode-alist))))
-(require 'jde)
+
+(defun delete-this-file ()
+  (interactive)
+  (or (buffer-file-name) (error "no file is currently being edited"))
+  (when (yes-or-no-p "Really delete this file?")
+    (delete-file (buffer-file-name))
+    (kill-this-buffer)))
+
+(defun indent-whole-buffer ()
+  "indent whole buffer"
+  (interactive)
+  (delete-trailing-whitespace)
+  (indent-region (point-min) (point-max) nil)
+  (untabify (point-min) (point-max)))
+
+;; http://www.dr-qubit.org/emacs.php#undo-tree
+;; hot damn.....
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+;; Power Macros http://www.linuxjournal.com/article/3769?page=0,1
+(require 'power-macros)
+(power-macros-mode)
+(pm-load)
+(setq power-macros-file "~/.emacs.d/power-macros")
+(global-set-key [(shift f1)] 'call-last-kbd-macro)
+
+
+;; edit files as root
+(defun sudo-find-file (file-name)
+  (interactive "Find file (sudo): ")
+  (find-file (concat "/sudo::" file-name)))
+
+;; http://nschum.de/src/emacs/full-ack/
+(autoload 'ack-same "full-ack" nil t)
+(autoload 'ack "full-ack" nil t)
+(autoload 'ack-find-same-file "full-ack" nil t)
+(autoload 'ack-find-file "full-ack" nil t)
+;(setq ack-executable "~/../../bin/ack")
+
+; (add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+(autoload 'csv-mode "csv-mode"
+   "Major mode for editing comma-separated value files." t)
+
+
+
+;;pymacs and rope
+;; http://pymacs.progiciels-bpi.ca/pymacs.html#install-the-pymacs-proper
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-autoload "pymacs")
+
+(pymacs-load "ropemacs" "rope-")
+(setq ropemacs-enable-autoimport t)
+(setq ropemacs-enable-shortcuts t)
+
+;;python.el
+(require 'python)
+(setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
+(setq default-tab-width 4)
+
+;re-bind RET to newline and indent, mode defines C-j for doing this
+(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
+
+
+
+
+
+
+;;some extra functions for Python code completion
+;(require 'pycomplete)
+
+;; ;; pyflakes on OS X
+;; ;;(add-to-list 'exec-path "/opt/local/bin/")
+
+;; ;; flymake config to enable on the fly error checking for Python
+;; ;; http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
+
+;; (add-to-list 'exec-path "~/../../bin")
+
+;; (when (load "flymake" t)
+;;   (defun flymake-pyflakes-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name))))
+;;       (list "pyflakes" (list local-file))))
+
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.py\\'" flymake-pyflakes-init)))
+
+;; (add-hook 'find-file-hook 'flymake-find-file-hook)
+
+;; ;(custom-set-variables
+;;   ;; custom-set-variables was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+;; ; '(ecb-layout-window-sizes (quote (("left8" (0.15053763440860216 . 0.2727272727272727) (0.15053763440860216 . 0.22727272727272727) (0.15053763440860216 . 0.29545454545454547) (0.15053763440860216 . 0.18181818181818182)))))
+;; ; '(ecb-options-version "2.40")
+;; ; '(jde-jdk (quote ))
+;; ; '(jde-jdk-registry (quote (("1.6.0.24" . "/usr/lib/jvm/java-6-sun/"))))
+;; ; '(power-macros-file "~/.emacs.d/power-macros")
+;; ; '(py-pychecker-command "~/bin/pychecker.sh")
+;; ; '(py-pychecker-command-args (quote ("")))
+;; ; '(python-check-command "~/bin/pychecker.sh")
+;; ; '(safe-local-variable-values (quote ((test-case-name . formless\.test)))))
+
+;; ;(set-default-font "DejaVu Sans Mono 9")
+
+;; ;; CEDT: required for ECB and speedbar
+;; ;;(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
+;; ;;(global-ede-mode 1)                      ; Enable the Project management system
+;; ;;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
+;; ;;(global-srecode-minor-mode 1)            ; Enable template insertion menu
+
+;; ;; speedbar
+;; (speedbar 1)
+;; (global-set-key (kbd "<f6>") 'speedbar)
+
+;; ;; ECB
+;; ;(require 'ecb)
+;; ;(require 'ecb-autoloads)
+;; ;(setq  ecb-new-ecb-frame  1)
+;; ;(custom-set-faces
+;;   ;; custom-set-faces was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+;; ; )
+
+;; (global-set-key (kbd "<f7>")   'ecb-activate)
+;; (global-set-key (kbd "<C-f7>") 'ecb-deactivate)
+
+;; ;; JDE library for Java
+;; (setq defer-loading-jde t)
+;; (if defer-loading-jde
+;;     (progn
+;;       (autoload 'jde-mode "jde" "JDE mode." t)
+;;       (setq auto-mode-alist
+;;          (append
+;;           '(("\\.java\\'" . jde-mode))
+;;           auto-mode-alist))))
+;; (require 'jde)
