@@ -1,38 +1,45 @@
-(setenv "PATH" (concat "c:/cygwin/bin;" (getenv "PATH")))
-(setq exec-path (cons "c:/cygwin/bin/" exec-path))
-(require 'cygwin-mount)
-(cygwin-mount-activate)
-
-(add-to-list 'load-path "~/emacs-config/")
-(add-to-list 'load-path "~/emacs-config/vendors")
-(add-to-list 'load-path "~/emacs-config/vendors/auto-complete-1.2")
-(add-to-list 'load-path "~/emacs-config/vendors/ecb-2.40/")
-(add-to-list 'load-path "~/emacs-config/vendors/nonsequitur-smex-7d5d797/")
-(add-to-list 'load-path "~/emacs-config/vendors/yasnippet-0.6.1c/")
-(add-to-list 'load-path "~/emacs-config/vendors/Pymacs-0.23/")
-(add-to-list 'load-path "~/emacs-config/vendors/DrewsLibraries/")
-(add-to-list 'load-path "~/emacs-config/vendors/exec-abbrev-cmd.el")
-(add-to-list 'load-path "~/emacs-config/vendors/revbufs.el")
-(add-to-list 'load-path "~/emacs-config/vendors/extraedit.el")
-(add-to-list 'load-path "~/emacs-config/vendors/breadcrumb.el")
-(add-to-list 'load-path "~/emacs-config/vendors/pycomplete.el")
-(add-to-list 'load-path "~/emacs-config/vendors/rainbow-delimiters.el")
-(add-to-list 'load-path "~/emacs-config/vendors/fastnav.el")
-(add-to-list 'load-path "~/emacs-config/vendors/eieio/")
-(add-to-list 'load-path "~/emacs-config/vendors/semantic/")
-(add-to-list 'load-path "~/emacs-config/vendors/jde/lisp/")
-(add-to-list 'load-path "~/emacs-config/vendors/cedet-1.0/common/")
-(add-to-list 'load-path "~/emacs-config/vendors/cedet-1.0/common/cedet.el")
-(add-to-list 'load-path "~/emacs-config/vendors/elib/")
-(add-to-list 'load-path "~/emacs-config/vendors/full-ack.el")
+(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/vendors")
+(add-to-list 'load-path "~/.emacs.d/vendors/auto-complete-1.2")
+(add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
+(add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
+(add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
+(add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.24b/")
+(add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
+(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/rainbow-delimiters.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/fastnav.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/eieio/")
+(add-to-list 'load-path "~/.emacs.d/vendors/semantic/")
+(add-to-list 'load-path "~/.emacs.d/vendors/jde/lisp/")
+(add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/")
+(add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/elib/")
+(add-to-list 'load-path "~/.emacs.d/vendors/full-ack.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/power-macros.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/undo-tree.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/csv-mode.el")
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
 
+;;Tramp
+(require 'tramp)
+(setq tramp-default-method "plink")
+;; clean up ufter Tramp
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (tramp-cleanup-all-connections)
+                              (tramp-cleanup-all-buffers)
+                              ))
+
 ;; auto save desktop as well during buffer auto-save
 (require 'desktop)
-(setq desktop-path '("~/emacs-config/"))
-(setq desktop-dirname "~/emacs-config/")
+(setq desktop-path '("~/.emacs.d/"))
+(setq desktop-dirname "~/.emacs.d/")
 (setq desktop-base-file-name "emacs-desktop")
 (desktop-save-mode 1)
 (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
@@ -40,7 +47,7 @@
 ;; save history
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file "~/emacs-config/savehist")
+(setq savehist-file "~/.emacs.d/savehist")
 
 ;; revert buffer from file -- useful for when file has been changed by version control
 (global-set-key (kbd "<f5>")   'revert-buffer)
@@ -89,7 +96,7 @@
 
 ;; control how Emacs backup files are handled
 (setq
- backup-directory-alist '(("." . "~/emacs-config/saves"))
+ backup-directory-alist '(("." . "~/.emacs.d/saves"))
  delete-old-versions t
  kept-new-versions 6
  kept-old-versions 2
@@ -150,7 +157,7 @@
 ;; yasnippet
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "~/emacs-config/vendors/yasnippet-0.6.1c/snippets")
+(yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets")
 
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
@@ -158,7 +165,7 @@
 
 ;; auto-complete config
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/emacs-config/vendors/auto-complete-1.2/dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/vendors/auto-complete-1.2/dict")
 (ac-config-default)
 
 ;; dotmode -- vi like command redo, bound to C-.
@@ -213,7 +220,7 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 ;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-(setq smex-save-file "~/emacs-config/smex-items")
+(setq smex-save-file "~/.emacs.d/smex-items")
 
 ;;multi-term.el
 (require 'multi-term)
@@ -225,7 +232,7 @@
 (global-set-key (kbd "<C-f6>") 'linum-mode)
 
 ;; display path to file in frame title
-                                        ;(setq-default mode-line-format
+;(setq-default mode-line-format
 (setq-default frame-title-format
               (list '((buffer-file-name " %f"
                                         (dired-directory
@@ -265,7 +272,7 @@
 (setq-default save-place t)
 
 ;; DrewsLibraries from EmacsWiki
-                                        ; crosshairs
+; crosshairs
 (require 'crosshairs)
 (global-set-key (kbd "<M-f6>") 'flash-crosshairs)
 
@@ -316,8 +323,8 @@
 (require 'fastnav)
 (global-set-key "\M-z" 'zap-up-to-char-forward)
 (global-set-key "\M-Z" 'zap-up-to-char-backward)
-(global-set-key "\M-s" 'jump-to-char-forward)
-(global-set-key "\M-S" 'jump-to-char-backward)
+;(global-set-key "\M-s" 'jump-to-char-forward)
+;(global-set-key "\M-S" 'jump-to-char-backward)
 (global-set-key "\M-r" 'replace-char-forward)
 (global-set-key "\M-R" 'replace-char-backward)
 (global-set-key "\M-i" 'insert-at-char-forward)
@@ -348,59 +355,71 @@
 
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
 ;; hot damn.....
-;;(require 'undo-tree)
-;;(global-undo-tree-mode)
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 ;; Power Macros http://www.linuxjournal.com/article/3769?page=0,1
-;;(require 'power-macros)
-;;(power-macros-mode)
-;;(pm-load)
+(require 'power-macros)
+(power-macros-mode)
+(pm-load)
+(setq power-macros-file "~/.emacs.d/power-macros")
+(global-set-key [(shift f1)] 'call-last-kbd-macro)
 
-;; Clean up after Tramp
-(add-hook 'kill-emacs-hook '(lambda nil
-                              (tramp-cleanup-all-connections)
-                              (tramp-cleanup-all-buffers)))
+
 ;; edit files as root
 (defun sudo-find-file (file-name)
   (interactive "Find file (sudo): ")
   (find-file (concat "/sudo::" file-name)))
-
 
 ;; http://nschum.de/src/emacs/full-ack/
 (autoload 'ack-same "full-ack" nil t)
 (autoload 'ack "full-ack" nil t)
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
+;(setq ack-executable "~/../../bin/ack")
+
+; (add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+(autoload 'csv-mode "csv-mode"
+   "Major mode for editing comma-separated value files." t)
 
 
-;; ;; python.el
-;; ;;(require 'python)
-;; ;;(setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
-;; ;;(setq default-tab-width 4)
-;; ;; re-bind RET to newline and indent, mode defines C-j for doing this
-;; ;;(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
-;; ; come extra functions for Python code completion
-;; ;;(require 'pycomplete)
+;;pymacs and rope
+;; http://pymacs.progiciels-bpi.ca/pymacs.html#install-the-pymacs-proper
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-autoload "pymacs")
+
+(pymacs-load "ropemacs" "rope-")
+(setq ropemacs-enable-autoimport t)
+(setq ropemacs-enable-shortcuts t)
+
+;;python.el
+(require 'python)
+(setq-default indent-tabs-mode nil)    ; use only spaces and no tabs
+(setq default-tab-width 4)
+
+;re-bind RET to newline and indent, mode defines C-j for doing this
+(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
 
-;; ;; pymacs and rope
-;; ;;(require 'pymacs)
-;; ;;(pymacs-load "ropemacs" "rope-")
-;; ;;(setq ropemacs-enable-autoimport t)
-;; ;;(setq ropemacs-enable-shortcuts t)
 
-;; ;;(autoload 'pymacs-apply "pymacs")
-;; ;;(autoload 'pymacs-call "pymacs")
-;; ;;(autoload 'pymacs-eval "pymacs" nil t)
-;; ;;(autoload 'pymacs-exec "pymacs" nil t)
-;; ;;(autoload 'pymacs-load "pymacs" nil t)
+
+
+
+;;some extra functions for Python code completion
+;(require 'pycomplete)
 
 ;; ;; pyflakes on OS X
 ;; ;;(add-to-list 'exec-path "/opt/local/bin/")
 
 ;; ;; flymake config to enable on the fly error checking for Python
 ;; ;; http://reinout.vanrees.org/weblog/2010/05/11/pep8-pyflakes-emacs.html
+
+;; (add-to-list 'exec-path "~/../../bin")
 
 ;; (when (load "flymake" t)
 ;;   (defun flymake-pyflakes-init ()
@@ -425,7 +444,7 @@
 ;; ; '(ecb-options-version "2.40")
 ;; ; '(jde-jdk (quote ))
 ;; ; '(jde-jdk-registry (quote (("1.6.0.24" . "/usr/lib/jvm/java-6-sun/"))))
-;; ; '(power-macros-file "~/emacs-config/power-macros")
+;; ; '(power-macros-file "~/.emacs.d/power-macros")
 ;; ; '(py-pychecker-command "~/bin/pychecker.sh")
 ;; ; '(py-pychecker-command-args (quote ("")))
 ;; ; '(python-check-command "~/bin/pychecker.sh")
@@ -434,7 +453,7 @@
 ;; ;(set-default-font "DejaVu Sans Mono 9")
 
 ;; ;; CEDT: required for ECB and speedbar
-;; ;;(load-file "~/emacs-config/vendors/cedet-1.0/common/cedet.el")
+;; ;;(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
 ;; ;;(global-ede-mode 1)                      ; Enable the Project management system
 ;; ;;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
 ;; ;;(global-srecode-minor-mode 1)            ; Enable template insertion menu
