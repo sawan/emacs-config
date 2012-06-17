@@ -11,6 +11,14 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/rainbow-delimiters.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/fastnav.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/eieio/")
+(add-to-list 'load-path "~/.emacs.d/vendors/semantic/")
+(add-to-list 'load-path "~/.emacs.d/vendors/jde/lisp/")
+(add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/")
+(add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/elib/")
 
 ;; clean up ufter Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
@@ -40,9 +48,6 @@
 
 ;; use y/n for all yes-no answers
 (defalias 'yes-or-no-p 'y-or-n-p)
-
-;; enable paren highliting for all files
-(add-hook 'find-file-hooks (lambda() (show-paren-mode t)))
 
 ;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -210,6 +215,8 @@
   ;; If there is more than one, they won't work right.
  '(ecb-layout-window-sizes (quote (("left8" (0.15053763440860216 . 0.2727272727272727) (0.15053763440860216 . 0.22727272727272727) (0.15053763440860216 . 0.29545454545454547) (0.15053763440860216 . 0.18181818181818182)))))
  '(ecb-options-version "2.40")
+ '(jde-jdk (quote ))
+ '(jde-jdk-registry (quote (("1.6.0.24" . "/usr/lib/jvm/java-6-sun/"))))
  '(power-macros-file "~/.emacs.d/power-macros")
  '(py-pychecker-command "~/bin/pychecker.sh")
  '(py-pychecker-command-args (quote ("")))
@@ -219,7 +226,7 @@
 ;(set-default-font "DejaVu Sans Mono 9")
 
 ;; CEDT: required for ECB and speedbar
-(load-file "~/.emacs.d/vendors/cedet-1.0pre7/common/cedet.el")
+(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
 (global-ede-mode 1)                      ; Enable the Project management system
 (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
 (global-srecode-minor-mode 1)            ; Enable template insertion menu
@@ -250,6 +257,12 @@
 (global-set-key (kbd "<C-f9>") 'highlight-symbol-next)
 (global-set-key (kbd "<S-f9>") 'highlight-symbol-prev)
 (global-set-key (kbd "<M-f9>") 'highlight-symbol-remove-all)
+
+;; enable paren highliting for all files
+(add-hook 'find-file-hooks (lambda() (show-paren-mode t)))
+
+(require 'rainbow-delimiters)
+(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
 
 
 ;; jump to matching parenthesis -- currently seems to support () and []
@@ -392,3 +405,31 @@
 ;;(global-set-key [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
 (global-set-key [(control x)(meta j)]     'bc-list)           ;; C-x M-j for the bookmark menu list
 
+(require 'fastnav)
+(global-set-key "\M-z" 'zap-up-to-char-forward)
+(global-set-key "\M-Z" 'zap-up-to-char-backward)
+(global-set-key "\M-s" 'jump-to-char-forward)
+(global-set-key "\M-S" 'jump-to-char-backward)
+(global-set-key "\M-r" 'replace-char-forward)
+(global-set-key "\M-R" 'replace-char-backward)
+(global-set-key "\M-i" 'insert-at-char-forward)
+(global-set-key "\M-I" 'insert-at-char-backward)
+(global-set-key "\M-j" 'execute-at-char-forward)
+(global-set-key "\M-J" 'execute-at-char-backward)
+(global-set-key "\M-k" 'delete-char-forward)
+(global-set-key "\M-K" 'delete-char-backward)
+(global-set-key "\M-m" 'mark-to-char-forward)
+(global-set-key "\M-M" 'mark-to-char-backward)
+(global-set-key "\M-p" 'sprint-forward)
+(global-set-key "\M-P" 'sprint-backward)
+
+;; JDE library for Java
+(setq defer-loading-jde t)
+(if defer-loading-jde
+    (progn
+      (autoload 'jde-mode "jde" "JDE mode." t)
+      (setq auto-mode-alist
+	    (append
+	     '(("\\.java\\'" . jde-mode))
+	     auto-mode-alist))))
+(require 'jde)
