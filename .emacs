@@ -301,6 +301,7 @@
 (require 'thing-edit)
 (key-chord-define-global "cw" 'thing-copy-word)
 (key-chord-define-global "cl" 'thing-copy-line)
+(key-chord-define-global "cs" 'thing-copy-symbol)
 (key-chord-define-global "lb" 'thing-copy-to-line-beginning)
 (key-chord-define-global "le" 'thing-copy-to-line-end)
 (key-chord-define-global "cr" 'copy-region-as-kill)
@@ -343,7 +344,6 @@ instead of a char."
 (key-chord-define-global "zs" 'th-zap-to-string)
 (key-chord-define-global "zr" 'th-zap-to-regexp)
 
-
 (require 'extraedit)
 
 ;; Set breadcrumbs in visited buffers for navigation
@@ -353,24 +353,23 @@ instead of a char."
 (key-chord-define-global "bn" 'bc-next)
 (key-chord-define-global "bl" 'bc-list)
 
-;; (require 'fastnav)
+(require 'fastnav)
 ;; (global-set-key "\M-z" 'zap-up-to-char-forward)
 ;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
-;; ;(global-set-key "\M-s" 'jump-to-char-forward)
-;; ;(global-set-key "\M-S" 'jump-to-char-backward)
-;; (global-set-key "\M-r" 'replace-char-forward)
-;; (global-set-key "\M-R" 'replace-char-backward)
-;; (global-set-key "\M-i" 'insert-at-char-forward)
-;; (global-set-key "\M-I" 'insert-at-char-backward)
-;; (global-set-key "\M-j" 'execute-at-char-forward)
-;; (global-set-key "\M-J" 'execute-at-char-backward)
-;; (global-set-key "\M-k" 'delete-char-forward)
-;; (global-set-key "\M-K" 'delete-char-backward)
-;; (global-set-key "\M-m" 'mark-to-char-forward)
-;; (global-set-key "\M-M" 'mark-to-char-backward)
-;; (global-set-key "\M-p" 'sprint-forward)
-;; (global-set-key "\M-P" 'sprint-backward)
-
+(global-set-key "\M-s" 'jump-to-char-forward)
+(global-set-key "\M-S" 'jump-to-char-backward)
+(global-set-key "\M-r" 'replace-char-forward)
+(global-set-key "\M-R" 'replace-char-backward)
+(global-set-key "\M-i" 'insert-at-char-forward)
+(global-set-key "\M-I" 'insert-at-char-backward)
+(global-set-key "\M-j" 'execute-at-char-forward)
+(global-set-key "\M-J" 'execute-at-char-backward)
+(global-set-key "\M-k" 'delete-char-forward)
+(global-set-key "\M-K" 'delete-char-backward)
+(global-set-key "\M-m" 'mark-to-char-forward)
+(global-set-key "\M-M" 'mark-to-char-backward)
+(global-set-key "\M-p" 'sprint-forward)
+(global-set-key "\M-P" 'sprint-backward)
 
 (defun delete-this-file ()
   (interactive)
@@ -412,7 +411,6 @@ instead of a char."
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
-
 ; http://blogs.fluidinfo.com/terry/2011/11/10/emacs-buffer-mode-histogram/
 (defun buffer-mode-histogram ()
   "Display a histogram of emacs buffer modes."
@@ -444,6 +442,18 @@ instead of a char."
                          (make-string count ?+))))))))
 
 
+(defun wc (&optional start end)
+   "Prints number of lines, words and characters in region or whole buffer."
+   (interactive)
+   (let ((n 0)
+         (start (if mark-active (region-beginning) (point-min)))
+         (end (if mark-active (region-end) (point-max))))
+     (save-excursion
+       (goto-char start)
+       (while (< (point) end) (if (forward-word 1) (setq n (1+ n)))))
+     (message "%3d lines %3d words %3d chars" (count-lines start end) n (- end start))))
+
+
 ;;Python
 
 ;;pymacs and rope
@@ -468,7 +478,7 @@ instead of a char."
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
 (defun python-add-debug-highlight ()
-  "Adds a highlighter for use by `python--pdb-breakpoint-string'"
+  "Adds a highlighter for use by `python-pdb-breakpoint-string'"
   (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
 
 (add-hook 'python-mode-hook 'python-add-debug-highlight)
@@ -484,7 +494,7 @@ instead of a char."
   ;; point is a nested block
   (split-line)
   (insert python-pdb-breakpoint-string)
-  (py-indent-line))
+  (save-buffer) )
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
 
@@ -535,10 +545,6 @@ instead of a char."
 ;; ;;(global-ede-mode 1)                      ; Enable the Project management system
 ;; ;;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
 ;; ;;(global-srecode-minor-mode 1)            ; Enable template insertion menu
-
-;; ;; speedbar
-;; (speedbar 1)
-;; (global-set-key (kbd "<f6>") 'speedbar)
 
 ;; ;; ECB
 ;; ;(require 'ecb)
