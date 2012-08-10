@@ -23,6 +23,8 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/power-macros.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/undo-tree.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/csv-mode.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/key-chord.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/yaml-mode.el")
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -30,11 +32,24 @@
 ;;Tramp
 (require 'tramp)
 (setq tramp-default-method "plink")
-;; clean up ufter Tramp
+;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
                               (tramp-cleanup-all-buffers)
                               ))
+;; speedbar
+(speedbar 1)
+
+;;Kinda cool?
+(require 'highlight-tail)
+;(highlight-tail-mode)
+
+(require 'key-chord)
+(key-chord-mode 1)
+
+(key-chord-define emacs-lisp-mode-map "eb" 'eval-buffer)
+(key-chord-define emacs-lisp-mode-map "ed" 'eval-defun)
+(key-chord-define emacs-lisp-mode-map "er" 'eval-region)
 
 ;; auto save desktop as well during buffer auto-save
 (require 'desktop)
@@ -98,8 +113,8 @@
 (setq
  backup-directory-alist '(("." . "~/.emacs.d/saves"))
  delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
+ kept-new-versions 20
+ kept-old-versions 10
  version-control t
  backup-by-copying t)
 
@@ -117,6 +132,7 @@
 ;; ido mode
 (require 'ido)
 (ido-mode t)
+(setq ido-enable-flex-matching t)
 
 (defun iswitchb-local-keys ()
   (mapc (lambda (K)
@@ -157,7 +173,7 @@
 ;; yasnippet
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets")
+(yas/load-directory "~/.emacs.d/vendors/yasnippet-0.6.1c/snippets/")
 
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
@@ -283,10 +299,11 @@
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
 (require 'thing-edit)
-(global-set-key (kbd "<C-f11>") 'thing-copy-word)
-(global-set-key (kbd "<C-f12>") 'thing-copy-line)
-(global-set-key (kbd "<M-f11>") 'thing-copy-to-line-beginning)
-(global-set-key (kbd "<M-f12>") 'thing-copy-to-line-end)
+(key-chord-define-global "cw" 'thing-copy-word)
+(key-chord-define-global "cl" 'thing-copy-line)
+(key-chord-define-global "lb" 'thing-copy-to-line-beginning)
+(key-chord-define-global "le" 'thing-copy-to-line-end)
+(key-chord-define-global "cr" 'copy-region-as-kill)
 
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
@@ -304,39 +321,55 @@
      (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
-(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
-(global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
-(global-set-key (kbd "C-c C") (lambda()(interactive)(line-uncomment)))
+(key-chord-define-global "dl" 'djcb-duplicate-line)
+
+;; http://tsdh.wordpress.com/2007/06/22/zapping-to-strings-and-regexps/
+(defun th-zap-to-string (arg str)
+  "Same as `zap-to-char' except that it zaps to the given string
+instead of a char."
+  (interactive "p\nsZap to string: ")
+  (kill-region (point) (progn
+                         (search-forward str nil nil arg)
+                         (point))))
+
+(defun th-zap-to-regexp (arg regexp)
+  "Same as `zap-to-char' except that it zaps to the given regexp
+instead of a char."
+  (interactive "p\nsZap to regexp: ")
+  (kill-region (point) (progn
+                         (re-search-forward regexp nil nil arg)
+                         (point))))
+
+(key-chord-define-global "zs" 'th-zap-to-string)
+(key-chord-define-global "zr" 'th-zap-to-regexp)
+
 
 (require 'extraedit)
 
 ;; Set breadcrumbs in visited buffers for navigation
 (require 'breadcrumb)
-(global-set-key [(meta K)] 'bc-set)
-(global-set-key [(meta P)] 'bc-previous)
-(global-set-key [(meta J)] 'bc-next)
-;;(global-set-key [(meta up)]             'bc-local-previous) ;; M-up-arrow for local previous
-;;(global-set-key [(meta down)]           'bc-local-next)     ;; M-down-arrow for local next
-;;(global-set-key [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
-(global-set-key [(control x)(meta j)]     'bc-list)           ;; C-x M-j for the bookmark menu list
+(key-chord-define-global "bs" 'bc-set)
+(key-chord-define-global "bp" 'bc-previous)
+(key-chord-define-global "bn" 'bc-next)
+(key-chord-define-global "bl" 'bc-list)
 
-(require 'fastnav)
-(global-set-key "\M-z" 'zap-up-to-char-forward)
-(global-set-key "\M-Z" 'zap-up-to-char-backward)
-;(global-set-key "\M-s" 'jump-to-char-forward)
-;(global-set-key "\M-S" 'jump-to-char-backward)
-(global-set-key "\M-r" 'replace-char-forward)
-(global-set-key "\M-R" 'replace-char-backward)
-(global-set-key "\M-i" 'insert-at-char-forward)
-(global-set-key "\M-I" 'insert-at-char-backward)
-(global-set-key "\M-j" 'execute-at-char-forward)
-(global-set-key "\M-J" 'execute-at-char-backward)
-(global-set-key "\M-k" 'delete-char-forward)
-(global-set-key "\M-K" 'delete-char-backward)
-(global-set-key "\M-m" 'mark-to-char-forward)
-(global-set-key "\M-M" 'mark-to-char-backward)
-(global-set-key "\M-p" 'sprint-forward)
-(global-set-key "\M-P" 'sprint-backward)
+;; (require 'fastnav)
+;; (global-set-key "\M-z" 'zap-up-to-char-forward)
+;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
+;; ;(global-set-key "\M-s" 'jump-to-char-forward)
+;; ;(global-set-key "\M-S" 'jump-to-char-backward)
+;; (global-set-key "\M-r" 'replace-char-forward)
+;; (global-set-key "\M-R" 'replace-char-backward)
+;; (global-set-key "\M-i" 'insert-at-char-forward)
+;; (global-set-key "\M-I" 'insert-at-char-backward)
+;; (global-set-key "\M-j" 'execute-at-char-forward)
+;; (global-set-key "\M-J" 'execute-at-char-backward)
+;; (global-set-key "\M-k" 'delete-char-forward)
+;; (global-set-key "\M-K" 'delete-char-backward)
+;; (global-set-key "\M-m" 'mark-to-char-forward)
+;; (global-set-key "\M-M" 'mark-to-char-backward)
+;; (global-set-key "\M-p" 'sprint-forward)
+;; (global-set-key "\M-P" 'sprint-backward)
 
 
 (defun delete-this-file ()
@@ -358,14 +391,6 @@
 (require 'undo-tree)
 (global-undo-tree-mode)
 
-;; Power Macros http://www.linuxjournal.com/article/3769?page=0,1
-(require 'power-macros)
-(power-macros-mode)
-(pm-load)
-(setq power-macros-file "~/.emacs.d/power-macros")
-(global-set-key [(shift f1)] 'call-last-kbd-macro)
-
-
 ;; edit files as root
 (defun sudo-find-file (file-name)
   (interactive "Find file (sudo): ")
@@ -378,11 +403,48 @@
 (autoload 'ack-find-file "full-ack" nil t)
 ;(setq ack-executable "~/../../bin/ack")
 
-; (add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+
 (autoload 'csv-mode "csv-mode"
    "Major mode for editing comma-separated value files." t)
+(add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
 
+; http://blogs.fluidinfo.com/terry/2011/11/10/emacs-buffer-mode-histogram/
+(defun buffer-mode-histogram ()
+  "Display a histogram of emacs buffer modes."
+  (interactive)
+  (let* ((totals `())
+         (buffers (buffer-list()))
+         (total-buffers (length buffers))
+         (ht (make-hash-table :test `equal)))
+    (save-excursion
+      (dolist (buffer buffers)
+        (set-buffer buffer)
+        (let
+            ((mode-name (symbol-name major-mode)))
+          (puthash mode-name (1+ (gethash mode-name ht 0)) ht))))
+    (maphash (lambda (key value)
+               (setq totals (cons (list key value) totals)))
+             ht)
+    (setq totals (sort totals (lambda (x y) (> (cadr x) (cadr y)))))
+    (with-output-to-temp-buffer "Buffer mode histogram"
+      (princ (format "%d buffers open, in %d distinct modes\n\n"
+                      total-buffers (length totals)))
+      (dolist (item totals)
+        (let
+            ((key (car item))
+             (count (cadr item)))
+          (if (equal (substring key -5) "-mode")
+              (setq key (substring key 0 -5)))
+          (princ (format "%2d %20s %s\n" count key
+                         (make-string count ?+))))))))
+
+
+;;Python
 
 ;;pymacs and rope
 ;; http://pymacs.progiciels-bpi.ca/pymacs.html#install-the-pymacs-proper
@@ -405,9 +467,25 @@
 ;re-bind RET to newline and indent, mode defines C-j for doing this
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
+(defun python-add-debug-highlight ()
+  "Adds a highlighter for use by `python--pdb-breakpoint-string'"
+  (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
 
+(add-hook 'python-mode-hook 'python-add-debug-highlight)
 
+(defvar python-pdb-breakpoint-string "import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
+  "Python breakpoint string used by `python-insert-breakpoint'")
 
+(defun python-insert-breakpoint ()
+  "Inserts a python breakpoint using `ipdb'"
+  (interactive)
+  (back-to-indentation)
+  ;; this preserves the correct indentation in case the line above
+  ;; point is a nested block
+  (split-line)
+  (insert python-pdb-breakpoint-string)
+  (py-indent-line))
+(key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
 
 ;;some extra functions for Python code completion

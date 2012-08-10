@@ -83,7 +83,7 @@
 ;; `4' and `r' pressed together insert a dollar sign.
 ;;
 ;; A ONE-key chord is a single key quickly pressed twice (within one third
-;; of a second or so).
+;; of a second or so). 
 ;;
 ;; Examples:
 ;;
@@ -114,7 +114,7 @@
 ;; write. Otherwise, if you are typing fast, two key intended to be separate
 ;; letters might instead trig a chord.
 ;; E.g. "uu" would be a good chord in spanish but not in finnish, and
-;; "hj" would be a good chord in english but not in swedish.
+;; "hj" would be a good chord in english but not in swedish. 
 ;;
 ;; Don't rely solely on /usr/dict/words to find unusual combination.
 ;; For example "cv" or "fg" can be quite common in certain kinds of
@@ -286,7 +286,7 @@ If COMMAND is nil, the key-chord is removed."
       (setq res (key-chord-lookup-key1 (car maps) key)
 	    maps (cdr maps)))
     (or res
-	(if (current-local-map)
+	(if (current-local-map) 
 	    (key-chord-lookup-key1 (current-local-map) key))
 	(key-chord-lookup-key1 (current-global-map) key))))
 
