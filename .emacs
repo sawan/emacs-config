@@ -25,6 +25,8 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/csv-mode.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/key-chord.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/yaml-mode.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/highlight-tail.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/wide-n.el")
 
 (add-to-list 'load-path "~/.emacs.d/vendors/emacros.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/color-moccur.el")
@@ -42,6 +44,9 @@
                               ))
 ;; speedbar
 (speedbar 1)
+
+;;Wide-n library
+(require 'wide-n)
 
 ;;Kinda cool?
 (require 'highlight-tail)
@@ -359,8 +364,8 @@ instead of a char."
 (require 'fastnav)
 ;; (global-set-key "\M-z" 'zap-up-to-char-forward)
 ;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
-(global-set-key "\M-s" 'jump-to-char-forward)
-(global-set-key "\M-S" 'jump-to-char-backward)
+;; (global-set-key "\M-s" 'jump-to-char-forward)
+;; (global-set-key "\M-S" 'jump-to-char-backward)
 (global-set-key "\M-r" 'replace-char-forward)
 (global-set-key "\M-R" 'replace-char-backward)
 (global-set-key "\M-i" 'insert-at-char-forward)
@@ -413,6 +418,11 @@ instead of a char."
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-hook 'yaml-mode-hook '(lambda ()
+                             (define-key yaml-mode-map
+                               (kbd "RET") 'newline-and-indent)))
+
+
 
 ; http://blogs.fluidinfo.com/terry/2011/11/10/emacs-buffer-mode-histogram/
 (defun buffer-mode-histogram ()
@@ -444,7 +454,7 @@ instead of a char."
           (princ (format "%2d %20s %s\n" count key
                          (make-string count ?+))))))))
 
-
+;; word count function -- similar to c on the command line
 (defun wc (&optional start end)
    "Prints number of lines, words and characters in region or whole buffer."
    (interactive)
@@ -456,6 +466,30 @@ instead of a char."
        (while (< (point) end) (if (forward-word 1) (setq n (1+ n)))))
      (message "%3d lines %3d words %3d chars" (count-lines start end) n (- end start))))
 
+
+(defun count-string-matches (strn)
+  "Return number of matches STRING following the point.
+Continues until end of buffer.  Also display the count as a message."
+  (interactive (list (read-string "Enter string: ")))
+  (save-excursion
+    (let ((count -1))
+      (while
+          (progn
+            (setq count (1+ count))
+            (search-forward strn nil t)))
+      (message "%d matches" count)
+      count)))
+
+;; http://www.emacswiki.org/emacs/BasicNarrowing
+(defun replace-regexp-in-region (start end)
+  (interactive "*r")      (save-excursion
+                            (save-restriction
+                              (let ((regexp (read-string "Regexp: "))
+                                    (to-string (read-string "Replacement: ")))
+                                (narrow-to-region start end)
+                                (goto-char (point-min))
+                                (while (re-search-forward regexp nil t)
+                                  (replace-match to-string nil nil))))))
 
 ;;Python
 
