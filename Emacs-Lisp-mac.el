@@ -1,0 +1,2 @@
+(emacros-new-macro 'end-file-comment-dwim [67108896 134217790 134217848 99 111 109 109 101 110 116 45 100 119 105 110 backspace 109 return])
+(emacros-new-macro 'begin-file-comment-dwim [67108896 134217788 134217848 99 111 109 109 101 110 116 45 100 119 105 109 return])

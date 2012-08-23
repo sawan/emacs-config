@@ -27,8 +27,6 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/yaml-mode.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/highlight-tail.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/wide-n.el")
-
-(add-to-list 'load-path "~/.emacs.d/vendors/emacros.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/color-moccur.el")
 
 ;; start native Emacs server ready for client connections
@@ -58,6 +56,11 @@
 (key-chord-define emacs-lisp-mode-map "eb" 'eval-buffer)
 (key-chord-define emacs-lisp-mode-map "ed" 'eval-defun)
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
+
+;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
+(load-file "~/.emacs.d/vendors/emacros.el")
+(setq emacros-global-dir "~/.emacs.d")
+(key-chord-define-global "em" 'emacros-auto-execute-named-macro)
 
 ;; auto save desktop as well during buffer auto-save
 (require 'desktop)
