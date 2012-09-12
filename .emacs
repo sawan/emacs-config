@@ -1,5 +1,6 @@
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/vendors")
+(add-to-list 'load-path "~/.emacs.d/vendors/pos-tip.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/auto-complete-1.2")
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
@@ -60,7 +61,7 @@
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
 (load-file "~/.emacs.d/vendors/emacros.el")
 (setq emacros-global-dir "~/.emacs.d")
-(key-chord-define-global "em" 'emacros-auto-execute-named-macro)
+(global-set-key [f12] 'emacros-auto-execute-named-macro)
 
 ;; auto save desktop as well during buffer auto-save
 (require 'desktop)
@@ -189,6 +190,9 @@
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
+
+;; pos-tip, used by autocomplete
+(require 'pos-tip)
 
 ;; auto-complete config
 (require 'auto-complete-config)
@@ -382,6 +386,9 @@ instead of a char."
 (global-set-key "\M-p" 'sprint-forward)
 (global-set-key "\M-P" 'sprint-backward)
 
+(key-chord-define-global "zf" 'zap-up-to-char-forward)
+(key-chord-define-global "zb" 'zap-up-to-char-backward)
+
 (defun delete-this-file ()
   (interactive)
   (or (buffer-file-name) (error "no file is currently being edited"))
@@ -424,6 +431,8 @@ instead of a char."
 (add-hook 'yaml-mode-hook '(lambda ()
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
+(add-to-list 'ac-modes 'yaml-mode)
+
 
 
 
@@ -457,7 +466,7 @@ instead of a char."
           (princ (format "%2d %20s %s\n" count key
                          (make-string count ?+))))))))
 
-;; word count function -- similar to c on the command line
+;; word count function -- similar to wc on the command line
 (defun wc (&optional start end)
    "Prints number of lines, words and characters in region or whole buffer."
    (interactive)
@@ -467,7 +476,7 @@ instead of a char."
      (save-excursion
        (goto-char start)
        (while (< (point) end) (if (forward-word 1) (setq n (1+ n)))))
-     (message "%3d lines %3d words %3d chars" (count-lines start end) n (- end start))))
+     (message "%4d lines %4d words %5d chars" (count-lines start end) n (- end start))))
 
 
 (defun count-string-matches (strn)
@@ -534,9 +543,26 @@ Continues until end of buffer.  Also display the count as a message."
   ;; point is a nested block
   (split-line)
   (insert python-pdb-breakpoint-string)
+  (pythogn-indent-line)
   (save-buffer) )
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
+;; http://www.emacswiki.org/emacs-en/PosTip
+(defun describe-function (function)
+   "Display the full documentation of FUNCTION (a symbol) in tooltip."
+   (interactive (list (function-called-at-point)))
+   (if (null function)
+       (pos-tip-show
+        "** You didn't specify a function! **" '("red"))
+     (pos-tip-show
+      (with-temp-buffer
+        (let ((standard-output (current-buffer))
+              (help-xref-following t))
+          (prin1 function)
+          (princ " is ")
+          (describe-function-1 function)
+          (buffer-string)))
+      nil nil nil 0)))
 
 ;;some extra functions for Python code completion
 ;(require 'pycomplete)
