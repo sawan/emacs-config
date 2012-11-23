@@ -543,7 +543,7 @@ Continues until end of buffer.  Also display the count as a message."
   ;; point is a nested block
   (split-line)
   (insert python-pdb-breakpoint-string)
-  (pythogn-indent-line)
+  (python-indent-line)
   (save-buffer) )
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
