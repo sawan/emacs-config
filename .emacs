@@ -1,5 +1,6 @@
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/vendors")
+(add-to-list 'load-path "~/.emacs.d/vendors/bm-1.50.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/pos-tip.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/auto-complete-1.2")
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
@@ -22,13 +23,14 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/semantic/")
 (add-to-list 'load-path "~/.emacs.d/vendors/elib-1.0/")
 (add-to-list 'load-path "~/.emacs.d/vendors/full-ack.el")
-(add-to-list 'load-path "~/.emacs.d/vendors/undo-tree.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/undo-tree-0.1.6.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/csv-mode.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/key-chord.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/yaml-mode.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/highlight-tail.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/wide-n.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/color-moccur.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/table-1.5.54.el")
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
