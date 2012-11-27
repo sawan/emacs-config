@@ -151,6 +151,11 @@
 (ido-mode t)
 (setq ido-enable-flex-matching t)
 
+;; Display ido results vertically, rather than horizontally. Meh...
+;(setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+;(defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
+;(add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+
 (defun iswitchb-local-keys ()
   (mapc (lambda (K)
           (let* ((key (car K)) (fun (cdr K)))
