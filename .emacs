@@ -33,6 +33,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/table-1.5.54.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/iedit.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/multiple-cursors/multiple-cursors.el")
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
@@ -529,6 +530,7 @@ Continues until end of buffer.  Also display the count as a message."
 
 (require 'kill-lines)
 
+(require 'multiple-cursors)
 
 ;;Python
 
