@@ -507,6 +507,29 @@ Continues until end of buffer.  Also display the count as a message."
                                 (while (re-search-forward regexp nil t)
                                   (replace-match to-string nil nil))))))
 
+
+(require 'iedit)
+
+;; http://www.masteringemacs.org/articles/2012/10/02/iedit-interactive-multi-occurrence-editing-in-your-buffer/
+(defun iedit-defun (arg)
+  "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
+  (interactive "P")
+  (if arg
+      (iedit-mode)
+    (save-excursion
+      (save-restriction
+        (widen)
+        ;; this function determines the scope of `iedit-start'.
+        (narrow-to-defun)
+        (if iedit-mode
+            (iedit-done)
+          ;; `current-word' can of course be replaced by other
+          ;; functions.
+          (iedit-start (current-word)))))))
+
+(require 'kill-lines)
+
+
 ;;Python
 
 ;;pymacs and rope
