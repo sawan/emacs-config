@@ -32,6 +32,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/color-moccur.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/table-1.5.54.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/iedit.el")
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
