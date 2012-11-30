@@ -25,7 +25,7 @@
 ;; This is nice when you have cursors that's outside of your view.
 
 ;;; Code:
-(add-to-list 'load-path "multiple-cursors-core.el")
+
 (require 'multiple-cursors-core)
 
 (eval-when-compile (require 'cl))

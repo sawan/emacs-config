@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "multiple-cursors-core.el")
+
 (require 'multiple-cursors-core)
 
 ;;;###autoload

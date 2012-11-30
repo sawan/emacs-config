@@ -26,7 +26,6 @@
 ;; Please see multiple-cursors.el for more commentary.
 
 ;;; Code:
-(add-to-list 'load-path "multiple-cursors-core.el")
 
 (require 'multiple-cursors-core)
 (require 'thingatpt)

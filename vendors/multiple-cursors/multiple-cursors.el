@@ -155,11 +155,6 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "mc-edit-lines.el")
-(add-to-list 'load-path "mc-cycle-cursors.el")
-(add-to-list 'load-path "mc-mark-more.el")
-(add-to-list 'load-path "rectangular-region-mode.el")
-
 (require 'mc-edit-lines)
 (require 'mc-cycle-cursors)
 (require 'mc-mark-more)

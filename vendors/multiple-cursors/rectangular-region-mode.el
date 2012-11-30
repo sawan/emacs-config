@@ -26,7 +26,7 @@
 ;; an exceedingly quick way of adding multiple cursors to multiple lines.
 
 ;;; Code:
-(add-to-list 'load-path "multiple-cursors-core.el")
+
 (require 'multiple-cursors-core)
 
 (defvar rrm/anchor (make-marker)
