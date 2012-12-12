@@ -34,7 +34,9 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/iedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/multiple-cursors/")
+(add-to-list 'load-path "~/.emacs.d/vendors/magit-1.2.0/")
 
+(require 'magit)
 
 ;; start native Emacs server ready for client connections
 (add-hook 'after-init-hook 'server-start)
