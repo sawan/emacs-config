@@ -154,10 +154,17 @@
 (ido-mode t)
 (setq ido-enable-flex-matching t)
 
-;; Display ido results vertically, rather than horizontally. Meh...
-;(setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-;(defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
-;(add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+(add-hook 'ido-setup-hook
+ (lambda ()
+   ;; Go straight home
+   (define-key ido-file-completion-map
+     (kbd "~")
+     (lambda ()
+       (interactive)
+       (if (looking-back "/")
+           (insert "~/")
+         (call-interactively 'self-insert-command))))))
+
 
 (defun iswitchb-local-keys ()
   (mapc (lambda (K)
@@ -651,22 +658,23 @@ Continues until end of buffer.  Also display the count as a message."
 
 ;; ;(set-default-font "DejaVu Sans Mono 9")
 
-;; ;; CEDT: required for ECB and speedbar
-;; ;;(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
-;; ;;(global-ede-mode 1)                      ; Enable the Project management system
-;; ;;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
-;; ;;(global-srecode-minor-mode 1)            ; Enable template insertion menu
+;; CEDT: required for ECB and speedbar
+(load-file "~/.emacs.d/vendors/cedet-1.0/common/cedet.el")
+(global-ede-mode 1)                      ; Enable the Project management system
+(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
+(global-srecode-minor-mode 1)            ; Enable template insertion menu
 
 ;; ;; ECB
-;; ;(require 'ecb)
-;; ;(require 'ecb-autoloads)
-;; ;(setq  ecb-new-ecb-frame  1)
-;; ;(custom-set-faces
-;;   ;; custom-set-faces was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up, so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;; ; )
+(require 'ecb)
+(require 'ecb-autoloads)
+(setq  ecb-new-ecb-frame  1)
+
+;; (custom-set-faces
+;;   custom-set-faces was added by Custom.
+;;   If you edit it by hand, you could mess it up, so be careful.
+;;   Your init file should contain only one such instance.
+;;   If there is more than one, they won't work right.
+;; )
 
 ;; (global-set-key (kbd "<f7>")   'ecb-activate)
 ;; (global-set-key (kbd "<C-f7>") 'ecb-deactivate)
