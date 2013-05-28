@@ -50,6 +50,7 @@
     gmdiff = difftool -y master...
     show-mdiff = git dt master...
     show-diff =  !sh -c 'git dt $1...' -
+    todo = commit --allow-empty -m "TODO: $*"
 
 [color]
     ui = auto
