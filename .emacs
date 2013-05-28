@@ -35,6 +35,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/iedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/multiple-cursors/")
 (add-to-list 'load-path "~/.emacs.d/vendors/magit-1.2.0/")
+(add-to-list 'load-path "~/.emacs.d/vendors/ido-ubiquitous.el")
 
 (require 'magit)
 
@@ -56,7 +57,7 @@
 (require 'wide-n)
 
 ;;Kinda cool?
-(require 'highlight-tail)
+;(require 'highlight-tail)
 ;(highlight-tail-mode)
 
 (require 'key-chord)
@@ -175,6 +176,46 @@
           ("<up>"    . ignore             )
           ("<down>"  . ignore             ))))
 (add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
+
+;; http://whattheemacsd.com/setup-ido.el-01.html
+;; Use ido everywhere
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode 1)
+
+;; Fix ido-ubiquitous for newer packages
+(defmacro ido-ubiquitous-use-new-completing-read (cmd package)
+  `(eval-after-load ,package
+     '(defadvice ,cmd (around ido-ubiquitous-new activate)
+        (let ((ido-ubiquitous-enable-compatibility nil))
+          ad-do-it))))
+
+(ido-ubiquitous-use-new-completing-read webjump 'webjump)
+(ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
+(ido-ubiquitous-use-new-completing-read yas/visit-snippet-file 'yasnippet)
+
+;; http://whattheemacsd.com/key-bindings.el-02.html
+;; Move more quickly
+(global-set-key (kbd "C-S-n")
+                (lambda ()
+                  (interactive)
+                  (ignore-errors (next-line 5))))
+
+(global-set-key (kbd "C-S-p")
+                (lambda ()
+                  (interactive)
+                  (ignore-errors (previous-line 5))))
+
+(global-set-key (kbd "C-S-f")
+                (lambda ()
+                  (interactive)
+                  (ignore-errors (forward-char 5))))
+
+(global-set-key (kbd "C-S-b")
+                (lambda ()
+                  (interactive)
+                  (ignore-errors (backward-char 5))))
+
+
 
 ;; use ibuffers for buffer listing
 (defalias 'list-buffers 'ibuffer)
@@ -427,6 +468,19 @@ instead of a char."
 ;; hot damn.....
 (require 'undo-tree)
 (global-undo-tree-mode)
+
+;; http://whattheemacsd.com/my-misc.el-02.html
+;; Keep region when undoing in region
+(defadvice undo-tree-undo (around keep-region activate)
+  (if (use-region-p)
+      (let ((m (set-marker (make-marker) (mark)))
+            (p (set-marker (make-marker) (point))))
+        ad-do-it
+        (goto-char p)
+        (set-mark m)
+        (set-marker p nil)
+        (set-marker m nil))
+    ad-do-it))
 
 ;; edit files as root
 (defun sudo-find-file (file-name)
