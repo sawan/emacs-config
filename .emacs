@@ -46,11 +46,8 @@
 (require 'extraedit)
 (require 'highlight-tail)
 
-;; start native Emacs server ready for client connections
+;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
-
-;; Load predefined macros
-(add-hook 'after-init-hook 'emacros-load-macros)
 
 (defface paren-face
    '((((class color) (background dark))
@@ -111,8 +108,11 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define emacs-lisp-mode-map "kl" 'kill-lines)
 
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
+(require 'emacros)
 (setq emacros-global-dir "~/.emacs.d")
 (global-set-key [f12] 'emacros-auto-execute-named-macro)
+;; Load predefined macros
+(add-hook 'after-init-hook 'emacros-load-macros)
 
 ;; Auto save desktop as well during buffer auto-save
 (require 'desktop)
@@ -235,6 +235,37 @@ Position the cursor at its beginning, according to the current mode."
 (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
 (ido-ubiquitous-use-new-completing-read yas/visit-snippet-file 'yasnippet)
 
+;;; integrate ido with artist-mode
+(defun artist-ido-select-operation (type)
+  "Use ido to select a drawing operation in artist-mode"
+  (interactive (list (ido-completing-read "Drawing operation: "
+                                          (list "Pen" "Pen Line" "line" "straight line" "rectangle"
+                                                "square" "poly-line" "straight poly-line" "ellipse"
+                                                "circle" "text see-thru" "text-overwrite" "spray-can"
+                                                "erase char" "erase rectangle" "vaporize line" "vaporize lines"
+                                                "cut rectangle" "cut square" "copy rectangle" "copy square"
+                                                "paste" "flood-fill"))))
+  (artist-select-operation type))
+(defun artist-ido-select-settings (type)
+  "Use ido to select a setting to change in artist-mode"
+  (interactive (list (ido-completing-read "Setting: "
+                                          (list "Set Fill" "Set Line" "Set Erase" "Spray-size" "Spray-chars"
+                                                "Rubber-banding" "Trimming" "Borders"))))
+  (if (equal type "Spray-size")
+      (artist-select-operation "spray set size")
+    (call-interactively (artist-fc-get-fn-from-symbol
+                         (cdr (assoc type '(("Set Fill" . set-fill)
+                                            ("Set Line" . set-line)
+                                            ("Set Erase" . set-erase)
+                                            ("Rubber-banding" . rubber-band)
+                                            ("Trimming" . trimming)
+                                            ("Borders" . borders)
+                                            ("Spray-chars" . spray-chars))))))))
+(add-hook 'artist-mode-init-hook
+          (lambda ()
+            (define-key artist-mode-map (kbd "C-c C-a C-o") 'artist-ido-select-operation)
+            (define-key artist-mode-map (kbd "C-c C-a C-c") 'artist-ido-select-settings)))
+
 ;; http://whattheemacsd.com/key-bindings.el-02.html
 ;; Move more quickly
 (global-set-key (kbd "C-S-n")
@@ -304,7 +335,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [f3] 'hs-hide-block)
 (global-set-key [f4] 'hs-show-block)
 
-add-hook 'prog-mode-hook 'hs-minor-mode)
+(add-hook 'prog-mode-hook 'hs-minor-mode)
 
 ;; yasnippet
 (require 'yasnippet)
@@ -483,8 +514,6 @@ instead of a char."
 
 (key-chord-define-global "zs" 'th-zap-to-string)
 (key-chord-define-global "zr" 'th-zap-to-regexp)
-
-
 
 ;; Set breadcrumbs in visited buffers for navigation
 (require 'breadcrumb)
