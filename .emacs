@@ -44,7 +44,8 @@
 
 ;;Tramp
 (require 'tramp)
-(setq tramp-default-method "plink")
+;(setq tramp-default-method "plink")
+(setq tramp-default-method "ssh")
 ;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
@@ -153,7 +154,9 @@
 ;; ido mode
 (require 'ido)
 (ido-mode t)
+(setq ido-everywhere t)
 (setq ido-enable-flex-matching t)
+
 
 (add-hook 'ido-setup-hook
  (lambda ()
@@ -502,13 +505,12 @@ instead of a char."
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.prod$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.model$" . yaml-mode))
 (add-hook 'yaml-mode-hook '(lambda ()
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
 (add-to-list 'ac-modes 'yaml-mode)
-
-
-
 
 ; http://blogs.fluidinfo.com/terry/2011/11/10/emacs-buffer-mode-histogram/
 (defun buffer-mode-histogram ()
@@ -612,18 +614,19 @@ Continues until end of buffer.  Also display the count as a message."
 
 ;;Python
 
-;;pymacs and rope
-;; http://pymacs.progiciels-bpi.ca/pymacs.html#install-the-pymacs-proper
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-autoload "pymacs")
+;; ;;pymacs and rope
+;; ;; http://pymacs.progiciels-bpi.ca/pymacs.html#install-the-pymacs-proper
+;; (require 'pymacs)
+;; (autoload 'pymacs-apply "pymacs")
+;; (autoload 'pymacs-call "pymacs")
+;; (autoload 'pymacs-eval "pymacs" nil t)
+;; (autoload 'pymacs-exec "pymacs" nil t)
+;; (autoload 'pymacs-load "pymacs" nil t)
+;; (autoload 'pymacs-autoload "pymacs")
 
-(pymacs-load "ropemacs" "rope-")
-(setq ropemacs-enable-autoimport t)
-(setq ropemacs-enable-shortcuts t)
+;; (pymacs-load "ropemacs" "rope-")
+;; (setq ropemacs-enable-autoimport t)
+;; (setq ropemacs-enable-shortcuts t)
 
 ;;python.el
 (require 'python)
