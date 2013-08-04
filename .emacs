@@ -36,11 +36,61 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/multiple-cursors/")
 (add-to-list 'load-path "~/.emacs.d/vendors/magit-1.2.0/")
 (add-to-list 'load-path "~/.emacs.d/vendors/ido-ubiquitous.el")
+(add-to-list 'load-path  "~/.emacs.d/vendors/emacros.el")
 
 (require 'magit)
+(require 'wide-n)
+(require 'kill-lines)
+(require 'multiple-cursors)
+(require 'wide-n)
+(require 'extraedit)
+(require 'highlight-tail)
 
-;; start native Emacs server ready for client connections
+;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
+
+(defface paren-face
+   '((((class color) (background dark))
+      (:foreground "grey20"))
+     (((class color) (background light))
+      (:foreground "grey90")))
+   "Face used to dim parentheses.")
+
+(add-hook 'lisp-mode-hook
+ 	  (lambda ()
+ 	    (font-lock-add-keywords nil
+ 				    '(("(\\|)" . 'paren-face)))))
+
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+
+;; http://emacsredux.com/blog/2013/06/15/open-line-above/
+(defun smart-open-line-above ()
+  "Insert an empty line above the current line.
+Position the cursor at it's beginning, according to the current mode."
+  (interactive)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(defun smart-open-line ()
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode."
+  (interactive)
+  (move-end-of-line nil)
+  (newline-and-indent))
+
+(global-set-key [(control return)] 'smart-open-line)
+(global-set-key [(control shift return)] 'smart-open-line-above)
 
 ;;Tramp
 (require 'tramp)
@@ -51,29 +101,21 @@
                               (tramp-cleanup-all-connections)
                               (tramp-cleanup-all-buffers)
                               ))
-;; speedbar
-(speedbar 1)
-
-;;Wide-n library
-(require 'wide-n)
-
-;;Kinda cool?
-;(require 'highlight-tail)
-;(highlight-tail-mode)
-
 (require 'key-chord)
 (key-chord-mode 1)
-
 (key-chord-define emacs-lisp-mode-map "eb" 'eval-buffer)
 (key-chord-define emacs-lisp-mode-map "ed" 'eval-defun)
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
+(key-chord-define emacs-lisp-mode-map "kl" 'kill-lines)
 
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
-(load-file "~/.emacs.d/vendors/emacros.el")
+(require 'emacros)
 (setq emacros-global-dir "~/.emacs.d")
 (global-set-key [f12] 'emacros-auto-execute-named-macro)
+;; Load predefined macros
+(add-hook 'after-init-hook 'emacros-load-macros)
 
-;; auto save desktop as well during buffer auto-save
+;; Auto save desktop as well during buffer auto-save
 (require 'desktop)
 (setq desktop-path '("~/.emacs.d/"))
 (setq desktop-dirname "~/.emacs.d/")
@@ -147,7 +189,7 @@
 (iswitchb-mode 1)
 ;(setq iswitchb-buffer-ignore '("^ " "*Buffer"))
 
-;; colums
+;; columns
 (column-number-mode 1)
 (display-time)
 
@@ -196,6 +238,37 @@
 (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
 (ido-ubiquitous-use-new-completing-read yas/visit-snippet-file 'yasnippet)
 
+;;; integrate ido with artist-mode
+(defun artist-ido-select-operation (type)
+  "Use ido to select a drawing operation in artist-mode"
+  (interactive (list (ido-completing-read "Drawing operation: "
+                                          (list "Pen" "Pen Line" "line" "straight line" "rectangle"
+                                                "square" "poly-line" "straight poly-line" "ellipse"
+                                                "circle" "text see-thru" "text-overwrite" "spray-can"
+                                                "erase char" "erase rectangle" "vaporize line" "vaporize lines"
+                                                "cut rectangle" "cut square" "copy rectangle" "copy square"
+                                                "paste" "flood-fill"))))
+  (artist-select-operation type))
+(defun artist-ido-select-settings (type)
+  "Use ido to select a setting to change in artist-mode"
+  (interactive (list (ido-completing-read "Setting: "
+                                          (list "Set Fill" "Set Line" "Set Erase" "Spray-size" "Spray-chars"
+                                                "Rubber-banding" "Trimming" "Borders"))))
+  (if (equal type "Spray-size")
+      (artist-select-operation "spray set size")
+    (call-interactively (artist-fc-get-fn-from-symbol
+                         (cdr (assoc type '(("Set Fill" . set-fill)
+                                            ("Set Line" . set-line)
+                                            ("Set Erase" . set-erase)
+                                            ("Rubber-banding" . rubber-band)
+                                            ("Trimming" . trimming)
+                                            ("Borders" . borders)
+                                            ("Spray-chars" . spray-chars))))))))
+(add-hook 'artist-mode-init-hook
+          (lambda ()
+            (define-key artist-mode-map (kbd "C-c C-a C-o") 'artist-ido-select-operation)
+            (define-key artist-mode-map (kbd "C-c C-a C-c") 'artist-ido-select-settings)))
+
 ;; http://whattheemacsd.com/key-bindings.el-02.html
 ;; Move more quickly
 (global-set-key (kbd "C-S-n")
@@ -219,6 +292,34 @@
                   (ignore-errors (backward-char 5))))
 
 
+;; http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
+(defun smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+;; remap C-a to `smarter-move-beginning-of-line'
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
+
 
 ;; use ibuffers for buffer listing
 (defalias 'list-buffers 'ibuffer)
@@ -237,14 +338,7 @@
 (global-set-key [f3] 'hs-hide-block)
 (global-set-key [f4] 'hs-show-block)
 
-;; ..... will work in these modes
-(add-hook 'c-mode-common-hook   'hs-minor-mode)
-(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
-(add-hook 'java-mode-hook       'hs-minor-mode)
-(add-hook 'lisp-mode-hook       'hs-minor-mode)
-(add-hook 'perl-mode-hook       'hs-minor-mode)
-(add-hook 'python-mode-hook     'hs-minor-mode)
-(add-hook 'sh-mode-hook         'hs-minor-mode)
+(add-hook 'prog-mode-hook 'hs-minor-mode)
 
 ;; yasnippet
 (require 'yasnippet)
@@ -280,7 +374,7 @@
 (add-hook 'find-file-hooks (lambda() (show-paren-mode t)))
 
 (require 'rainbow-delimiters)
-(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'find-file-hook 'rainbow-delimiters-mode)
 
 ;; jump to matching parenthesis -- currently seems to support () and []
 (defun goto-match-paren (arg)
@@ -313,9 +407,10 @@
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 (setq smex-save-file "~/.emacs.d/smex-items")
+;; This is your old M-x.
+;(global-set-key (kbd "M-x") 'execute-extended-command)
+
 
 ;;multi-term.el
 (require 'multi-term)
@@ -422,8 +517,6 @@ instead of a char."
 
 (key-chord-define-global "zs" 'th-zap-to-string)
 (key-chord-define-global "zr" 'th-zap-to-regexp)
-
-(require 'extraedit)
 
 ;; Set breadcrumbs in visited buffers for navigation
 (require 'breadcrumb)
@@ -599,10 +692,6 @@ Continues until end of buffer.  Also display the count as a message."
           ;; functions.
           (iedit-start (current-word)))))))
 
-(require 'kill-lines)
-
-(require 'multiple-cursors)
-
 
 (setq ediff-split-window-function 'split-window-horizontally)
 (defun command-line-diff (switch)
@@ -642,7 +731,8 @@ Continues until end of buffer.  Also display the count as a message."
 
 (add-hook 'python-mode-hook 'python-add-debug-highlight)
 
-(defvar python-pdb-breakpoint-string "import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
+(defvar python-pdb-breakpoint-string
+  "import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
   "Python breakpoint string used by `python-insert-breakpoint'")
 
 (defun python-insert-breakpoint ()
