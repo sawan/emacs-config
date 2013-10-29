@@ -648,7 +648,9 @@ Position the cursor at its beginning, according to the current mode."
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
 ;; hot damn.....
 (require 'undo-tree)
-(global-undo-tree-mode)
+(global-undo-tree-mode t)
+(setq undo-tree-visualizer-relative-timestamps t)
+(setq undo-tree-visualizer-timestamps t)
 
 ;; http://whattheemacsd.com/my-misc.el-02.html
 ;; Keep region when undoing in region
@@ -684,12 +686,11 @@ Position the cursor at its beginning, according to the current mode."
           (iedit-start (current-word)))))))
 
 
-
-
-
 ;;;; yasnippet
 (require 'yasnippet)
 (yas--initialize)
+(yas/reload-all)
+(setq yas/prompt-functions '(yas/ido-prompt yas/completing-prompt yas/no-prompt))
 
 ;;;; autocomplete
 (require 'auto-complete-config)
@@ -736,7 +737,6 @@ Position the cursor at its beginning, according to the current mode."
 (require 'epy-init)
 (epy-setup-ipython)
 (epy-setup-checker "pyflakes %f")
-
 
 
 ;;;; ack
