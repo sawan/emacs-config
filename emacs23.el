@@ -6,7 +6,6 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/ecb-2.40/")
 (add-to-list 'load-path "~/.emacs.d/vendors/nonsequitur-smex-7d5d797/")
 (add-to-list 'load-path "~/.emacs.d/vendors/yasnippet-0.6.1c/")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/Pymacs-0.24b/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
 (add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
@@ -14,39 +13,29 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/pycomplete.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/rainbow-delimiters.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/fastnav.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/jdee-2.4.0.1/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/eieio/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/common/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/speedbar/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/eieio/")
 (add-to-list 'load-path "~/.emacs.d/vendors/cedet-1.0/semantic/")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/elib-1.0/")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/full-ack.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/undo-tree.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/csv-mode.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/key-chord.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/yaml-mode.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/highlight-tail.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/wide-n.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/color-moccur.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/table-1.5.54.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
-
 (add-to-list 'load-path "~/.emacs.d/vendors/iedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/multiple-cursors/")
 (add-to-list 'load-path "~/.emacs.d/vendors/magit-1.2.0/")
 (add-to-list 'load-path "~/.emacs.d/vendors/ido-ubiquitous.el")
-
 (add-to-list 'load-path  "~/.emacs.d/vendors/emacros.el")
 
 (require 'magit)
@@ -494,7 +483,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
 
-(defun djcb-duplicate-line (&optional commentfirst)
+(Defun djcb-duplicate-line (&optional commentfirst)
   "comment line at point; if COMMENTFIRST is non-nil, comment the original"
   (interactive)
   (beginning-of-line)

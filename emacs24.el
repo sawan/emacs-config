@@ -6,7 +6,7 @@
 
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/")
+	     '("melpa" . "http://melpa.milkbox.net/packages/")
 	     '("marmalade" . "http://marmalade-repo.org/packages/") )
 (package-initialize)
 
@@ -47,8 +47,8 @@
 	  multiple-cursors
 	  macros+
 	  macrostep
-	  elpy)))
-
+	  jedi
+)))
 
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
@@ -67,6 +67,8 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/emacros.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
+(add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/epy-init.el")
 
 (require 'magit)
 (require 'wide-n)
@@ -120,6 +122,9 @@
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
+
+;; required on OS X
+(add-to-list 'exec-path "/opt/local/bin/")
 
 ;;;; desktop
 ;; Auto save desktop as well during buffer auto-save
@@ -387,7 +392,6 @@ point reaches the beginning or end of the buffer, stop there."
 
 
 
-
 ;;;; emacs lisp
 
 (defun imenu-elisp-sections ()
@@ -433,8 +437,45 @@ Position the cursor at its beginning, according to the current mode."
 (require 'fuzzy)
 (turn-on-fuzzy-isearch)
 
-;;;; Tramp
+;;;; MISC libraries
 
+(require 'highlight-indentation)
+
+;; restore point at location upon file re-visit
+(require 'saveplace)
+(setq-default save-place t)
+
+;; DrewsLibraries from EmacsWiki
+; crosshairs
+(require 'crosshairs)
+(global-set-key (kbd "<M-f6>") 'flash-crosshairs)
+
+(require 'exec-abbrev-cmd)
+(exec-abbrev-cmd-mode 1)
+(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
+
+;; http://www.emacswiki.org/emacs/ThingEdit
+; copy and paste various types of data
+(require 'thing-edit)
+(key-chord-define-global "cw" 'thing-copy-word)
+(key-chord-define-global "cl" 'thing-copy-line)
+(key-chord-define-global "cs" 'thing-copy-symbol)
+(key-chord-define-global "lb" 'thing-copy-to-line-beginning)
+(key-chord-define-global "le" 'thing-copy-to-line-end)
+(key-chord-define-global "cr" 'copy-region-as-kill)
+
+;; revert all open buffers, useful when VC changes happen in the background
+(require 'revbufs)
+
+;;;; emacros
+;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
+(require 'emacros)
+(setq emacros-global-dir "~/.emacs.d")
+(global-set-key [f12] #'emacros-auto-execute-named-macro)
+;; Load predefined macros
+(add-hook 'after-init-hook 'emacros-load-macros)
+
+;;;; Tramp
 (require 'tramp)
 (setq tramp-default-method "plink"
       tramp-completion-without-shell-p t)
@@ -505,7 +546,6 @@ Position the cursor at its beginning, according to the current mode."
 (setq ido-everywhere t)
 (setq ido-enable-flex-matching t)
 
-
 (add-hook 'ido-setup-hook
  (lambda ()
    ;; Go straight home
@@ -516,7 +556,6 @@ Position the cursor at its beginning, according to the current mode."
        (if (looking-back "/")
            (insert "~/")
          (call-interactively 'self-insert-command))))))
-
 
 (defun iswitchb-local-keys ()
   (mapc (lambda (K)
@@ -554,7 +593,7 @@ Position the cursor at its beginning, according to the current mode."
                                                 "erase char" "erase rectangle" "vaporize line" "vaporize lines"
                                                 "cut rectangle" "cut square" "copy rectangle" "copy square"
                                                 "paste" "flood-fill"))))
-  (artist-select-operation type))
+ (artist-select-operation type))
 
 (defun artist-ido-select-settings (type)
   "Use ido to select a setting to change in artist-mode"
@@ -621,7 +660,9 @@ Position the cursor at its beginning, according to the current mode."
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
 ;; hot damn.....
 (require 'undo-tree)
-(global-undo-tree-mode)
+(global-undo-tree-mode t)
+(setq undo-tree-visualizer-relative-timestamps t)
+(setq undo-tree-visualizer-timestamps t)
 
 ;; http://whattheemacsd.com/my-misc.el-02.html
 ;; Keep region when undoing in region
@@ -635,7 +676,6 @@ Position the cursor at its beginning, according to the current mode."
         (set-marker p nil)
         (set-marker m nil))
     ad-do-it))
-
 
 
 ;;;; iedit
@@ -657,8 +697,31 @@ Position the cursor at its beginning, according to the current mode."
           ;; functions.
           (iedit-start (current-word)))))))
 
+
+;;;; yasnippet
+(require 'yasnippet)
+(yas--initialize)
+(yas/reload-all)
+(setq yas/prompt-functions '(yas/ido-prompt yas/completing-prompt yas/no-prompt))
+
+;;;; autocomplete
+(require 'auto-complete-config)
+(ac-config-default)
+(auto-complete-mode 1)
+(after 'auto-complete-autoloads
+       (autoload 'auto-complete-mode "auto-complete" "enable auto-complete-mode" t nil)
+       (add-hook 'python-mode-hook
+                 (lambda ()
+                   (require 'auto-complete-config)
+		   (ac-ropemacs-initialize)
+		   (ac-ropemacs-setup)
+                   (add-to-list 'ac-sources 'ac-source-ropemacs)
+                   (auto-complete-mode))))
+
+
 ;;;; python mode
 (require 'python)
+(add-hook 'python-mode-hook 'highlight-indentation)
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
@@ -682,8 +745,12 @@ Position the cursor at its beginning, according to the current mode."
   (save-buffer) )
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
+(require 'epy-init)
+(epy-setup-ipython)
+(epy-setup-checker "pyflakes %f")
 
 
+;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
 (autoload 'ack-same "full-ack" nil t)
 (autoload 'ack "full-ack" nil t)

@@ -12,3 +12,4 @@ tramp
 server/
 *~
 *.elc
+*.pyc
