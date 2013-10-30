@@ -430,16 +430,29 @@ Position the cursor at its beginning, according to the current mode."
 (global-set-key [(control return)] 'smart-open-line)
 (global-set-key [(control shift return)] 'smart-open-line-above)
 
+(require 'fuzzy)
+(turn-on-fuzzy-isearch)
+
 ;;;; Tramp
 
 (require 'tramp)
-;(setq tramp-default-method "plink")
-(setq tramp-default-method "ssh")
+(setq tramp-default-method "plink"
+      tramp-completion-without-shell-p t)
+ (setq tramp-verbose 10)
+ (setq tramp-debug-buffer t)
+(require 'trace)
+     (dolist (elt (all-completions "tramp-" obarray 'functionp))
+       (trace-function-background (intern elt)))
+     (untrace-function 'tramp-read-passwd)
+     (untrace-function 'tramp-gw-basic-authentication)
+;(setq tramp-default-method "ssh")
 ;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
                               (tramp-cleanup-all-buffers)
                               ))
+
+
 ;;;; key-chord
 (require 'key-chord)
 (key-chord-mode 1)
@@ -645,6 +658,7 @@ Position the cursor at its beginning, according to the current mode."
           (iedit-start (current-word)))))))
 
 ;;;; python mode
+(require 'python)
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
