@@ -48,6 +48,7 @@
 	  macros+
 	  macrostep
 	  jedi
+	  elpy
 )))
 
 (defmacro after (mode &rest body)
@@ -68,7 +69,6 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/emacros.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
-(add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/epy-init.el")
 
 (require 'magit)
 (require 'wide-n)
@@ -123,7 +123,7 @@
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
 
-;; required on OS X
+;; required on OS X -- pyflakes
 (add-to-list 'exec-path "/opt/local/bin/")
 
 ;;;; desktop
@@ -698,30 +698,13 @@ Position the cursor at its beginning, according to the current mode."
           (iedit-start (current-word)))))))
 
 
-;;;; yasnippet
-(require 'yasnippet)
-(yas--initialize)
-(yas/reload-all)
-(setq yas/prompt-functions '(yas/ido-prompt yas/completing-prompt yas/no-prompt))
-
 ;;;; autocomplete
 (require 'auto-complete-config)
 (ac-config-default)
 (auto-complete-mode 1)
-(after 'auto-complete-autoloads
-       (autoload 'auto-complete-mode "auto-complete" "enable auto-complete-mode" t nil)
-       (add-hook 'python-mode-hook
-                 (lambda ()
-                   (require 'auto-complete-config)
-		   (ac-ropemacs-initialize)
-		   (ac-ropemacs-setup)
-                   (add-to-list 'ac-sources 'ac-source-ropemacs)
-                   (auto-complete-mode))))
-
 
 ;;;; python mode
 (require 'python)
-(add-hook 'python-mode-hook 'highlight-indentation)
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
@@ -745,10 +728,9 @@ Position the cursor at its beginning, according to the current mode."
   (save-buffer) )
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
-(require 'epy-init)
-(epy-setup-ipython)
-(epy-setup-checker "pyflakes %f")
-
+;;;elpy
+(elpy-enable)
+(setq elpy-rpc-backend "jedi")
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
