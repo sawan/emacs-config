@@ -37,6 +37,8 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/magit-1.2.0/")
 (add-to-list 'load-path "~/.emacs.d/vendors/ido-ubiquitous.el")
 (add-to-list 'load-path  "~/.emacs.d/vendors/emacros.el")
+(add-to-list 'load-path  "~/.emacs.d/vendors/sqlplus.el")
+(add-to-list 'load-path  "~/.emacs.d/vendors/plsql.el")
 
 (require 'magit)
 (require 'wide-n)
@@ -45,6 +47,23 @@
 (require 'wide-n)
 (require 'extraedit)
 (require 'highlight-tail)
+
+(require 'sqlplus)
+(add-to-list 'auto-mode-alist '("\\.sqp\\'" . sqlplus-mode))
+
+(require 'plsql)
+(setq auto-mode-alist
+  (append '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
+       ("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
+       ("\\.sql\\'" . plsql-mode) ("\\.PLS\\'" . plsql-mode)
+       ("\\.PKG\\'" . plsql-mode) ("\\.PKS\\'" . plsql-mode)
+       ("\\.PKB\\'" . plsql-mode) ("\\.SQL\\'" . plsql-mode)
+       ("\\.prc\\'" . plsql-mode) ("\\.fnc\\'" . plsql-mode)
+       ("\\.trg\\'" . plsql-mode) ("\\.vw\\'" . plsql-mode)
+       ("\\.PRC\\'" . plsql-mode) ("\\.FNC\\'" . plsql-mode)
+       ("\\.TRG\\'" . plsql-mode) ("\\.VW\\'" . plsql-mode))
+          auto-mode-alist ))
+
 
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
@@ -483,7 +502,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
 
-(Defun djcb-duplicate-line (&optional commentfirst)
+(defun djcb-duplicate-line (&optional commentfirst)
   "comment line at point; if COMMENTFIRST is non-nil, comment the original"
   (interactive)
   (beginning-of-line)
