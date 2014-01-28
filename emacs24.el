@@ -706,6 +706,11 @@ Position the cursor at its beginning, according to the current mode."
 ;;;; python mode
 (require 'python)
 
+;; Rebind RET
+(add-hook 'python-mode-hook '(lambda ()
+			       (define-key python-mode-map
+				 (kbd "RET") 'newline-and-indent)))
+
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
   (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
@@ -713,7 +718,8 @@ Position the cursor at its beginning, according to the current mode."
 (add-hook 'python-mode-hook 'python-add-debug-highlight)
 
 (defvar python-pdb-breakpoint-string
-  "import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
+  "from pudb import set_trace;set_trace() ## DEBUG ##"
+  ;;"import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
   "Python breakpoint string used by `python-insert-breakpoint'")
 
 (defun python-insert-breakpoint ()
@@ -726,11 +732,15 @@ Position the cursor at its beginning, according to the current mode."
   (insert python-pdb-breakpoint-string)
   (python-indent-line)
   (save-buffer) )
+
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
 ;;;elpy
 (elpy-enable)
-(setq elpy-rpc-backend "jedi")
+(setq elpy-rpc-backend "rope")
+
+(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
+
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
