@@ -131,7 +131,7 @@
 (require 'desktop)
 (setq desktop-path '("~/.emacs.d/"))
 (setq desktop-dirname "~/.emacs.d/")
-(setq desktop-base-file-name "emacs-desktop")
+(setq desktop-base-file-name "emacs-desktop-24")
 (desktop-save-mode 1)
 (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
 
@@ -464,6 +464,12 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define-global "le" 'thing-copy-to-line-end)
 (key-chord-define-global "cr" 'copy-region-as-kill)
 
+(require 'highlight-symbol)
+(global-set-key (kbd "<f9>")   'highlight-symbol-at-point)
+(global-set-key (kbd "<C-f9>") 'highlight-symbol-next)
+(global-set-key (kbd "<S-f9>") 'highlight-symbol-prev)
+(global-set-key (kbd "<M-f9>") 'highlight-symbol-remove-all)
+
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
 
@@ -705,6 +711,8 @@ Position the cursor at its beginning, according to the current mode."
 
 ;;;; python mode
 (require 'python)
+;re-bind RET to newline and indent, mode defines C-j for doing this
+(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
