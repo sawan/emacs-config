@@ -742,17 +742,17 @@ Continues until end of buffer.  Also display the count as a message."
 (setq default-tab-width 4)
 
 ;re-bind RET to newline and indent, mode defines C-j for doing this
-(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
+(add-hook 'python-mode-hook '(lambda ()
+          (define-key python-mode-map (kbd "RET")
+            'newline-and-indent)))
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
   (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
 
-(add-hook 'python-mode-hook 'python-add-debug-highlight)
-
 (defvar python-pdb-breakpoint-string
-  "import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
-  "Python breakpoint string used by `python-insert-breakpoint'")
+  "Python breakpoint string used by `python-insert-breakpoint'"
+  "import d; dbg() ## DEBUG ##" )
 
 (defun python-insert-breakpoint ()
   "Inserts a python breakpoint using `ipdb'"
@@ -762,8 +762,9 @@ Continues until end of buffer.  Also display the count as a message."
   ;; point is a nested block
   (split-line)
   (insert python-pdb-breakpoint-string)
-  (python-indent-line)
   (save-buffer) )
+
+(add-hook 'python-mode-hook 'python-add-debug-highlight)
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
 ;; http://www.emacswiki.org/emacs-en/PosTip
