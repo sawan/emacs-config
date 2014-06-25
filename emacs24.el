@@ -7,7 +7,7 @@
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/")
-	     '("marmalade" . "http://marmalade-repo.org/packages/") )
+	     '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 (defun mp-install-rad-packages ()
@@ -49,6 +49,7 @@
 	  macrostep
 	  jedi
 	  elpy
+	  expand-region
 )))
 
 (defmacro after (mode &rest body)
@@ -473,6 +474,9 @@ Position the cursor at its beginning, according to the current mode."
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
 
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
 ;;;; emacros
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
 (require 'emacros)
@@ -483,7 +487,7 @@ Position the cursor at its beginning, according to the current mode."
 
 ;;;; Tramp
 (require 'tramp)
-(setq tramp-default-method "plink"
+(setq tramp-default-method "ssh"
       tramp-completion-without-shell-p t)
  (setq tramp-verbose 10)
  (setq tramp-debug-buffer t)
@@ -492,7 +496,7 @@ Position the cursor at its beginning, according to the current mode."
        (trace-function-background (intern elt)))
      (untrace-function 'tramp-read-passwd)
      (untrace-function 'tramp-gw-basic-authentication)
-;(setq tramp-default-method "ssh")
+;(setq tramp-default-method "")
 ;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
