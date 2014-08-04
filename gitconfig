@@ -70,3 +70,5 @@
     added = yellow
     changed = green bold
     untracked = cyan
+[push]
+	default = current
