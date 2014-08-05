@@ -1,3 +1,3 @@
 alias ff find-file $1
-alias japps cd src/Ballstein/src/resource/twall/python/apps/
+alias japps cd /plink:d290036@pudl-wall-02.networks.in.telstra.com.au:/home/d290036/src/Ballstein/src/resource/twall/python/apps
 alias pudl  cd /d290036@pudl-wall-02.networks.in.telstra.com.au:/home/d290036 ; japps

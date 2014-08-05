@@ -113,9 +113,25 @@ Position the cursor at its beginning, according to the current mode."
 
 ;;Tramp
 (require 'tramp)
+(setq tramp-debug-buffer t)
+(setq tramp-verbose 10)
 (setq tramp-default-method "plink")
+
+;; (setq tramp-completion-without-shell-p t)
+;; (setq tramp-verbose 10)
+;; (setq tramp-debug-buffer t)
+;; (require 'trace)
+;;      (dolist (elt (all-completions "tramp-" obarray 'functionp))
+;;        (trace-function-background (intern elt)))
+;;      (untrace-function 'tramp-read-passwd)
+;;      (untrace-function 'tramp-gw-basic-authentication)
+
 ;(setq tramp-default-method "ssh")
 ;; clean up after Tramp
+
+
+
+
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
                               (tramp-cleanup-all-buffers)

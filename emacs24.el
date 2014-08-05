@@ -32,6 +32,7 @@
 	  rainbow-mode
 	  fastnav
 	  cedet
+          hungry-delete
 	  full-ack
 	  undo-tree
 	  visual-regexp
@@ -339,6 +340,8 @@ instead of a char."
 
 (global-set-key (kbd "<C-f10>") 'goto-match-paren)
 
+(require 'hungry-delete)
+(global-hungry-delete-mode)
 
 ;; http://whattheemacsd.com/key-bindings.el-02.html
 ;; Move more quickly
@@ -487,16 +490,17 @@ Position the cursor at its beginning, according to the current mode."
 
 ;;;; Tramp
 (require 'tramp)
-(setq tramp-default-method "ssh"
-      tramp-completion-without-shell-p t)
- (setq tramp-verbose 10)
- (setq tramp-debug-buffer t)
-(require 'trace)
-     (dolist (elt (all-completions "tramp-" obarray 'functionp))
-       (trace-function-background (intern elt)))
-     (untrace-function 'tramp-read-passwd)
-     (untrace-function 'tramp-gw-basic-authentication)
-;(setq tramp-default-method "")
+(setq tramp-default-method "plink")
+(setq  tramp-completion-reread-directory-timeout 0)
+
+;; (setq tramp-verbose 10)
+;; (setq tramp-debug-buffer t)
+;; (require 'trace)
+;;      (dolist (elt (all-completions "tramp-" obarray 'functionp))
+;;        (trace-function-background (intern elt)))
+;;      (untrace-function 'tramp-read-passwd)
+;;      (untrace-function 'tramp-gw-basic-authentication)
+
 ;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
@@ -730,8 +734,8 @@ Position the cursor at its beginning, according to the current mode."
 (add-hook 'python-mode-hook 'python-add-debug-highlight)
 
 (defvar python-pdb-breakpoint-string
-  "from pudb import set_trace;set_trace() ## DEBUG ##"
-  ;;"import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
+  ;;"from pudb import set_trace;set_trace() ## DEBUG ##"
+  "import ipdb,pprint;pp=pprint.PrettyPrinter(width=2,indent=2).pprint;ipdb.set_trace() ## DEBUG ##"
   "Python breakpoint string used by `python-insert-breakpoint'")
 
 (defun python-insert-breakpoint ()
@@ -748,11 +752,12 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
 
 ;;;elpy
-(elpy-enable)
-(setq elpy-rpc-backend "rope")
+;;(elpy-enable)
+;;(setq elpy-rpc-backend "rope")
 
 (key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
+(add-hook 'python-mode-hook 'which-function-mode)
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
