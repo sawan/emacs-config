@@ -80,6 +80,15 @@
 (require 'extraedit)
 (require 'highlight-tail)
 
+(defun eshell/force-close ()
+    "Eshell alias to force close when it complains about read-only text"
+    (interactive)
+    (let ((inhibit-read-only t))
+        (kill-buffer "*eshell*"))
+
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (eshell/force-close)))
+
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
 
@@ -601,19 +610,19 @@ Position the cursor at its beginning, according to the current mode."
 (defun artist-ido-select-operation (type)
   "Use ido to select a drawing operation in artist-mode"
   (interactive (list (ido-completing-read "Drawing operation: "
-                                          (list "Pen" "Pen Line" "line" "straight line" "rectangle"
-                                                "square" "poly-line" "straight poly-line" "ellipse"
-                                                "circle" "text see-thru" "text-overwrite" "spray-can"
-                                                "erase char" "erase rectangle" "vaporize line" "vaporize lines"
-                                                "cut rectangle" "cut square" "copy rectangle" "copy square"
-                                                "paste" "flood-fill"))))
+(list "Pen" "Pen Line" "line" "straight line" "rectangle"
+ "square" "poly-line" "straight poly-line" "ellipse"
+ "circle" "text see-thru" "text-overwrite" "spray-can"
+ "erase char" "erase rectangle" "vaporize line" "vaporize lines"
+ "cut rectangle" "cut square" "copy rectangle" "copy square"
+ "paste" "flood-fill"))))
  (artist-select-operation type))
 
 (defun artist-ido-select-settings (type)
   "Use ido to select a setting to change in artist-mode"
   (interactive (list (ido-completing-read "Setting: "
-                                          (list "Set Fill" "Set Line" "Set Erase" "Spray-size" "Spray-chars"
-                                                "Rubber-banding" "Trimming" "Borders"))))
+   (list "Set Fill" "Set Line" "Set Erase" "Spray-size" "Spray-chars"
+         "Rubber-banding" "Trimming" "Borders"))))
   (if (equal type "Spray-size")
       (artist-select-operation "spray set size")
     (call-interactively (artist-fc-get-fn-from-symbol
