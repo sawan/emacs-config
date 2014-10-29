@@ -71,6 +71,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/kill-lines.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/emacros.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
+(add-to-list 'load-path "~/.emacs.d/vendors/no-easy-keys.el")
 
 (require 'magit)
 (require 'wide-n)
@@ -79,12 +80,13 @@
 (require 'wide-n)
 (require 'extraedit)
 (require 'highlight-tail)
+(require 'no-easy-keys)
 
 (defun eshell/force-close ()
     "Eshell alias to force close when it complains about read-only text"
     (interactive)
     (let ((inhibit-read-only t))
-        (kill-buffer "*eshell*"))
+        (kill-buffer "*eshell*")))
 
 (add-hook 'kill-emacs-hook '(lambda nil
                               (eshell/force-close)))
