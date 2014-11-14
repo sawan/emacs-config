@@ -446,6 +446,15 @@ Position the cursor at its beginning, according to the current mode."
   (move-end-of-line nil)
   (newline-and-indent))
 
+(defun kill-line-remove-blanks ()
+"Delete current line and remove blanks after it"
+    (interactive)
+    (move-beginning-of-line nil)
+    (kill-line)
+    (delete-blank-lines)
+    (delete-blank-lines)
+    (back-to-indentation))
+
 (global-set-key [(control return)] 'smart-open-line)
 (global-set-key [(control shift return)] 'smart-open-line-above)
 
@@ -478,6 +487,7 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define-global "lb" 'thing-copy-to-line-beginning)
 (key-chord-define-global "le" 'thing-copy-to-line-end)
 (key-chord-define-global "cr" 'copy-region-as-kill)
+(key-chord-define-global "rl" 'kill-line-remove-blanks)
 
 (require 'highlight-symbol)
 (global-set-key (kbd "<f9>")   'highlight-symbol-at-point)
@@ -723,6 +733,21 @@ Position the cursor at its beginning, according to the current mode."
           (iedit-start (current-word)))))))
 
 
+(require 'csv-mode)
+(autoload 'csv-mode "csv-mode"
+   "Major mode for editing comma-separated value files." t)
+(add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.prod$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.model$" . yaml-mode))
+(add-hook 'yaml-mode-hook '(lambda ()
+                             (define-key yaml-mode-map
+                               (kbd "RET") 'newline-and-indent)))
+(add-to-list 'ac-modes 'yaml-mode)
+
 ;;;; autocomplete
 (require 'auto-complete-config)
 (ac-config-default)
@@ -760,7 +785,26 @@ Position the cursor at its beginning, according to the current mode."
   (python-indent-line)
   (save-buffer) )
 
+(defun python-insert-string(in-string)
+  "Inserts string"
+  (interactive)
+  (back-to-indentation)
+  (split-line)
+  (insert in-string)
+  (python-indent-line))
+
+(defun linfo()
+  "Insert info log entry"
+  (interactive)
+  (python-insert-string "log.info(' %s' % () )"))
+
+(defun ldebug()
+  "Insert debug log entry"
+  (interactive)
+  (python-insert-string "log.debug(' %s' % () )"))
+
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
+
 
 ;;;elpy
 ;;(elpy-enable)
