@@ -51,6 +51,7 @@
 	  jedi
 	  elpy
 	  expand-region
+	  hydra
 )))
 
 (defmacro after (mode &rest body)
