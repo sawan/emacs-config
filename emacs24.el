@@ -86,6 +86,7 @@
     "Eshell alias to force close when it complains about read-only text"
     (interactive)
     (let ((inhibit-read-only t))
+      (ignore-errors)
         (kill-buffer "*eshell*")))
 
 (add-hook 'kill-emacs-hook '(lambda nil
@@ -113,10 +114,6 @@
 
 ;; delete trailing whitespace before file is saved
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; switching buffers
-(iswitchb-mode 1)
-;(setq iswitchb-buffer-ignore '("^ " "*Buffer"))
 
 ;; columns
 (column-number-mode 1)
@@ -501,6 +498,22 @@ Position the cursor at its beginning, according to the current mode."
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
+;; Bastardised version from
+;; http://endlessparentheses.com/implementing-comment-line.html and
+;; https://github.com/kaushalmodi/.emacs.d/blob/13bc1313e786ce1f1ab41d5aaff3dc39dfc57852/setup-files/setup-editing.el#L110-117
+(defun comment-dwim-lines-or-region (n)
+  "Comment or uncomment current line or active region and leave point after it.
+   With positive prefix, apply to N lines including current one.
+   With negative prefix, apply to -N lines above."
+  (interactive "p")
+  (if (region-active-p)
+      (comment-or-uncomment-region (region-beginning) (region-end))
+      (comment-or-uncomment-region (line-beginning-position) (goto-char (line-end-position n))))
+  (forward-line 1)
+  (back-to-indentation))
+
+(global-set-key (kbd "M-;") #'comment-dwim-lines-or-region)
+
 ;;;; emacros
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
 (require 'emacros)
@@ -511,7 +524,8 @@ Position the cursor at its beginning, according to the current mode."
 
 ;;;; Tramp
 (require 'tramp)
-(setq tramp-default-method "plink")
+(when (window-system) 'w32
+      (setq tramp-default-method "plink"))
 (setq  tramp-completion-reread-directory-timeout 0)
 
 ;; (setq tramp-verbose 10)
@@ -527,7 +541,6 @@ Position the cursor at its beginning, according to the current mode."
                               (tramp-cleanup-all-connections)
                               (tramp-cleanup-all-buffers)
                               ))
-
 
 ;;;; key-chord
 (require 'key-chord)
@@ -592,15 +605,15 @@ Position the cursor at its beginning, according to the current mode."
            (insert "~/")
          (call-interactively 'self-insert-command))))))
 
-(defun iswitchb-local-keys ()
-  (mapc (lambda (K)
-          (let* ((key (car K)) (fun (cdr K)))
-            (define-key iswitchb-mode-map (edmacro-parse-keys key) fun)))
-        '(("<right>" . iswitchb-next-match)
-          ("<left>"  . iswitchb-prev-match)
-          ("<up>"    . ignore             )
-          ("<down>"  . ignore             ))))
-(add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
+;; (defun iswitchb-local-keys ()
+;;   (mapc (lambda (K)
+;;           (let* ((key (car K)) (fun (cdr K)))
+;;             (define-key iswitchb-mode-map (edmacro-parse-keys key) fun)))
+;;         '(("<right>" . iswitchb-next-match)
+;;           ("<left>"  . iswitchb-prev-match)
+;;           ("<up>"    . ignore             )
+;;           ("<down>"  . ignore             ))))
+;; (add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
 
 ;; http://whattheemacsd.com/setup-ido.el-01.html
 ;; Use ido everywhere
@@ -746,7 +759,8 @@ Position the cursor at its beginning, according to the current mode."
 (add-hook 'yaml-mode-hook '(lambda ()
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
-(add-to-list 'ac-modes 'yaml-mode)
+
+;;(add-to-list 'ac-modes 'yaml-mode)
 
 ;;;; autocomplete
 (require 'auto-complete-config)
@@ -804,7 +818,6 @@ Position the cursor at its beginning, according to the current mode."
   (python-insert-string "log.debug(' %s' % () )"))
 
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
-
 
 ;;;elpy
 ;;(elpy-enable)
