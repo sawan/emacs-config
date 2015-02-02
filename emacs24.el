@@ -386,7 +386,7 @@ the beginning of the line.
 
 If ARG is not nil or 1, move forward ARG - 1 lines first.  If
 point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
+  (interactive "p")
   (setq arg (or arg 1))
 
   ;; Move lines first
@@ -403,6 +403,18 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
+;; http://oremacs.com/2014/12/23/upcase-word-you-silly/
+(defadvice upcase-word (before upcase-word-advice activate)
+  (unless (looking-back "\\b")
+    (backward-word)))
+
+(defadvice downcase-word (before downcase-word-advice activate)
+  (unless (looking-back "\\b")
+    (backward-word)))
+
+(defadvice capitalize-word (before capitalize-word-advice activate)
+  (unless (looking-back "\\b")
+    (backward-word)))
 
 
 ;;;; emacs lisp
@@ -444,13 +456,10 @@ Position the cursor at its beginning, according to the current mode."
   (move-end-of-line nil)
   (newline-and-indent))
 
-(defun kill-line-remove-blanks ()
+(defun kill-line-remove-blanks (&optional arg)
 "Delete current line and remove blanks after it"
-    (interactive)
-    (move-beginning-of-line nil)
-    (kill-line)
-    (delete-blank-lines)
-    (delete-blank-lines)
+    (interactive "p")
+    (kill-whole-line arg)
     (back-to-indentation))
 
 (global-set-key [(control return)] 'smart-open-line)
@@ -791,7 +800,7 @@ Position the cursor at its beginning, according to the current mode."
 
 (defun python-insert-breakpoint ()
   "Inserts a python breakpoint using `ipdb'"
-  (interactive)
+  (interactive "p")
   (back-to-indentation)
   ;; this preserves the correct indentation in case the line above
   ;; point is a nested block
