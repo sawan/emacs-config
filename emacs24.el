@@ -416,6 +416,39 @@ point reaches the beginning or end of the buffer, stop there."
   (unless (looking-back "\\b")
     (backward-word)))
 
+;; http://oremacs.com/2014/12/25/ode-to-toggle/
+(defun char-upcasep (letter)
+  (eq letter (upcase letter)))
+
+(defun upcase-word-toggle ()
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'symbol))
+        beg end
+        (regionp
+         (if (eq this-command last-command)
+             (get this-command 'regionp)
+           (put this-command 'regionp nil))))
+    (cond
+      ((or (region-active-p) regionp)
+       (setq beg (region-beginning)
+             end (region-end))
+       (put this-command 'regionp t))
+      (bounds
+       (setq beg (car bounds)
+             end (cdr bounds)))
+      (t
+       (setq beg (point)
+             end (1+ beg))))
+    (save-excursion
+      (goto-char (1- beg))
+      (and (re-search-forward "[A-Za-z]" end t)
+           (funcall (if (char-upcasep (char-before))
+                        'downcase-region
+                      'upcase-region)
+                    beg end)))))
+
+(global-set-key (kbd "C-z") 'upcase-word-toggle)
+
 
 ;;;; emacs lisp
 
@@ -508,21 +541,26 @@ Position the cursor at its beginning, according to the current mode."
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
-;; Bastardised version from
 ;; http://endlessparentheses.com/implementing-comment-line.html and
-;; https://github.com/kaushalmodi/.emacs.d/blob/13bc1313e786ce1f1ab41d5aaff3dc39dfc57852/setup-files/setup-editing.el#L110-117
-(defun comment-dwim-lines-or-region (n)
-  "Comment or uncomment current line or active region and leave point after it.
-   With positive prefix, apply to N lines including current one.
-   With negative prefix, apply to -N lines above."
+(defun endless/comment-line-or-region (n)
+  "Comment or uncomment current line and leave point after it.
+  With positive prefix, apply to N lines including current one.
+  With negative prefix, apply to -N lines above.
+  If region is active, apply to active region instead."
   (interactive "p")
-  (if (region-active-p)
-      (comment-or-uncomment-region (region-beginning) (region-end))
-      (comment-or-uncomment-region (line-beginning-position) (goto-char (line-end-position n))))
-  (forward-line 1)
-  (back-to-indentation))
+  (if (use-region-p)
+      (comment-or-uncomment-region
+       (region-beginning) (region-end))
+    (let ((range
+           (list (line-beginning-position)
+                 (goto-char (line-end-position n)))))
+      (comment-or-uncomment-region
+       (apply #'min range)
+       (apply #'max range)))
+    (forward-line 1)
+    (back-to-indentation)))
 
-(global-set-key (kbd "M-;") #'comment-dwim-lines-or-region)
+(global-set-key (kbd "M-;") #'endless/comment-line-or-region)
 
 ;;;; emacros
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
