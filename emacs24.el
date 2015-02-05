@@ -52,6 +52,8 @@
 	  elpy
 	  expand-region
 	  hydra
+	  smyx-theme
+	  autopair
 )))
 
 (defmacro after (mode &rest body)
@@ -82,6 +84,12 @@
 (require 'extraedit)
 (require 'highlight-tail)
 (require 'no-easy-keys)
+(require 'smyx-theme)
+
+
+(require 'autopair)
+(autopair-global-mode)
+
 
 (defun eshell/force-close ()
     "Eshell alias to force close when it complains about read-only text"
