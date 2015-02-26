@@ -54,6 +54,7 @@
 	  hydra
 	  smyx-theme
 	  autopair
+	  google-this
 )))
 
 (defmacro after (mode &rest body)
@@ -85,6 +86,9 @@
 (require 'highlight-tail)
 (require 'no-easy-keys)
 (require 'smyx-theme)
+
+(require 'google-this)
+(google-this-mode 1)
 
 
 (require 'autopair)
@@ -852,3 +856,15 @@ Position the cursor at its beginning, according to the current mode."
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
 ;(setq ack-executable "~/../../bin/ack")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(paradox-github-token t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
