@@ -100,9 +100,19 @@
       (ignore-errors)
         (kill-buffer "*eshell*")))
 
+(defun really-kill-emacs ()
+  "Like `kill-emacs', but ignores `kill-emacs-hook'."
+  (interactive)
+  (let (kill-emacs-hook)
+    (kill-emacs)))
+
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (kill-ring-save)
+			      ))
+
 (add-hook 'kill-emacs-hook '(lambda nil
                               (eshell/force-close)
-			      (kill-ring-save)))
+			      ))
 
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
