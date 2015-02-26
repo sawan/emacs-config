@@ -53,7 +53,6 @@
 	  expand-region
 	  hydra
 	  smyx-theme
-	  autopair
 )))
 
 (defmacro after (mode &rest body)
@@ -76,6 +75,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
 (add-to-list 'load-path "~/.emacs.d/vendors/no-easy-keys.el")
 
+(require 'pos-tip)
 (require 'magit)
 (require 'wide-n)
 (require 'kill-lines)
@@ -83,13 +83,10 @@
 (require 'wide-n)
 (require 'extraedit)
 (require 'highlight-tail)
-(require 'no-easy-keys)
 (require 'smyx-theme)
 
-
-(require 'autopair)
-(autopair-global-mode)
-
+(require 'no-easy-keys)
+(no-easy-keys)
 
 (defun eshell/force-close ()
     "Eshell alias to force close when it complains about read-only text"
@@ -801,7 +798,6 @@ Position the cursor at its beginning, according to the current mode."
           ;; functions.
           (iedit-start (current-word)))))))
 
-
 (require 'csv-mode)
 (autoload 'csv-mode "csv-mode"
    "Major mode for editing comma-separated value files." t)
@@ -846,12 +842,14 @@ Position the cursor at its beginning, according to the current mode."
 
 (defun python-insert-breakpoint ()
   "Inserts a python breakpoint using `ipdb'"
-  (interactive "p")
+  (interactive)
   (back-to-indentation)
   ;; this preserves the correct indentation in case the line above
   ;; point is a nested block
+  (setq myStr (thing-at-point 'line))
   (split-line)
   (insert python-pdb-breakpoint-string)
+  (back-to-indentation)
   (python-indent-line)
   (save-buffer) )
 
@@ -861,7 +859,8 @@ Position the cursor at its beginning, according to the current mode."
   (back-to-indentation)
   (split-line)
   (insert in-string)
-  (python-indent-line))
+  (python-indent-line)
+  (backward-char 3))
 
 (defun linfo()
   "Insert info log entry"
