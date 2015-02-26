@@ -55,7 +55,7 @@
 	  smyx-theme
 	  autopair
 	  google-this
-	  smart-mode-line-powerline-theme)))
+	  )))
 
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
