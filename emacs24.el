@@ -53,7 +53,9 @@
 	  expand-region
 	  hydra
 	  smyx-theme
-)))
+	  autopair
+	  google-this
+	  )))
 
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
@@ -88,6 +90,12 @@
 (require 'no-easy-keys)
 (no-easy-keys)
 
+(require 'google-this)
+(google-this-mode 1)
+
+(require 'autopair)
+(autopair-global-mode)
+
 (defun eshell/force-close ()
     "Eshell alias to force close when it complains about read-only text"
     (interactive)
@@ -95,8 +103,19 @@
       (ignore-errors)
         (kill-buffer "*eshell*")))
 
+(defun really-kill-emacs ()
+  "Like `kill-emacs', but ignores `kill-emacs-hook'."
+  (interactive)
+  (let (kill-emacs-hook)
+    (kill-emacs)))
+
 (add-hook 'kill-emacs-hook '(lambda nil
-                              (eshell/force-close)))
+                              (kill-ring-save)
+			      ))
+
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (eshell/force-close)
+			      ))
 
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
