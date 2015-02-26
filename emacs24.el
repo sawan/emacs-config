@@ -55,7 +55,7 @@
 	  smyx-theme
 	  autopair
 	  google-this
-)))
+	  smart-mode-line-powerline-theme)))
 
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
@@ -90,10 +90,8 @@
 (require 'google-this)
 (google-this-mode 1)
 
-
 (require 'autopair)
 (autopair-global-mode)
-
 
 (defun eshell/force-close ()
     "Eshell alias to force close when it complains about read-only text"
@@ -103,7 +101,8 @@
         (kill-buffer "*eshell*")))
 
 (add-hook 'kill-emacs-hook '(lambda nil
-                              (eshell/force-close)))
+                              (eshell/force-close)
+			      (kill-ring-save)))
 
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
@@ -894,15 +893,3 @@ Position the cursor at its beginning, according to the current mode."
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
 ;(setq ack-executable "~/../../bin/ack")
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(paradox-github-token t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
