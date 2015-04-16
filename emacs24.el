@@ -1,7 +1,5 @@
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
-
 ;;;; package.el
-
 (require 'package)
 
 (setq package-user-dir "~/.emacs.d/elpa/")
@@ -823,12 +821,12 @@ Position the cursor at its beginning, according to the current mode."
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
 
-;;(add-to-list 'ac-modes 'yaml-mode)
-
 ;;;; autocomplete
 (require 'auto-complete-config)
 (ac-config-default)
 (auto-complete-mode 1)
+(add-hook 'find-file-hook 'auto-complete-mode)
+(add-to-list 'ac-modes 'yaml-mode)
 
 ;;;; python mode
 (require 'python)
