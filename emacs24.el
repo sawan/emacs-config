@@ -599,7 +599,6 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define emacs-lisp-mode-map "eb" 'eval-buffer)
 (key-chord-define emacs-lisp-mode-map "ed" 'eval-defun)
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
-(key-chord-define emacs-lisp-mode-map "kl" 'kill-lines)
 
 ;;;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -919,7 +918,8 @@ Position the cursor at its beginning, according to the current mode."
   ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
-  ("d" djcb-duplicate-line "dup-line" :color blue))
+  ("d" djcb-duplicate-line "dup-line" :color blue)
+  ("k" kill-lines "kill-lines" :color blue))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
 
