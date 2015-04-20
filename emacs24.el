@@ -54,6 +54,8 @@
 	  autopair
 	  google-this
 	  wrap-region
+	  git-timemachine
+          ace-jump-mode
 	  )))
 
 (defmacro after (mode &rest body)
@@ -295,8 +297,6 @@ Continues until end of buffer.  Also display the count as a message."
      (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
-(key-chord-define-global "dl" 'djcb-duplicate-line)
-
 ;; http://tsdh.wordpress.com/2007/06/22/zapping-to-strings-and-regexps/
 (defun th-zap-to-string (arg str)
   "Same as `zap-to-char' except that it zaps to the given string
@@ -535,19 +535,8 @@ Position the cursor at its beginning, according to the current mode."
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
 (require 'thing-edit)
-(key-chord-define-global "cw" 'thing-copy-word)
-(key-chord-define-global "cl" 'thing-copy-line)
-(key-chord-define-global "cs" 'thing-copy-symbol)
-(key-chord-define-global "lb" 'thing-copy-to-line-beginning)
-(key-chord-define-global "le" 'thing-copy-to-line-end)
-(key-chord-define-global "cr" 'copy-region-as-kill)
-(key-chord-define-global "rl" 'kill-line-remove-blanks)
 
 (require 'highlight-symbol)
-(global-set-key (kbd "<f9>")   'highlight-symbol-at-point)
-(global-set-key (kbd "<C-f9>") 'highlight-symbol-next)
-(global-set-key (kbd "<S-f9>") 'highlight-symbol-prev)
-(global-set-key (kbd "<M-f9>") 'highlight-symbol-remove-all)
 
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
@@ -910,3 +899,35 @@ Position the cursor at its beginning, according to the current mode."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;;;; Hydra configurations
+(defhydra hydra-ace-jump ()
+  "Ace jump:"
+  ("l" ace-jump-line-mode "line" :color blue)
+  ("w" ace-jump-word-mode "word" :color blue)
+  ("c" ace-jump-char-mode "char" :color blue))
+
+(global-set-key (kbd "<f1>") 'hydra-ace-jump/body)
+
+(defhydra hydra-text-commands ()
+  "Text commands"
+  ("r" copy-region-as-kill "copy-region" :color blue)
+  ("w" thing-copy-word "copy-word" :color blue)
+  ("l" thing-copy-line "copy-line" :color blue)
+  ("s" thing-copy-symbol "copy-symbol" :color blue)
+  ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
+  ("e" thing-copy-to-line-end "copy-line-end" :color blue)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("d" djcb-duplicate-line "dup-line" :color blue))
+
+(global-set-key (kbd "<f2>") 'hydra-text-commands/body)
+
+(defhydra hydra-highlight-symbol ()
+  "Highlight symbol"
+  ("h" highlight-symbol-at-point :color red)
+  ("n" highlight-symbol-next :color red)
+  ("p" highlight-symbol-prev :color red)
+  ("r" highlight-symbol-remove-all :color blue))
+
+(global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
