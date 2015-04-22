@@ -935,6 +935,11 @@ Position the cursor at its beginning, according to the current mode."
 
 (global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
 
+(defun reattach-occur ()
+  (if (get-buffer "*Occur*")
+    (switch-to-buffer-other-window "*Occur*")
+    (hydra-occur-dwim/body) ))
+
 ;; Used in conjnction with occur-mode-goto-occurrence-advice this helps keep
 ;; focus on the *Occur* window and hides upon request in case needed later.
 (defhydra hydra-occur-dwim ()
@@ -942,6 +947,7 @@ Position the cursor at its beginning, according to the current mode."
   ("o" occur-dwim "Start occur-dwim" :color red)
   ("j" occur-next "Next" :color red)
   ("k" occur-prev "Prev":color red)
-  ("h" (delete-window) "Hide" :color blue))
+  ("h" delete-window "Hide" :color blue)
+  ("r" (reattach-occur) "Re-attach" :color red))
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
