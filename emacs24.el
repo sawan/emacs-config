@@ -108,7 +108,6 @@
   (let (kill-emacs-hook)
     (kill-emacs)))
 
-
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
 
@@ -175,8 +174,6 @@
 			dired-directory
 			(revert-buffer-function " %b"
 			      ("%b - Dir:  " default-directory)))))))
-
-
 ;;;; utility functions
 
 ;; http://www.emacswiki.org/emacs-en/PosTip
@@ -264,7 +261,6 @@ Continues until end of buffer.  Also display the count as a message."
                                 (while (re-search-forward regexp nil t)
                                   (replace-match to-string nil nil))))))
 
-
 ;; edit files as root
 (defun sudo-find-file (file-name)
   (interactive "Find file (sudo): ")
@@ -339,7 +335,6 @@ instead of a char."
         (isearch-forward regexp-p no-recursive-edit)))))
 
 (global-set-key (kbd "M-s") 'isearch-forward-at-point)
-
 
 ;; jump to matching parenthesis -- currently seems to support () and []
 (defun goto-match-paren (arg)
@@ -463,8 +458,30 @@ point reaches the beginning or end of the buffer, stop there."
 
 (global-set-key (kbd "C-z") 'upcase-word-toggle)
 
-
 ;;;; emacs lisp
+
+;; http://oremacs.com/2015/01/26/occur-dwim/
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+(add-hook 'occur-hook (lambda () (other-window 1)))
+
+;; Enables easy navigation from *Occur* window, when target is found goto via
+;; 'q' key in the *Occur* window. See hydra-occur for more options.
+(defadvice occur-mode-goto-occurrence (after occur-mode-goto-occurrence-advice activate)
+  (other-window 1)
+  (hydra-occur/body))
+
 
 (defun imenu-elisp-sections ()
   (setq imenu-prev-index-position-function nil)
@@ -526,7 +543,7 @@ Position the cursor at its beginning, according to the current mode."
 ;; DrewsLibraries from EmacsWiki
 ; crosshairs
 (require 'crosshairs)
-(global-set-key (kbd "<M-f6>") 'flash-crosshairs)
+(global-set-key (kbd "<M-f12>") 'flash-crosshairs)
 
 (require 'exec-abbrev-cmd)
 (exec-abbrev-cmd-mode 1)
@@ -569,7 +586,6 @@ Position the cursor at its beginning, according to the current mode."
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
 (require 'emacros)
 (setq emacros-global-dir "~/.emacs.d")
-(global-set-key [f12] #'emacros-auto-execute-named-macro)
 ;; Load predefined macros
 (add-hook 'after-init-hook 'emacros-load-macros)
 
@@ -886,19 +902,6 @@ Position the cursor at its beginning, according to the current mode."
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
 ;(setq ack-executable "~/../../bin/ack")
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(paradox-github-token t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 
 ;;;; Hydra configurations
 (defhydra hydra-ace-jump ()
@@ -913,7 +916,7 @@ Position the cursor at its beginning, according to the current mode."
   "Text commands"
   ("r" copy-region-as-kill "copy-region" :color blue)
   ("w" thing-copy-word "copy-word" :color blue)
-  ("l" thing-copy-line "copy-line" :color blue)
+  ("l" thing-copy-line "copy-line"  :color blue)
   ("s" thing-copy-symbol "copy-symbol" :color blue)
   ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
@@ -926,8 +929,19 @@ Position the cursor at its beginning, according to the current mode."
 (defhydra hydra-highlight-symbol ()
   "Highlight symbol"
   ("h" highlight-symbol-at-point :color red)
-  ("n" highlight-symbol-next :color red)
-  ("p" highlight-symbol-prev :color red)
+  ("j" highlight-symbol-next :color red)
+  ("k" highlight-symbol-prev :color red)
   ("r" highlight-symbol-remove-all :color blue))
 
 (global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
+
+;; Used in conjnction with occur-mode-goto-occurrence-advice this helps keep
+;; focus on the *Occur* window and hides upon request in case needed later.
+(defhydra hydra-occur-dwim ()
+  "Occur mode"
+  ("o" occur-dwim "Start occur-dwim" :color red)
+  ("j" occur-next "Next" :color red)
+  ("k" occur-prev "Prev":color red)
+  ("h" (delete-window) "Hide" :color blue))
+
+(global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
