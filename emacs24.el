@@ -252,14 +252,15 @@ Continues until end of buffer.  Also display the count as a message."
 
 ;; http://www.emacswiki.org/emacs/BasicNarrowing
 (defun replace-regexp-in-region (start end)
-  (interactive "*r")      (save-excursion
-                            (save-restriction
-                              (let ((regexp (read-string "Regexp: "))
-                                    (to-string (read-string "Replacement: ")))
-                                (narrow-to-region start end)
-                                (goto-char (point-min))
-                                (while (re-search-forward regexp nil t)
-                                  (replace-match to-string nil nil))))))
+  (interactive "*r")
+  (save-excursion
+    (save-restriction
+      (let ((regexp (read-string "Regexp: "))
+	    (to-string (read-string "Replacement: ")))
+	(narrow-to-region start end)
+	(goto-char (point-min))
+	(while (re-search-forward regexp nil t)
+	  (replace-match to-string nil nil))))))
 
 ;; edit files as root
 (defun sudo-find-file (file-name)
@@ -599,6 +600,60 @@ Position the cursor at its beginning, according to the current mode."
     (back-to-indentation)))
 
 (global-set-key (kbd "M-;") #'endless/comment-line-or-region)
+
+(defun xah-shrink-whitespaces ()
+  "Remove whitespaces around cursor to just one or none.
+Remove whitespaces around cursor to just one space, or remove neighboring blank lines to just one or none.
+URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+Version 2015-03-03"
+  (interactive)
+  (let ((pos (point))
+        line-has-char-p ; current line contains non-white space chars
+        has-space-tab-neighbor-p
+        whitespace-begin whitespace-end
+        space-or-tab-begin space-or-tab-end
+        )
+    (save-excursion
+      (setq has-space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
+      (beginning-of-line)
+      (setq line-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
+
+      (goto-char pos)
+      (skip-chars-backward "\t ")
+      (setq space-or-tab-begin (point))
+
+      (skip-chars-backward "\t \n")
+      (setq whitespace-begin (point))
+
+      (goto-char pos)
+      (skip-chars-forward "\t ")
+      (setq space-or-tab-end (point))
+      (skip-chars-forward "\t \n")
+      (setq whitespace-end (point)))
+
+    (if  line-has-char-p
+        (if has-space-tab-neighbor-p
+            (let (deleted-text)
+              ;; remove all whitespaces in the range
+              (setq deleted-text
+                    (delete-and-extract-region space-or-tab-begin space-or-tab-end))
+              ;; insert a whitespace only if we have removed something different than a simple whitespace
+              (when (not (string= deleted-text " "))
+                (insert " ")))
+
+          (progn
+            (when (equal (char-before) 10) (delete-char -1))
+            (when (equal (char-after) 10) (delete-char 1))))
+      (progn (delete-blank-lines)))))
+
+(defun xah-select-current-line ()
+  "Select current line.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07
+"
+  (interactive)
+  (end-of-line)
+  (set-mark (line-beginning-position)))
 
 ;;;; emacros
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
@@ -977,6 +1032,7 @@ Position the cursor at its beginning, according to the current mode."
   "goto-line"
   ("g" goto-line "go")
   ("m" set-mark-command "mark" :bind nil)
+  ("s" xah-select-current-line "Select current" :color red)
   ("r" copy-region-as-kill "copy-region" :color blue)
   ("f" forward-line "forward")
   ("b" previous-line "backwards")
