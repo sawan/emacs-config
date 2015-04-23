@@ -460,6 +460,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; emacs lisp
 
+;; occur
 ;; http://oremacs.com/2015/01/26/occur-dwim/
 (defun occur-dwim ()
   "Call `occur' with a sane default."
@@ -476,11 +477,28 @@ point reaches the beginning or end of the buffer, stop there."
 
 (add-hook 'occur-hook (lambda () (other-window 1)))
 
-;; Enables easy navigation from *Occur* window, when target is found goto via
-;; 'q' key in the *Occur* window. See hydra-occur for more options.
+;; Keeps focus on *Occur* window, even when when target is visited via RETURN key.
+;; See hydra-occur-dwim for more options.
 (defadvice occur-mode-goto-occurrence (after occur-mode-goto-occurrence-advice activate)
   (other-window 1)
-  (hydra-occur/body))
+  (hydra-occur-dwim/body))
+
+;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+   (dolist (buf (buffer-list))
+     (with-current-buffer buf
+       (if (eq mode major-mode)
+           (add-to-list 'buffer-mode-matches buf))))
+   buffer-mode-matches))
+
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
 
 
 (defun imenu-elisp-sections ()
@@ -929,8 +947,8 @@ Position the cursor at its beginning, according to the current mode."
 (defhydra hydra-highlight-symbol ()
   "Highlight symbol"
   ("h" highlight-symbol-at-point :color red)
-  ("j" highlight-symbol-next :color red)
-  ("k" highlight-symbol-prev :color red)
+  ("n" highlight-symbol-next :color red)
+  ("p" highlight-symbol-prev :color red)
   ("r" highlight-symbol-remove-all :color blue))
 
 (global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
@@ -940,14 +958,26 @@ Position the cursor at its beginning, according to the current mode."
     (switch-to-buffer-other-window "*Occur*")
     (hydra-occur-dwim/body) ))
 
-;; Used in conjnction with occur-mode-goto-occurrence-advice this helps keep
+;; Used in conjunction with occur-mode-goto-occurrence-advice this helps keep
 ;; focus on the *Occur* window and hides upon request in case needed later.
 (defhydra hydra-occur-dwim ()
   "Occur mode"
   ("o" occur-dwim "Start occur-dwim" :color red)
-  ("j" occur-next "Next" :color red)
-  ("k" occur-prev "Prev":color red)
+  ("n" occur-next "Next" :color red)
+  ("p" occur-prev "Prev":color red)
   ("h" delete-window "Hide" :color blue)
+  ("m" multi-occur-in-this-mode "Mode multi-occur" color :red)
   ("r" (reattach-occur) "Re-attach" :color red))
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
+
+(defhydra hydra-goto-line (goto-map ""
+                           :pre (linum-mode 1)
+                           :post (linum-mode -1))
+  "goto-line"
+  ("g" goto-line "go")
+  ("m" set-mark-command "mark" :bind nil)
+  ("r" copy-region-as-kill "copy-region" :color blue)
+  ("f" forward-line "forward")
+  ("b" previous-line "backwards")
+  ("q" nil "quit"))
