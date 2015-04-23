@@ -56,6 +56,8 @@
 	  wrap-region
 	  git-timemachine
           ace-jump-mode
+	  move-text
+	  guide-keys
 	  )))
 
 (defmacro after (mode &rest body)
@@ -679,8 +681,7 @@ Version 2015-02-07
 ;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
-                              (tramp-cleanup-all-buffers)
-                              ))
+                              (tramp-cleanup-all-buffers) ))
 
 ;;;; key-chord
 (require 'key-chord)
@@ -688,6 +689,15 @@ Version 2015-02-07
 (key-chord-define emacs-lisp-mode-map "eb" 'eval-buffer)
 (key-chord-define emacs-lisp-mode-map "ed" 'eval-defun)
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
+
+
+;;; guide-keys
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x r" ))
+(setq guide-key/highlight-command-regexp '(
+                         ("register" . font-lock-type-face) ))
+(guide-key-mode 1)
+
 
 ;;;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -995,7 +1005,9 @@ Version 2015-02-07
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("d" djcb-duplicate-line "dup-line" :color blue)
-  ("k" kill-lines "kill-lines" :color blue))
+  ("k" kill-lines "kill-lines" :color blue)
+  ("u" move-text-up "move-up" color :red)
+  ("d" move-text-down "move-down" color :red))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
 
@@ -1026,14 +1038,16 @@ Version 2015-02-07
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
 
-(defhydra hydra-goto-line (goto-map ""
+(defhydra hydra-lines (goto-map ""
                            :pre (linum-mode 1)
                            :post (linum-mode -1))
-  "goto-line"
-  ("g" goto-line "go")
+  "Lines"
+  ("g" goto-line "goto-line")
   ("m" set-mark-command "mark" :bind nil)
   ("s" xah-select-current-line "Select current" :color red)
   ("r" copy-region-as-kill "copy-region" :color blue)
-  ("f" forward-line "forward")
-  ("b" previous-line "backwards")
+  ("n" forward-line "forward")
+  ("p" previous-line "backwards")
+  ("u" move-text-up "move-up" color :red)
+  ("d" move-text-down "move-down" color :red)
   ("q" nil "quit"))
