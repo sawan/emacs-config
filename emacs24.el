@@ -690,14 +690,12 @@ Version 2015-02-07
 (key-chord-define emacs-lisp-mode-map "ed" 'eval-defun)
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
 
-
 ;;; guide-keys
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x r" ))
 (setq guide-key/highlight-command-regexp '(
                          ("register" . font-lock-type-face) ))
 (guide-key-mode 1)
-
 
 ;;;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -1004,7 +1002,7 @@ Version 2015-02-07
   ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
-  ("d" djcb-duplicate-line "dup-line" :color blue)
+  ("p" djcb-duplicate-line "dup-line" :color blue)
   ("k" kill-lines "kill-lines" :color blue)
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red))
@@ -1013,10 +1011,10 @@ Version 2015-02-07
 
 (defhydra hydra-highlight-symbol ()
   "Highlight symbol"
-  ("h" highlight-symbol-at-point :color red)
-  ("n" highlight-symbol-next :color red)
-  ("p" highlight-symbol-prev :color red)
-  ("r" highlight-symbol-remove-all :color blue))
+  ("h" highlight-symbol-at-point "highlight-toggle" :color red)
+  ("n" highlight-symbol-next "next" :color red)
+  ("p" highlight-symbol-prev "previous" :color red)
+  ("r" highlight-symbol-remove-all "remove-all ":color blue))
 
 (global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
 
