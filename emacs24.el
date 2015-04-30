@@ -692,7 +692,8 @@ Version 2015-02-07
 
 ;;; guide-keys
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" ))
+(setq guide-key/guide-key-sequence '("C-x r"
+				     "C-x v" ))
 (setq guide-key/highlight-command-regexp '(
                          ("register" . font-lock-type-face) ))
 (guide-key-mode 1)
@@ -989,7 +990,10 @@ Version 2015-02-07
   "Ace jump:"
   ("l" ace-jump-line-mode "line" :color blue)
   ("w" ace-jump-word-mode "word" :color blue)
-  ("c" ace-jump-char-mode "char" :color blue))
+  ("c" ace-jump-char-mode "char" :color blue)
+  ("b" ace-jump-buffer-in-one-window "all-buffers" :color blue)
+  ("s" ace-jump-same-mode-buffers "mode-matching-buffer" :color blue)
+  ("q" nil "quit"))
 
 (global-set-key (kbd "<f1>") 'hydra-ace-jump/body)
 
@@ -1049,3 +1053,5 @@ Version 2015-02-07
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
   ("q" nil "quit"))
+
+(global-set-key (kbd "<f4>") 'hydra-lines/body)
