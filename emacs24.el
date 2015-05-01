@@ -1,7 +1,5 @@
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
-
 ;;;; package.el
-
 (require 'package)
 
 (setq package-user-dir "~/.emacs.d/elpa/")
@@ -51,7 +49,16 @@
 	  jedi
 	  elpy
 	  expand-region
-)))
+	  hydra
+	  smyx-theme
+	  autopair
+	  google-this
+	  wrap-region
+	  git-timemachine
+          ace-jump-mode
+	  move-text
+	  guide-keys
+	  )))
 
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
@@ -72,7 +79,9 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/emacros.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
 (add-to-list 'load-path "~/.emacs.d/vendors/no-easy-keys.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/thing-cmds.el")
 
+(require 'pos-tip)
 (require 'magit)
 (require 'wide-n)
 (require 'kill-lines)
@@ -80,17 +89,26 @@
 (require 'wide-n)
 (require 'extraedit)
 (require 'highlight-tail)
+(require 'smyx-theme)
+
 (require 'no-easy-keys)
+(no-easy-keys)
 
-(defun eshell/force-close ()
-    "Eshell alias to force close when it complains about read-only text"
-    (interactive)
-    (let ((inhibit-read-only t))
-      (ignore-errors)
-        (kill-buffer "*eshell*")))
+(require 'google-this)
+(google-this-mode 1)
 
-(add-hook 'kill-emacs-hook '(lambda nil
-                              (eshell/force-close)))
+(require 'autopair)
+(autopair-global-mode)
+
+(require 'thing-cmds)
+
+(wrap-region-mode t)
+
+(defun really-kill-emacs ()
+  "Like `kill-emacs', but ignores `kill-emacs-hook'."
+  (interactive)
+  (let (kill-emacs-hook)
+    (kill-emacs)))
 
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
@@ -158,8 +176,6 @@
 			dired-directory
 			(revert-buffer-function " %b"
 			      ("%b - Dir:  " default-directory)))))))
-
-
 ;;;; utility functions
 
 ;; http://www.emacswiki.org/emacs-en/PosTip
@@ -238,15 +254,15 @@ Continues until end of buffer.  Also display the count as a message."
 
 ;; http://www.emacswiki.org/emacs/BasicNarrowing
 (defun replace-regexp-in-region (start end)
-  (interactive "*r")      (save-excursion
-                            (save-restriction
-                              (let ((regexp (read-string "Regexp: "))
-                                    (to-string (read-string "Replacement: ")))
-                                (narrow-to-region start end)
-                                (goto-char (point-min))
-                                (while (re-search-forward regexp nil t)
-                                  (replace-match to-string nil nil))))))
-
+  (interactive "*r")
+  (save-excursion
+    (save-restriction
+      (let ((regexp (read-string "Regexp: "))
+	    (to-string (read-string "Replacement: ")))
+	(narrow-to-region start end)
+	(goto-char (point-min))
+	(while (re-search-forward regexp nil t)
+	  (replace-match to-string nil nil))))))
 
 ;; edit files as root
 (defun sudo-find-file (file-name)
@@ -279,8 +295,6 @@ Continues until end of buffer.  Also display the count as a message."
     (insert-string
      (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
-
-(key-chord-define-global "dl" 'djcb-duplicate-line)
 
 ;; http://tsdh.wordpress.com/2007/06/22/zapping-to-strings-and-regexps/
 (defun th-zap-to-string (arg str)
@@ -324,7 +338,6 @@ instead of a char."
         (isearch-forward regexp-p no-recursive-edit)))))
 
 (global-set-key (kbd "M-s") 'isearch-forward-at-point)
-
 
 ;; jump to matching parenthesis -- currently seems to support () and []
 (defun goto-match-paren (arg)
@@ -385,7 +398,7 @@ the beginning of the line.
 
 If ARG is not nil or 1, move forward ARG - 1 lines first.  If
 point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
+  (interactive "p")
   (setq arg (or arg 1))
 
   ;; Move lines first
@@ -402,9 +415,94 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
+;; http://oremacs.com/2014/12/23/upcase-word-you-silly/
+(defadvice upcase-word (before upcase-word-advice activate)
+  (unless (looking-back "\\b")
+    (backward-word)))
 
+(defadvice downcase-word (before downcase-word-advice activate)
+  (unless (looking-back "\\b")
+    (backward-word)))
+
+(defadvice capitalize-word (before capitalize-word-advice activate)
+  (unless (looking-back "\\b")
+    (backward-word)))
+
+;; http://oremacs.com/2014/12/25/ode-to-toggle/
+(defun char-upcasep (letter)
+  (eq letter (upcase letter)))
+
+(defun upcase-word-toggle ()
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'symbol))
+        beg end
+        (regionp
+         (if (eq this-command last-command)
+             (get this-command 'regionp)
+           (put this-command 'regionp nil))))
+    (cond
+      ((or (region-active-p) regionp)
+       (setq beg (region-beginning)
+             end (region-end))
+       (put this-command 'regionp t))
+      (bounds
+       (setq beg (car bounds)
+             end (cdr bounds)))
+      (t
+       (setq beg (point)
+             end (1+ beg))))
+    (save-excursion
+      (goto-char (1- beg))
+      (and (re-search-forward "[A-Za-z]" end t)
+           (funcall (if (char-upcasep (char-before))
+                        'downcase-region
+                      'upcase-region)
+                    beg end)))))
+
+(global-set-key (kbd "C-z") 'upcase-word-toggle)
 
 ;;;; emacs lisp
+
+;; occur
+;; http://oremacs.com/2015/01/26/occur-dwim/
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+(add-hook 'occur-hook (lambda () (other-window 1)))
+
+;; Keeps focus on *Occur* window, even when when target is visited via RETURN key.
+;; See hydra-occur-dwim for more options.
+(defadvice occur-mode-goto-occurrence (after occur-mode-goto-occurrence-advice activate)
+  (other-window 1)
+  (hydra-occur-dwim/body))
+
+;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+   (dolist (buf (buffer-list))
+     (with-current-buffer buf
+       (if (eq mode major-mode)
+           (add-to-list 'buffer-mode-matches buf))))
+   buffer-mode-matches))
+
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
+
 
 (defun imenu-elisp-sections ()
   (setq imenu-prev-index-position-function nil)
@@ -443,13 +541,10 @@ Position the cursor at its beginning, according to the current mode."
   (move-end-of-line nil)
   (newline-and-indent))
 
-(defun kill-line-remove-blanks ()
+(defun kill-line-remove-blanks (&optional arg)
 "Delete current line and remove blanks after it"
-    (interactive)
-    (move-beginning-of-line nil)
-    (kill-line)
-    (delete-blank-lines)
-    (delete-blank-lines)
+    (interactive "p")
+    (kill-whole-line arg)
     (back-to-indentation))
 
 (global-set-key [(control return)] 'smart-open-line)
@@ -469,7 +564,7 @@ Position the cursor at its beginning, according to the current mode."
 ;; DrewsLibraries from EmacsWiki
 ; crosshairs
 (require 'crosshairs)
-(global-set-key (kbd "<M-f6>") 'flash-crosshairs)
+(global-set-key (kbd "<M-f12>") 'flash-crosshairs)
 
 (require 'exec-abbrev-cmd)
 (exec-abbrev-cmd-mode 1)
@@ -478,19 +573,8 @@ Position the cursor at its beginning, according to the current mode."
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
 (require 'thing-edit)
-(key-chord-define-global "cw" 'thing-copy-word)
-(key-chord-define-global "cl" 'thing-copy-line)
-(key-chord-define-global "cs" 'thing-copy-symbol)
-(key-chord-define-global "lb" 'thing-copy-to-line-beginning)
-(key-chord-define-global "le" 'thing-copy-to-line-end)
-(key-chord-define-global "cr" 'copy-region-as-kill)
-(key-chord-define-global "rl" 'kill-line-remove-blanks)
 
 (require 'highlight-symbol)
-(global-set-key (kbd "<f9>")   'highlight-symbol-at-point)
-(global-set-key (kbd "<C-f9>") 'highlight-symbol-next)
-(global-set-key (kbd "<S-f9>") 'highlight-symbol-prev)
-(global-set-key (kbd "<M-f9>") 'highlight-symbol-remove-all)
 
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
@@ -498,27 +582,85 @@ Position the cursor at its beginning, according to the current mode."
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
-;; Bastardised version from
 ;; http://endlessparentheses.com/implementing-comment-line.html and
-;; https://github.com/kaushalmodi/.emacs.d/blob/13bc1313e786ce1f1ab41d5aaff3dc39dfc57852/setup-files/setup-editing.el#L110-117
-(defun comment-dwim-lines-or-region (n)
-  "Comment or uncomment current line or active region and leave point after it.
-   With positive prefix, apply to N lines including current one.
-   With negative prefix, apply to -N lines above."
+(defun endless/comment-line-or-region (n)
+  "Comment or uncomment current line and leave point after it.
+  With positive prefix, apply to N lines including current one.
+  With negative prefix, apply to -N lines above.
+  If region is active, apply to active region instead."
   (interactive "p")
-  (if (region-active-p)
-      (comment-or-uncomment-region (region-beginning) (region-end))
-      (comment-or-uncomment-region (line-beginning-position) (goto-char (line-end-position n))))
-  (forward-line 1)
-  (back-to-indentation))
+  (if (use-region-p)
+      (comment-or-uncomment-region
+       (region-beginning) (region-end))
+    (let ((range
+           (list (line-beginning-position)
+                 (goto-char (line-end-position n)))))
+      (comment-or-uncomment-region
+       (apply #'min range)
+       (apply #'max range)))
+    (forward-line 1)
+    (back-to-indentation)))
 
-(global-set-key (kbd "M-;") #'comment-dwim-lines-or-region)
+(global-set-key (kbd "M-;") #'endless/comment-line-or-region)
+
+(defun xah-shrink-whitespaces ()
+  "Remove whitespaces around cursor to just one or none.
+Remove whitespaces around cursor to just one space, or remove neighboring blank lines to just one or none.
+URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+Version 2015-03-03"
+  (interactive)
+  (let ((pos (point))
+        line-has-char-p ; current line contains non-white space chars
+        has-space-tab-neighbor-p
+        whitespace-begin whitespace-end
+        space-or-tab-begin space-or-tab-end
+        )
+    (save-excursion
+      (setq has-space-tab-neighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil))
+      (beginning-of-line)
+      (setq line-has-char-p (search-forward-regexp "[[:graph:]]" (line-end-position) t))
+
+      (goto-char pos)
+      (skip-chars-backward "\t ")
+      (setq space-or-tab-begin (point))
+
+      (skip-chars-backward "\t \n")
+      (setq whitespace-begin (point))
+
+      (goto-char pos)
+      (skip-chars-forward "\t ")
+      (setq space-or-tab-end (point))
+      (skip-chars-forward "\t \n")
+      (setq whitespace-end (point)))
+
+    (if  line-has-char-p
+        (if has-space-tab-neighbor-p
+            (let (deleted-text)
+              ;; remove all whitespaces in the range
+              (setq deleted-text
+                    (delete-and-extract-region space-or-tab-begin space-or-tab-end))
+              ;; insert a whitespace only if we have removed something different than a simple whitespace
+              (when (not (string= deleted-text " "))
+                (insert " ")))
+
+          (progn
+            (when (equal (char-before) 10) (delete-char -1))
+            (when (equal (char-after) 10) (delete-char 1))))
+      (progn (delete-blank-lines)))))
+
+(defun xah-select-current-line ()
+  "Select current line.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07
+"
+  (interactive)
+  (end-of-line)
+  (set-mark (line-beginning-position)))
 
 ;;;; emacros
 ;; Emacros http://thbecker.net/free_software_utilities/emacs_lisp/emacros/emacros.html
 (require 'emacros)
 (setq emacros-global-dir "~/.emacs.d")
-(global-set-key [f12] #'emacros-auto-execute-named-macro)
 ;; Load predefined macros
 (add-hook 'after-init-hook 'emacros-load-macros)
 
@@ -539,8 +681,7 @@ Position the cursor at its beginning, according to the current mode."
 ;; clean up after Tramp
 (add-hook 'kill-emacs-hook '(lambda nil
                               (tramp-cleanup-all-connections)
-                              (tramp-cleanup-all-buffers)
-                              ))
+                              (tramp-cleanup-all-buffers) ))
 
 ;;;; key-chord
 (require 'key-chord)
@@ -550,12 +691,11 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
 
 ;;; guide-keys
-;; (require 'guide-key)
-;; (setq guide-key/guide-key-sequence '("C-x r"
-;; 				     "C-x v" ))
-;; (setq guide-key/highlight-command-regexp '(
-;;                          ("register" . font-lock-type-face) ))
-;; (guide-key-mode 1)
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x r" ))
+(setq guide-key/highlight-command-regexp '(
+                         ("register" . font-lock-type-face) ))
+(guide-key-mode 1)
 
 ;;;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -752,7 +892,6 @@ Position the cursor at its beginning, according to the current mode."
           ;; functions.
           (iedit-start (current-word)))))))
 
-
 (require 'csv-mode)
 (autoload 'csv-mode "csv-mode"
    "Major mode for editing comma-separated value files." t)
@@ -766,10 +905,13 @@ Position the cursor at its beginning, according to the current mode."
 (add-hook 'yaml-mode-hook '(lambda ()
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
+
 ;;;; autocomplete
 (require 'auto-complete-config)
 (ac-config-default)
 (auto-complete-mode 1)
+(add-hook 'find-file-hook 'auto-complete-mode)
+(add-to-list 'ac-modes 'yaml-mode)
 
 ;;;; python mode
 (require 'python)
@@ -798,8 +940,10 @@ Position the cursor at its beginning, according to the current mode."
   (back-to-indentation)
   ;; this preserves the correct indentation in case the line above
   ;; point is a nested block
+  (setq myStr (thing-at-point 'line))
   (split-line)
   (insert python-pdb-breakpoint-string)
+  (back-to-indentation)
   (python-indent-line)
   (save-buffer) )
 
@@ -809,7 +953,8 @@ Position the cursor at its beginning, according to the current mode."
   (back-to-indentation)
   (split-line)
   (insert in-string)
-  (python-indent-line))
+  (python-indent-line)
+  (backward-char 3))
 
 (defun linfo()
   "Insert info log entry"
@@ -844,10 +989,7 @@ Position the cursor at its beginning, according to the current mode."
   "Ace jump:"
   ("l" ace-jump-line-mode "line" :color blue)
   ("w" ace-jump-word-mode "word" :color blue)
-  ("c" ace-jump-char-mode "char" :color blue)
-  ("b" ace-jump-buffer-in-one-window "all-buffers" :color blue)
-  ("s" ace-jump-same-mode-buffers "mode-matching-buffer" :color blue)
-  ("q" nil "quit"))
+  ("c" ace-jump-char-mode "char" :color blue))
 
 (global-set-key (kbd "<f1>") 'hydra-ace-jump/body)
 
@@ -907,7 +1049,3 @@ Position the cursor at its beginning, according to the current mode."
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
   ("q" nil "quit"))
-
-(global-set-key (kbd "<f4>") 'hydra-lines/body)
-
-;;test commit again
