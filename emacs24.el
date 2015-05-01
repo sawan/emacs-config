@@ -550,12 +550,12 @@ Position the cursor at its beginning, according to the current mode."
 (key-chord-define emacs-lisp-mode-map "er" 'eval-region)
 
 ;;; guide-keys
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r"
-				     "C-x v" ))
-(setq guide-key/highlight-command-regexp '(
-                         ("register" . font-lock-type-face) ))
-(guide-key-mode 1)
+;; (require 'guide-key)
+;; (setq guide-key/guide-key-sequence '("C-x r"
+;; 				     "C-x v" ))
+;; (setq guide-key/highlight-command-regexp '(
+;;                          ("register" . font-lock-type-face) ))
+;; (guide-key-mode 1)
 
 ;;;; broswe-kill-ring config
 (require 'browse-kill-ring)
@@ -766,9 +766,6 @@ Position the cursor at its beginning, according to the current mode."
 (add-hook 'yaml-mode-hook '(lambda ()
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
-
-;;(add-to-list 'ac-modes 'yaml-mode)
-
 ;;;; autocomplete
 (require 'auto-complete-config)
 (ac-config-default)
