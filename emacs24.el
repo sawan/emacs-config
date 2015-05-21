@@ -57,6 +57,7 @@
 	  git-timemachine
           ace-jump-mode
 	  ace-jump-buffer
+	  ace-jump-window
 	  move-text
 	  guide-keys
 	  )))
@@ -1049,4 +1050,7 @@ Version 2015-02-07
   ("p" previous-line "backwards")
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
+  ("k" kill-lines "kill-lines" :color blue)
   ("q" nil "quit"))
+
+(global-set-key (kbd "<f4>") 'hydra-highlight-symbol/body)
