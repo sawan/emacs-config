@@ -82,6 +82,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
 (add-to-list 'load-path "~/.emacs.d/vendors/no-easy-keys.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/thing-cmds.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/moccur-edit.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -92,6 +93,7 @@
 (require 'extraedit)
 (require 'highlight-tail)
 (require 'smyx-theme)
+(require 'moccur-edit)
 
 (require 'no-easy-keys)
 (no-easy-keys)
@@ -1043,14 +1045,15 @@ Version 2015-02-07
                            :post (linum-mode -1))
   "Lines"
   ("g" goto-line "goto-line")
+  ("p" djcb-duplicate-line "dup-line" :color blue)
   ("m" set-mark-command "mark" :bind nil)
   ("s" xah-select-current-line "Select current" :color red)
   ("r" copy-region-as-kill "copy-region" :color blue)
-  ("n" forward-line "forward")
-  ("p" previous-line "backwards")
+  ("f" forward-line "forward")
+  ("b" previous-line "backwards")
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
   ("k" kill-lines "kill-lines" :color blue)
   ("q" nil "quit"))
 
-(global-set-key (kbd "<f4>") 'hydra-highlight-symbol/body)
+(global-set-key (kbd "<f4>") 'hydra-lines/body)
