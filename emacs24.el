@@ -1054,6 +1054,7 @@ Version 2015-02-07
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
   ("k" kill-lines "kill-lines" :color blue)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
