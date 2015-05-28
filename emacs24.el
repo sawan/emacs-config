@@ -56,6 +56,8 @@
 	  wrap-region
 	  git-timemachine
           ace-jump-mode
+	  ace-jump-buffer
+	  ace-jump-window
 	  move-text
 	  guide-keys
 	  )))
