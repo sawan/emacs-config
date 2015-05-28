@@ -1003,9 +1003,6 @@ Version 2015-02-07
   ("s" thing-copy-symbol "copy-symbol" :color blue)
   ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
-  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
-  ("p" djcb-duplicate-line "dup-line" :color blue)
-  ("k" kill-lines "kill-lines" :color blue)
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red))
 
@@ -1043,7 +1040,6 @@ Version 2015-02-07
                            :post (linum-mode -1))
   "Lines"
   ("g" goto-line "goto-line")
-  ("p" djcb-duplicate-line "dup-line" :color blue)
   ("m" set-mark-command "mark" :bind nil)
   ("s" xah-select-current-line "Select current" :color red)
   ("r" copy-region-as-kill "copy-region" :color blue)
@@ -1051,6 +1047,9 @@ Version 2015-02-07
   ("b" previous-line "backwards")
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("p" djcb-duplicate-line "dup-line" :color blue)
+  ("k" kill-lines "kill-lines" :color blue)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
