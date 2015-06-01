@@ -82,6 +82,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/emacs-for-python-master/")
 (add-to-list 'load-path "~/.emacs.d/vendors/no-easy-keys.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/thing-cmds.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/moccur-edit.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -92,6 +93,7 @@
 (require 'extraedit)
 (require 'highlight-tail)
 (require 'smyx-theme)
+(require 'moccur-edit)
 
 (require 'no-easy-keys)
 (no-easy-keys)
@@ -467,8 +469,8 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; occur
 ;; http://oremacs.com/2015/01/26/occur-dwim/
-(defun occur-dwim ()
-  "Call `occur' with a sane default."
+(defun sane-occurs (occur-fn)
+  "Call various `occur' with a sane default."
   (interactive)
   (push (if (region-active-p)
             (buffer-substring-no-properties
@@ -478,7 +480,15 @@ point reaches the beginning or end of the buffer, stop there."
             (when (stringp sym)
               (regexp-quote sym))))
         regexp-history)
-  (call-interactively 'occur))
+  (call-interactively occur-fn))
+
+(defun occur-dwim ()
+  (interactive)
+  (sane-occurs 'occur))
+
+(defun multi-occur-dwim ()
+  (interactive)
+  (sane-occurs 'multi-occur))
 
 (add-hook 'occur-hook (lambda () (other-window 1)))
 
@@ -946,8 +956,7 @@ Version 2015-02-07
   (split-line)
   (insert python-pdb-breakpoint-string)
   (back-to-indentation)
-  (python-indent-line)
-  (save-buffer) )
+  (python-indent-line))
 
 (defun python-insert-string(in-string)
   "Inserts string"
@@ -957,6 +966,21 @@ Version 2015-02-07
   (insert in-string)
   (python-indent-line)
   (backward-char 3))
+
+(defun lwarn()
+  "Insert warning log entry"
+  (interactive)
+  (python-insert-string "log.warning(' %s' % () )"))
+
+(defun lerror()
+  "Insert error log entry"
+  (interactive)
+  (python-insert-string "log.error(' %s' % () )"))
+
+(defun lexcept()
+  "Insert exception log entry"
+  (interactive)
+  (python-insert-string "log.exception(' %s' % () )"))
 
 (defun linfo()
   "Insert info log entry"
@@ -1003,6 +1027,8 @@ Version 2015-02-07
   ("s" thing-copy-symbol "copy-symbol" :color blue)
   ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("p" djcb-duplicate-line "dup-line" :color blue)
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red))
 
@@ -1026,11 +1052,12 @@ Version 2015-02-07
 ;; focus on the *Occur* window and hides upon request in case needed later.
 (defhydra hydra-occur-dwim ()
   "Occur mode"
-  ("o" occur-dwim "Start occur-dwim" :color red)
+  ("o" occur-dwim "occur-dwim" :color red)
+  ("m" multi-occur-dwim "multi-occur-dwim" :color red)
+  ("M" multi-occur-in-this-mode "Mode multi-occur" :color red)
   ("n" occur-next "Next" :color red)
   ("p" occur-prev "Prev":color red)
   ("h" delete-window "Hide" :color blue)
-  ("m" multi-occur-in-this-mode "Mode multi-occur" color :red)
   ("r" (reattach-occur) "Re-attach" :color red))
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
@@ -1047,8 +1074,8 @@ Version 2015-02-07
   ("p" previous-line "backwards")
   ("u" move-text-up "move-up" color :red)
   ("d" move-text-down "move-down" color :red)
-  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
-  ("p" djcb-duplicate-line "dup-line" :color blue)
   ("k" kill-lines "kill-lines" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("q" nil "quit"))
+
+(global-set-key (kbd "<f4>") 'hydra-lines/body)
