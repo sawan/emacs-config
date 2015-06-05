@@ -317,8 +317,6 @@ instead of a char."
                          (re-search-forward regexp nil nil arg)
                          (point))))
 
-(key-chord-define-global "zs" 'th-zap-to-string)
-(key-chord-define-global "zr" 'th-zap-to-regexp)
 
 ;; I-search with initial contents -- current token at point
 ;; http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness
@@ -841,27 +839,6 @@ Version 2015-02-07
 (key-chord-define-global "bn" 'bc-next)
 (key-chord-define-global "bl" 'bc-list)
 
-;;;; fastnav
-(require 'fastnav)
-;; (global-set-key "\M-z" 'zap-up-to-char-forward)
-;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
-;; (global-set-key "\M-s" 'jump-to-char-forward)
-;; (global-set-key "\M-S" 'jump-to-char-backward)
-(global-set-key "\M-r" 'replace-char-forward)
-(global-set-key "\M-R" 'replace-char-backward)
-(global-set-key "\M-i" 'insert-at-char-forward)
-(global-set-key "\M-I" 'insert-at-char-backward)
-(global-set-key "\M-j" 'execute-at-char-forward)
-(global-set-key "\M-J" 'execute-at-char-backward)
-(global-set-key "\M-k" 'delete-char-forward)
-(global-set-key "\M-K" 'delete-char-backward)
-(global-set-key "\M-m" 'mark-to-char-forward)
-(global-set-key "\M-M" 'mark-to-char-backward)
-(global-set-key "\M-p" 'sprint-forward)
-(global-set-key "\M-P" 'sprint-backward)
-
-(key-chord-define-global "zf" 'zap-up-to-char-forward)
-(key-chord-define-global "zb" 'zap-up-to-char-backward)
 
 ;;;; undo-tree
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
@@ -886,8 +863,8 @@ Version 2015-02-07
 
 
 ;;;; iedit
-(require 'iedit)
 ;; http://www.masteringemacs.org/articles/2012/10/02/iedit-interactive-multi-occurrence-editing-in-your-buffer/
+(require 'iedit)
 (defun iedit-defun (arg)
   "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
   (interactive "P")
@@ -928,18 +905,14 @@ Version 2015-02-07
 ;;;; python mode
 (require 'python)
 ;re-bind RET to newline and indent, mode defines C-j for doing this
-(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
-;; Rebind RET
-(add-hook 'python-mode-hook '(lambda ()
-			       (define-key python-mode-map
-				 (kbd "RET") 'newline-and-indent)))
+(defun python-remove-debug-breaks ()
+  "Removes all debug breakpoints"
+  (flush-lines "## DEBUG ##\\s-*$"))
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
   (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
-
-(add-hook 'python-mode-hook 'python-add-debug-highlight)
 
 (defvar python-pdb-breakpoint-string
   ;;"from pudb import set_trace;set_trace() ## DEBUG ##"
@@ -970,37 +943,47 @@ Version 2015-02-07
 (defun lwarn()
   "Insert warning log entry"
   (interactive)
-  (python-insert-string "log.warning(' %s' % () )"))
+  (python-insert-string "log.warning(' %s' % ())"))
 
 (defun lerror()
   "Insert error log entry"
   (interactive)
-  (python-insert-string "log.error(' %s' % () )"))
+  (python-insert-string "log.error(' %s' % ())"))
 
 (defun lexcept()
   "Insert exception log entry"
   (interactive)
-  (python-insert-string "log.exception(' %s' % () )"))
+  (python-insert-string "log.exception(' %s' % ())"))
 
 (defun linfo()
   "Insert info log entry"
   (interactive)
-  (python-insert-string "log.info(' %s' % () )"))
+  (python-insert-string "log.info(' %s' % ())"))
 
 (defun ldebug()
   "Insert debug log entry"
   (interactive)
-  (python-insert-string "log.debug(' %s' % () )"))
+  (python-insert-string "log.debug(' %s' % ())"))
+
+
+(add-hook 'python-mode-hook 'python-add-debug-highlight)
+(add-hook 'python-mode-hook 'python-remove-debug-breaks)
+;; Rebind RET
+(add-hook 'python-mode-hook '(lambda ()
+			       (define-key python-mode-map
+				 (kbd "RET") 'newline-and-indent)))
+(add-hook 'python-mode-hook 'which-function-mode)
 
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
+(key-chord-define python-mode-map "DD" 'python-remove-debug-breaks)
+(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
 ;;;elpy
 ;;(elpy-enable)
 ;;(setq elpy-rpc-backend "rope")
 
-(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
-(add-hook 'python-mode-hook 'which-function-mode)
+
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
@@ -1030,7 +1013,8 @@ Version 2015-02-07
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("p" djcb-duplicate-line "dup-line" :color blue)
   ("u" move-text-up "move-up" color :red)
-  ("d" move-text-down "move-down" color :red))
+  ("d" move-text-down "move-down" color :red)
+  ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
 
@@ -1079,3 +1063,30 @@ Version 2015-02-07
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
+
+
+;;;; fastnav
+(require 'fastnav)
+
+(defhydra hydra-fastnav ()
+  "FastNav on chars"
+  ("m" mark-to-char-forward "Mark forward" :color blue)
+  ("M" mark-to-char-backward "Mark back" :color blue)
+  ("r" replace-char-forward "Replace forward" :color blue)
+  ("R" replace-char-backward "Replace back" :color blue)
+  ("d" delete-char-forward "Delete forward" :color blue)
+  ("D" delete-char-backward "Delete back" :color blue)
+  ("i" insert-at-char-forward "Insert forward" :color blue)
+  ("I" insert-at-char-backward "Insert back" :color blue)
+  ("z" zap-up-to-char-forward "Zap up-to forward" :color blue)
+  ("Z" zap-up-to-char-backward "Zap up-to backwards" :color blue)
+  ("e" execute-at-char-forward "Execute forward" :color blue)
+  ("E" execute-at-char-backward "Execute backwards" :color blue)
+  ("s" th-zap-to-string "Zap to string" :color blue)
+  ("p" th-zap-to-regexp "Zap to reg-exp" :color blue)
+  ("q" nil "quit"))
+
+(global-set-key (kbd "<f5>") 'hydra-fastnav/body)
+
+;; schema search function
+;; (set-face-attribute 'default nil :font "Lucida Console-10")
