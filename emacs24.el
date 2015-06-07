@@ -805,7 +805,23 @@ Position the cursor at its beginning, according to the current mode."
   (back-to-indentation)
   (split-line)
   (insert in-string)
-  (python-indent-line))
+  (python-indent-line)
+  (backward-char 3))
+
+(defun lwarn()
+  "Insert warning log entry"
+  (interactive)
+  (python-insert-string "log.warning(' %s' % () )"))
+
+(defun lerror()
+  "Insert error log entry"
+  (interactive)
+  (python-insert-string "log.error(' %s' % () )"))
+
+(defun lexcept()
+  "Insert exception log entry"
+  (interactive)
+  (python-insert-string "log.exception(' %s' % () )"))
 
 (defun linfo()
   "Insert info log entry"
@@ -834,3 +850,74 @@ Position the cursor at its beginning, according to the current mode."
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
 ;(setq ack-executable "~/../../bin/ack")
+
+
+;;;; Hydra configurations
+(defhydra hydra-ace-jump ()
+  "Ace jump:"
+  ("l" ace-jump-line-mode "line" :color blue)
+  ("w" ace-jump-word-mode "word" :color blue)
+  ("c" ace-jump-char-mode "char" :color blue))
+
+(global-set-key (kbd "<f1>") 'hydra-ace-jump/body)
+
+(defhydra hydra-text-commands ()
+  "Text commands"
+  ("r" copy-region-as-kill "copy-region" :color blue)
+  ("w" thing-copy-word "copy-word" :color blue)
+  ("l" thing-copy-line "copy-line"  :color blue)
+  ("s" thing-copy-symbol "copy-symbol" :color blue)
+  ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
+  ("e" thing-copy-to-line-end "copy-line-end" :color blue)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("p" djcb-duplicate-line "dup-line" :color blue)
+  ("u" move-text-up "move-up" color :red)
+  ("d" move-text-down "move-down" color :red))
+
+(global-set-key (kbd "<f2>") 'hydra-text-commands/body)
+
+(defhydra hydra-highlight-symbol ()
+  "Highlight symbol"
+  ("h" highlight-symbol-at-point "highlight-toggle" :color red)
+  ("n" highlight-symbol-next "next" :color red)
+  ("p" highlight-symbol-prev "previous" :color red)
+  ("r" highlight-symbol-remove-all "remove-all ":color blue))
+
+(global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
+
+(defun reattach-occur ()
+  (if (get-buffer "*Occur*")
+    (switch-to-buffer-other-window "*Occur*")
+    (hydra-occur-dwim/body) ))
+
+;; Used in conjunction with occur-mode-goto-occurrence-advice this helps keep
+;; focus on the *Occur* window and hides upon request in case needed later.
+(defhydra hydra-occur-dwim ()
+  "Occur mode"
+  ("o" occur-dwim "occur-dwim" :color red)
+  ("m" multi-occur-dwim "multi-occur-dwim" :color red)
+  ("M" multi-occur-in-this-mode "Mode multi-occur" :color red)
+  ("n" occur-next "Next" :color red)
+  ("p" occur-prev "Prev":color red)
+  ("h" delete-window "Hide" :color blue)
+  ("r" (reattach-occur) "Re-attach" :color red))
+
+(global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
+
+(defhydra hydra-lines (goto-map ""
+                           :pre (linum-mode 1)
+                           :post (linum-mode -1))
+  "Lines"
+  ("g" goto-line "goto-line")
+  ("m" set-mark-command "mark" :bind nil)
+  ("s" xah-select-current-line "Select current" :color red)
+  ("r" copy-region-as-kill "copy-region" :color blue)
+  ("n" forward-line "forward")
+  ("p" previous-line "backwards")
+  ("u" move-text-up "move-up" color :red)
+  ("d" move-text-down "move-down" color :red)
+  ("k" kill-lines "kill-lines" :color blue)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("q" nil "quit"))
+
+(global-set-key (kbd "<f4>") 'hydra-lines/body)
