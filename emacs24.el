@@ -1090,3 +1090,4 @@ Version 2015-02-07
 
 ;; schema search function
 ;; (set-face-attribute 'default nil :font "Lucida Console-10")
+;;save this
