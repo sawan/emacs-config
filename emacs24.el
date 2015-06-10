@@ -921,3 +921,30 @@ Position the cursor at its beginning, according to the current mode."
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
+
+;;;; fastnav
+(require 'fastnav)
+
+(defhydra hydra-fastnav ()
+  "FastNav on chars"
+  ("m" mark-to-char-forward "Mark forward" :color blue)
+  ("M" mark-to-char-backward "Mark back" :color blue)
+  ("r" replace-char-forward "Replace forward" :color blue)
+  ("R" replace-char-backward "Replace back" :color blue)
+  ("d" delete-char-forward "Delete forward" :color blue)
+  ("D" delete-char-backward "Delete back" :color blue)
+  ("i" insert-at-char-forward "Insert forward" :color blue)
+  ("I" insert-at-char-backward "Insert back" :color blue)
+  ("z" zap-up-to-char-forward "Zap up-to forward" :color blue)
+  ("Z" zap-up-to-char-backward "Zap up-to backwards" :color blue)
+  ("e" execute-at-char-forward "Execute forward" :color blue)
+  ("E" execute-at-char-backward "Execute backwards" :color blue)
+  ("s" th-zap-to-string "Zap to string" :color blue)
+  ("p" th-zap-to-regexp "Zap to reg-exp" :color blue)
+  ("q" nil "quit"))
+
+(global-set-key (kbd "<f5>") 'hydra-fastnav/body)
+
+;; schema search function
+;; (set-face-attribute 'default nil :font "Lucida Console-10")
+;;save this
