@@ -805,23 +805,7 @@ Position the cursor at its beginning, according to the current mode."
   (back-to-indentation)
   (split-line)
   (insert in-string)
-  (python-indent-line)
-  (backward-char 3))
-
-(defun lwarn()
-  "Insert warning log entry"
-  (interactive)
-  (python-insert-string "log.warning(' %s' % () )"))
-
-(defun lerror()
-  "Insert error log entry"
-  (interactive)
-  (python-insert-string "log.error(' %s' % () )"))
-
-(defun lexcept()
-  "Insert exception log entry"
-  (interactive)
-  (python-insert-string "log.exception(' %s' % () )"))
+  (python-indent-line))
 
 (defun linfo()
   "Insert info log entry"
@@ -850,6 +834,8 @@ Position the cursor at its beginning, according to the current mode."
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
 ;(setq ack-executable "~/../../bin/ack")
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 ;;;; Hydra configurations
@@ -947,4 +933,7 @@ Position the cursor at its beginning, according to the current mode."
 
 ;; schema search function
 ;; (set-face-attribute 'default nil :font "Lucida Console-10")
-;;save this
+=======
+>>>>>>> parent of d0c9e9c... Trying to revert
+=======
+>>>>>>> parent of d0c9e9c... Trying to revert
