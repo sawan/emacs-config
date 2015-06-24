@@ -836,6 +836,7 @@ Position the cursor at its beginning, according to the current mode."
 ;(setq ack-executable "~/../../bin/ack")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 ;;;; Hydra configurations
@@ -933,6 +934,8 @@ Position the cursor at its beginning, according to the current mode."
 
 ;; schema search function
 ;; (set-face-attribute 'default nil :font "Lucida Console-10")
+=======
+>>>>>>> parent of d0c9e9c... Trying to revert
 =======
 >>>>>>> parent of d0c9e9c... Trying to revert
 =======
