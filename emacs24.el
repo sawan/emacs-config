@@ -317,9 +317,6 @@ instead of a char."
                          (re-search-forward regexp nil nil arg)
                          (point))))
 
-(key-chord-define-global "zs" 'th-zap-to-string)
-(key-chord-define-global "zr" 'th-zap-to-regexp)
-
 ;; I-search with initial contents -- current token at point
 ;; http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness
 (defvar isearch-initial-string nil)
@@ -927,8 +924,6 @@ Version 2015-02-07
 
 ;;;; python mode
 (require 'python)
-;re-bind RET to newline and indent, mode defines C-j for doing this
-(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
 ;; Rebind RET
 (add-hook 'python-mode-hook '(lambda ()
@@ -966,6 +961,12 @@ Version 2015-02-07
   (insert in-string)
   (python-indent-line)
   (backward-char 3))
+
+(defun python-remove-debug-breaks ()
+   "Removes all debug breakpoints"
+   (flush-lines "## DEBUG ##\\s-*$"))
+
+(add-hook 'python-mode-hook 'python-remove-debug-breaks)
 
 (defun lwarn()
   "Insert warning log entry"
