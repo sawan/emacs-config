@@ -317,6 +317,8 @@ instead of a char."
                          (re-search-forward regexp nil nil arg)
                          (point))))
 
+(key-chord-define-global "zs" 'th-zap-to-string)
+(key-chord-define-global "zr" 'th-zap-to-regexp)
 
 ;; I-search with initial contents -- current token at point
 ;; http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness
@@ -839,6 +841,27 @@ Version 2015-02-07
 (key-chord-define-global "bn" 'bc-next)
 (key-chord-define-global "bl" 'bc-list)
 
+;;;; fastnav
+(require 'fastnav)
+;; (global-set-key "\M-z" 'zap-up-to-char-forward)
+;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
+;; (global-set-key "\M-s" 'jump-to-char-forward)
+;; (global-set-key "\M-S" 'jump-to-char-backward)
+(global-set-key "\M-r" 'replace-char-forward)
+(global-set-key "\M-R" 'replace-char-backward)
+(global-set-key "\M-i" 'insert-at-char-forward)
+(global-set-key "\M-I" 'insert-at-char-backward)
+(global-set-key "\M-j" 'execute-at-char-forward)
+(global-set-key "\M-J" 'execute-at-char-backward)
+(global-set-key "\M-k" 'delete-char-forward)
+(global-set-key "\M-K" 'delete-char-backward)
+(global-set-key "\M-m" 'mark-to-char-forward)
+(global-set-key "\M-M" 'mark-to-char-backward)
+(global-set-key "\M-p" 'sprint-forward)
+(global-set-key "\M-P" 'sprint-backward)
+
+(key-chord-define-global "zf" 'zap-up-to-char-forward)
+(key-chord-define-global "zb" 'zap-up-to-char-backward)
 
 ;;;; undo-tree
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
@@ -863,8 +886,8 @@ Version 2015-02-07
 
 
 ;;;; iedit
-;; http://www.masteringemacs.org/articles/2012/10/02/iedit-interactive-multi-occurrence-editing-in-your-buffer/
 (require 'iedit)
+;; http://www.masteringemacs.org/articles/2012/10/02/iedit-interactive-multi-occurrence-editing-in-your-buffer/
 (defun iedit-defun (arg)
   "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
   (interactive "P")
@@ -905,14 +928,18 @@ Version 2015-02-07
 ;;;; python mode
 (require 'python)
 ;re-bind RET to newline and indent, mode defines C-j for doing this
+(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
 
-(defun python-remove-debug-breaks ()
-  "Removes all debug breakpoints"
-  (flush-lines "## DEBUG ##\\s-*$"))
+;; Rebind RET
+(add-hook 'python-mode-hook '(lambda ()
+			       (define-key python-mode-map
+				 (kbd "RET") 'newline-and-indent)))
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
   (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
+
+(add-hook 'python-mode-hook 'python-add-debug-highlight)
 
 (defvar python-pdb-breakpoint-string
   ;;"from pudb import set_trace;set_trace() ## DEBUG ##"
@@ -943,47 +970,37 @@ Version 2015-02-07
 (defun lwarn()
   "Insert warning log entry"
   (interactive)
-  (python-insert-string "log.warning(' %s' % ())"))
+  (python-insert-string "log.warning(' %s' % () )"))
 
 (defun lerror()
   "Insert error log entry"
   (interactive)
-  (python-insert-string "log.error(' %s' % ())"))
+  (python-insert-string "log.error(' %s' % () )"))
 
 (defun lexcept()
   "Insert exception log entry"
   (interactive)
-  (python-insert-string "log.exception(' %s' % ())"))
+  (python-insert-string "log.exception(' %s' % () )"))
 
 (defun linfo()
   "Insert info log entry"
   (interactive)
-  (python-insert-string "log.info(' %s' % ())"))
+  (python-insert-string "log.info(' %s' % () )"))
 
 (defun ldebug()
   "Insert debug log entry"
   (interactive)
-  (python-insert-string "log.debug(' %s' % ())"))
-
-
-(add-hook 'python-mode-hook 'python-add-debug-highlight)
-(add-hook 'python-mode-hook 'python-remove-debug-breaks)
-;; Rebind RET
-(add-hook 'python-mode-hook '(lambda ()
-			       (define-key python-mode-map
-				 (kbd "RET") 'newline-and-indent)))
-(add-hook 'python-mode-hook 'which-function-mode)
+  (python-insert-string "log.debug(' %s' % () )"))
 
 (key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
-(key-chord-define python-mode-map "DD" 'python-remove-debug-breaks)
-(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
 ;;;elpy
 ;;(elpy-enable)
 ;;(setq elpy-rpc-backend "rope")
 
+(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
-
+(add-hook 'python-mode-hook 'which-function-mode)
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
