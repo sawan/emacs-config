@@ -1031,7 +1031,7 @@ Version 2015-02-07
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("p" djcb-duplicate-line "dup-line" :color blue)
   ("u" move-text-up "move-up" color :red)
-  ("d" move-text-down "move-down" color :red))
+  ("d" move-text-down "move-down" color :red)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
@@ -1041,7 +1041,8 @@ Version 2015-02-07
   ("h" highlight-symbol-at-point "highlight-toggle" :color red)
   ("n" highlight-symbol-next "next" :color red)
   ("p" highlight-symbol-prev "previous" :color red)
-  ("r" highlight-symbol-remove-all "remove-all ":color blue))
+  ("r" highlight-symbol-remove-all "remove-all ":color blue)
+  ("q" nil "quit"))
 
 (global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
 
@@ -1060,7 +1061,8 @@ Version 2015-02-07
   ("n" occur-next "Next" :color red)
   ("p" occur-prev "Prev":color red)
   ("h" delete-window "Hide" :color blue)
-  ("r" (reattach-occur) "Re-attach" :color red))
+  ("r" (reattach-occur) "Re-attach" :color red)
+  ("q" nil "quit"))
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
 
