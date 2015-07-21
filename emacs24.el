@@ -1,3 +1,16 @@
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(paradox-github-token t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
 ;;;; package.el
 (require 'package)
@@ -464,8 +477,23 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; emacs lisp
 
+;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+   (dolist (buf (buffer-list))
+     (with-current-buffer buf
+       (if (eq mode major-mode)
+           (add-to-list 'buffer-mode-matches buf))))
+   buffer-mode-matches))
+
 ;; occur
 ;; http://oremacs.com/2015/01/26/occur-dwim/
+(defun multi-occur-all-buffers (regexp &optional allbufs)
+  "Show all lines matching REGEXP in all buffers."
+  (interactive (occur-read-primary-args))
+  (multi-occur-in-matching-buffers ".*" regexp))
+
 (defun sane-occurs (occur-fn)
   "Call various `occur' with a sane default."
   (interactive)
@@ -487,6 +515,14 @@ point reaches the beginning or end of the buffer, stop there."
   (interactive)
   (sane-occurs 'multi-occur))
 
+(defun multi-occur-in-mode-dwim ()
+  (interactive)
+  (sane-occurs 'multi-occur-in-this-mode))
+
+(defun multi-occur-all-dwim ()
+  (interactive)
+  (sane-occurs 'multi-occur-all-buffers))
+
 (add-hook 'occur-hook (lambda () (other-window 1)))
 
 ;; Keeps focus on *Occur* window, even when when target is visited via RETURN key.
@@ -495,23 +531,8 @@ point reaches the beginning or end of the buffer, stop there."
   (other-window 1)
   (hydra-occur-dwim/body))
 
-;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
-(defun get-buffers-matching-mode (mode)
-  "Returns a list of buffers where their major-mode is equal to MODE"
-  (let ((buffer-mode-matches '()))
-   (dolist (buf (buffer-list))
-     (with-current-buffer buf
-       (if (eq mode major-mode)
-           (add-to-list 'buffer-mode-matches buf))))
-   buffer-mode-matches))
-
-(defun multi-occur-in-this-mode ()
-  "Show all lines matching REGEXP in buffers with this major mode."
-  (interactive)
-  (multi-occur
-   (get-buffers-matching-mode major-mode)
-   (car (occur-read-primary-args))))
-
+(defadvice occur-edit-mode-finish (after occur-cease-edit-advice activate)
+  (save-some-buffers))
 
 (defun imenu-elisp-sections ()
   (setq imenu-prev-index-position-function nil)
@@ -1041,6 +1062,8 @@ Version 2015-02-07
   ("u" move-text-up "move-up" :color red)
   ("d" move-text-down "move-down" :color red)
   ("y" yank-n-times "multiple paste" :color blue )
+  ("u" move-text-up "move-up" color :red)
+  ("d" move-text-down "move-down" color :red)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
@@ -1050,7 +1073,8 @@ Version 2015-02-07
   ("h" highlight-symbol-at-point "highlight-toggle" :color red)
   ("n" highlight-symbol-next "next" :color red)
   ("p" highlight-symbol-prev "previous" :color red)
-  ("r" highlight-symbol-remove-all "remove-all ":color blue))
+  ("r" highlight-symbol-remove-all "remove-all ":color blue)
+  ("q" nil "quit"))
 
 (global-set-key (kbd "<f3>") 'hydra-highlight-symbol/body)
 
@@ -1065,11 +1089,13 @@ Version 2015-02-07
   "Occur mode"
   ("o" occur-dwim "occur-dwim" :color red)
   ("m" multi-occur-dwim "multi-occur-dwim" :color red)
-  ("M" multi-occur-in-this-mode "Mode multi-occur" :color red)
+  ("a" multi-occur-all-dwim "multi-occur-all-dwin" :color red)
+  ("M" multi-occur-in-mode-dwim "Mode multi-occur" :color red)
   ("n" occur-next "Next" :color red)
   ("p" occur-prev "Prev":color red)
   ("h" delete-window "Hide" :color blue)
-  ("r" (reattach-occur) "Re-attach" :color red))
+  ("r" (reattach-occur) "Re-attach" :color red)
+  ("q" nil "quit"))
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
 
