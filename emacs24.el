@@ -612,6 +612,14 @@ Position the cursor at its beginning, according to the current mode."
 
 (global-set-key (kbd "M-;") #'endless/comment-line-or-region)
 
+
+(defun yank-n-times (n)
+  "yank n number of times."
+  (interactive "nPaste how many times? ")
+  (setq last-kill (current-kill 0 t))
+  (dotimes 'n (insert last-kill)))
+
+
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one or none.
 Remove whitespaces around cursor to just one space, or remove neighboring blank lines to just one or none.
@@ -1030,8 +1038,9 @@ Version 2015-02-07
   ("e" thing-copy-to-line-end "copy-line-end" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("p" djcb-duplicate-line "dup-line" :color blue)
-  ("u" move-text-up "move-up" color :red)
-  ("d" move-text-down "move-down" color :red))
+  ("u" move-text-up "move-up" :color red)
+  ("d" move-text-down "move-down" :color red)
+  ("y" yank-n-times "multiple paste" :color blue )
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
