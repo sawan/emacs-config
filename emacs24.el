@@ -869,10 +869,6 @@ Version 2015-02-07
 
 ;;;; fastnav
 (require 'fastnav)
-;; (global-set-key "\M-z" 'zap-up-to-char-forward)
-;; (global-set-key "\M-Z" 'zap-up-to-char-backward)
-;; (global-set-key "\M-s" 'jump-to-char-forward)
-;; (global-set-key "\M-S" 'jump-to-char-backward)
 (global-set-key "\M-r" 'replace-char-forward)
 (global-set-key "\M-R" 'replace-char-backward)
 (global-set-key "\M-i" 'insert-at-char-forward)
@@ -881,13 +877,8 @@ Version 2015-02-07
 (global-set-key "\M-J" 'execute-at-char-backward)
 (global-set-key "\M-k" 'delete-char-forward)
 (global-set-key "\M-K" 'delete-char-backward)
-(global-set-key "\M-m" 'mark-to-char-forward)
-(global-set-key "\M-M" 'mark-to-char-backward)
 (global-set-key "\M-p" 'sprint-forward)
 (global-set-key "\M-P" 'sprint-backward)
-
-(key-chord-define-global "zf" 'zap-up-to-char-forward)
-(key-chord-define-global "zb" 'zap-up-to-char-backward)
 
 ;;;; undo-tree
 ;; http://www.dr-qubit.org/emacs.php#undo-tree
@@ -1045,7 +1036,9 @@ Version 2015-02-07
   "Ace jump:"
   ("l" ace-jump-line-mode "line" :color blue)
   ("w" ace-jump-word-mode "word" :color blue)
-  ("c" ace-jump-char-mode "char" :color blue))
+  ("c" ace-jump-char-mode "char" :color blue)
+  ("q" nil "quit"))
+
 
 (global-set-key (kbd "<f1>") 'hydra-ace-jump/body)
 
