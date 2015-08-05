@@ -73,6 +73,10 @@
 	  ace-jump-window
 	  move-text
 	  guide-keys
+	  easy-kill
+	  easy-kill-extras
+	  back-button
+	  visible-mark
 	  )))
 
 (defmacro after (mode &rest body)
@@ -108,6 +112,9 @@
 (require 'smyx-theme)
 (require 'moccur-edit)
 
+(require 'back-button)
+(back-button-mode 1)
+
 (require 'no-easy-keys)
 (no-easy-keys)
 
@@ -120,6 +127,8 @@
 (require 'thing-cmds)
 
 (wrap-region-mode t)
+
+(global-set-key [remap kill-ring-save] 'easy-kill)
 
 (defun really-kill-emacs ()
   "Like `kill-emacs', but ignores `kill-emacs-hook'."
@@ -486,6 +495,13 @@ point reaches the beginning or end of the buffer, stop there."
        (if (eq mode major-mode)
            (add-to-list 'buffer-mode-matches buf))))
    buffer-mode-matches))
+
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
 
 ;; occur
 ;; http://oremacs.com/2015/01/26/occur-dwim/
@@ -927,6 +943,7 @@ Version 2015-02-07
 (add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
 
 (require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.prod$" . yaml-mode))
@@ -1032,15 +1049,18 @@ Version 2015-02-07
 ;(setq ack-executable "~/../../bin/ack")
 
 ;;;; Hydra configurations
-(defhydra hydra-ace-jump ()
-  "Ace jump:"
-  ("l" ace-jump-line-mode "line" :color blue)
-  ("w" ace-jump-word-mode "word" :color blue)
-  ("c" ace-jump-char-mode "char" :color blue)
+(defhydra hydra-avy ()
+  "Avy"
+  ("l" avy-goto-line "line" :color blue)
+  ("w" avy-goto-word-1 "word" :color blue)
+  ("c" avy-goto-char- "char" :color blue)
+  ("C" avy-goto-char-2 "char-2" :color blue)
+  ("r" avy-copy-region "region" :color red)
+  ("L" avy-copy-line "region" :color red)
+  ("m" avy-move-line "region" :color red)
   ("q" nil "quit"))
 
-
-(global-set-key (kbd "<f1>") 'hydra-ace-jump/body)
+(global-set-key (kbd "<f1>") 'hydra-avy/body)
 
 (defhydra hydra-text-commands ()
   "Text commands"
@@ -1055,8 +1075,8 @@ Version 2015-02-07
   ("u" move-text-up "move-up" :color red)
   ("d" move-text-down "move-down" :color red)
   ("y" yank-n-times "multiple paste" :color blue )
-  ("u" move-text-up "move-up" color :red)
-  ("d" move-text-down "move-down" color :red)
+  ("u" move-text-up "move-up" :color :red)
+  ("d" move-text-down "move-down" :color red)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
@@ -1088,7 +1108,7 @@ Version 2015-02-07
   ("p" occur-prev "Prev":color red)
   ("h" delete-window "Hide" :color blue)
   ("r" (reattach-occur) "Re-attach" :color red)
-  ("q" nil "quit"))
+  ("q" delete-window "quit" :color blue))
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
 
@@ -1102,8 +1122,8 @@ Version 2015-02-07
   ("r" copy-region-as-kill "copy-region" :color blue)
   ("n" forward-line "forward")
   ("p" previous-line "backwards")
-  ("u" move-text-up "move-up" color :red)
-  ("d" move-text-down "move-down" color :red)
+  ("u" move-text-up "move-up" :color red)
+  ("d" move-text-down "move-down" :color red)
   ("k" kill-lines "kill-lines" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("q" nil "quit"))
