@@ -718,6 +718,8 @@ Version 2015-02-07
 ;; Load predefined macros
 (add-hook 'after-init-hook 'emacros-load-macros)
 
+(load-file "~/.emacs.d/vendors/term-fix.el")
+
 ;;;; Tramp
 (require 'tramp)
 (when (window-system) 'w32
@@ -1053,7 +1055,7 @@ Version 2015-02-07
   "Avy"
   ("l" avy-goto-line "line" :color blue)
   ("w" avy-goto-word-1 "word" :color blue)
-  ("c" avy-goto-char- "char" :color blue)
+  ("c" avy-goto-char   "char" :color blue)
   ("C" avy-goto-char-2 "char-2" :color blue)
   ("r" avy-copy-region "region" :color red)
   ("L" avy-copy-line "region" :color red)
