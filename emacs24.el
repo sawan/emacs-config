@@ -77,6 +77,9 @@
 	  easy-kill-extras
 	  back-button
 	  visible-mark
+	  markdown-mode
+	  markdown-mode+
+	  paradox
 	  )))
 
 (defmacro after (mode &rest body)
