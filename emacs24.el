@@ -19,6 +19,11 @@
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/")
 	     '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+(add-to-list 'package-archives
+             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+
+
 (package-initialize)
 
 (defun mp-install-rad-packages ()
@@ -216,8 +221,7 @@
         "** You didn't specify a function! **" '("red"))
      (pos-tip-show
       (with-temp-buffer
-        (let ((standard-output (current-buffer))
-              (help-xref-following t))
+        (let ((standard-output (current-buffer)))
           (prin1 function)
           (princ " is ")
           (describe-function-1 function)
@@ -1158,5 +1162,85 @@ Version 2015-02-07
 
 (global-set-key (kbd "<f5>") 'hydra-fastnav/body)
 
+
+(defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+                           :color pink
+                           :post (deactivate-mark))
+"
+  ^_p_^     _d_elete    _s_tring
+_b_   _f_   _q_uit      _y_ank
+  ^_n_^     _k_new-copy _r_eset
+^^^^        _e_xchange  _u_ndo
+^^^^        ^ ^         _p_aste
+"
+  ("f" forward-char nil)
+  ("b" backward-char nil)
+  ("p" previous-line nil)
+  ("n" next-line nil)
+  ("e" exchange-point-and-mark nil)
+  ("k" copy-rectangle-as-kill nil)
+  ("d" delete-rectangle nil)
+  ("r" (if (region-active-p)
+           (deactivate-mark)
+         (rectangle-mark-mode 1)) nil)
+  ("y" yank-rectangle nil)
+  ("u" undo nil)
+  ("s" string-rectangle nil)
+  ("p" kill-rectangle nil)
+  ("q" nil nil))
+
 ;; schema search function
 ;; (set-face-attribute 'default nil :font "Lucida Console-10")
+
+
+;; https://github.com/abo-abo/hydra/wiki/Switch-to-buffer
+(defun my/name-of-buffers (n)
+  "Return the names of the first N buffers from `buffer-list'."
+  (let ((bns
+         (delq nil
+               (mapcar
+                (lambda (b)
+                  (unless (string-match "^ " (setq b (buffer-name b)))
+                    b))
+                (buffer-list)))))
+    (subseq bns 1 (min (1+ n) (length bns)))))
+
+;; Given ("a", "b", "c"), return "1. a, 2. b, 3. c".
+(defun my/number-names (list)
+  "Enumerate and concatenate LIST."
+  (let ((i 0))
+    (mapconcat
+     (lambda (x)
+       (format "%d. %s" (cl-incf i) x))
+     list
+     ", ")))
+
+(defvar my/last-buffers nil)
+
+(defun my/switch-to-buffer (arg)
+  (interactive "p")
+  (switch-to-buffer
+   (nth (1- arg) my/last-buffers)))
+
+(defun my/switch-to-buffer-other-window (arg)
+  (interactive "p")
+  (switch-to-buffer-other-window
+   (nth (1- arg) my/last-buffers)))
+
+
+(defhydra my/switch-to-buffer (:exit t
+                                :body-pre (setq my/last-buffers
+                                                (my/name-of-buffers 4)))
+"
+other buffers: %s(my/number-names my/last-buffers)
+
+"
+   ("o" (my/switch-to-buffer 0))
+   ("1" (my/switch-to-buffer 1))
+   ("2" (my/switch-to-buffer 2))
+   ("3" (my/switch-to-buffer 3))
+   ("4" (my/switch-to-buffer 4))
+   ("i" (ido-switch-buffer))
+   ("q" nil))
+
+(global-set-key (kbd "C-x b") 'my/switch-to-buffer/body)
