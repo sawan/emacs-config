@@ -1,0 +1,45 @@
+2015-08-30  Matthew Carter  <m@ahungry.com>
+
+	Merge commit 'affdc4611d859e6f643e38c2ed9ad83debb92633'
+
+2015-07-08  Matthew Carter  <m@ahungry.com>
+
+	Merge commit '9e64c798557bb7f1eeca91140515cb8d11edc8d6'
+
+2015-07-05  Matthew Carter  <m@ahungry.com>
+
+	Merge commit '4c478268da6f324deb8753ac1d1c83e767b14dca'
+
+2015-06-29  Matthew Carter  <m@ahungry.com>
+
+	Merge commit 'e64a9cd001b82d0f8238d41bb36e6c0c7b0449b3'
+
+2015-04-26  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* packages/ahungry-theme/ahungry-theme.el: Use lexical-binding.
+
+2015-03-10  Matthew Carter  <m@ahungry.com>
+
+	Merge commit 'f954c936afc1e3de21a3ee0d6e5add9853f8ed58'
+
+2015-02-09  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* color-theme-ahungry.el: Don't burp if color-theme is missing
+
+2015-02-06  Matthew Carter  <m@ahungry.com>
+
+	Merge commit '3843afc1e499123bea752c925a4c0d0b7167b8a7'
+
+2015-02-06  Matthew Carter  <m@ahungry.com>
+
+	Merge commit '4c9fdc8a28ee4cfd795c94bc4b872138f363ae0f'
+
+2015-02-06  Matthew Carter  <m@ahungry.com>
+
+	Merge commit 'e312e04bc813a642483f0be67a6073cb93a24552'
+
+2015-01-27  Matthew Carter  <m@ahungry.com>
+
+	Merge commit '1583a82fdcd387de95d27c384ec590e714d24c6a' as
+	'packages/ahungry-theme'
+

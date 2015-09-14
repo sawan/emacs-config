@@ -1,0 +1,1 @@
+(define-package "ample-zen-theme" "20150119.1354" "AmpleZen Theme for Emacs 24" 'nil :stars '(#("18" 0 2 (font-lock-face paradox-star-face))) :url "https://github.com/mjwall/ample-zen" :keywords '("theme" "dark" "emacs 24"))
