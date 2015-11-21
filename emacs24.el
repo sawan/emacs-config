@@ -85,6 +85,7 @@
 	  markdown-mode
 	  markdown-mode+
 	  paradox
+	  aggressive-indent
 	  )))
 
 (defmacro after (mode &rest body)
