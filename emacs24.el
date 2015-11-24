@@ -85,6 +85,8 @@
 	  markdown-mode
 	  markdown-mode+
 	  paradox
+          visual-regexp-steroids
+          aggressive-indent
 	  )))
 
 (defmacro after (mode &rest body)
@@ -399,22 +401,22 @@ instead of a char."
 (global-set-key (kbd "C-S-n")
                 (lambda ()
                   (interactive)
-                  (ignore-errors (next-line 5))))
+                  (ignore-errors (next-line 10))))
 
 (global-set-key (kbd "C-S-p")
                 (lambda ()
                   (interactive)
-                  (ignore-errors (previous-line 5))))
+                  (ignore-errors (previous-line 10))))
 
 (global-set-key (kbd "C-S-f")
                 (lambda ()
                   (interactive)
-                  (ignore-errors (forward-char 5))))
+                  (ignore-errors (forward-char 10))))
 
 (global-set-key (kbd "C-S-b")
                 (lambda ()
                   (interactive)
-                  (ignore-errors (backward-char 5))))
+                  (ignore-errors (backward-char 10))))
 
 
 ;; http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
@@ -663,6 +665,22 @@ Position the cursor at its beginning, according to the current mode."
   (setq last-kill (current-kill 0 t))
   (dotimes 'n (insert last-kill)))
 
+
+;; http://emacsredux.com/blog/2013/05/30/joining-lines/
+(defun join-region (beg end)
+"Apply join-line over region."
+(interactive "r")
+(if mark-active
+(let ((beg (region-beginning))
+(end (copy-marker (region-end))))
+(goto-char beg)
+(while (< (point) end)
+  (join-line 1)))))
+
+(defun top-join-line ()
+  "Join the current line with the line beneath it."
+  (interactive)
+  (delete-indentation 1))
 
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one or none.
@@ -972,9 +990,9 @@ Version 2015-02-07
 (require 'python)
 
 ;; Rebind RET
-(add-hook 'python-mode-hook '(lambda ()
-			       (define-key python-mode-map
-				 (kbd "RET") 'newline-and-indent)))
+;; (add-hook 'python-mode-hook '(lambda ()
+			       ;; (define-key python-mode-map
+				 ;; (kbd "RET") 'newline-and-indent)))
 
 (defun python-add-debug-highlight ()
   "Adds a highlighter for use by `python-pdb-breakpoint-string'"
@@ -1039,11 +1057,9 @@ Version 2015-02-07
   (interactive)
   (python-insert-string "log.debug(' %s' % () )"))
 
-(key-chord-define python-mode-map "dd" 'python-insert-breakpoint)
-
 ;;;elpy
-;;(elpy-enable)
-;;(setq elpy-rpc-backend "rope")
+(elpy-enable)
+(setq elpy-rpc-backend "jedi")
 
 (key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
@@ -1125,16 +1141,22 @@ Version 2015-02-07
                            :pre (linum-mode 1)
                            :post (linum-mode -1))
   "Lines"
+  ("c" thing-copy-line "copy" :color blue)
+  ("e" thing-copy-to-line-end "copy-end" :color blue)
+  ("b" thing-copy-to-line-beginning "copy-begin" :color blue)
   ("g" goto-line "goto-line")
   ("m" set-mark-command "mark" :bind nil)
   ("s" xah-select-current-line "Select current" :color red)
   ("r" copy-region-as-kill "copy-region" :color blue)
+  ("R" join-region "join-region" :color blue)
   ("n" forward-line "forward")
   ("p" previous-line "backwards")
   ("u" move-text-up "move-up" :color red)
   ("d" move-text-down "move-down" :color red)
   ("k" kill-lines "kill-lines" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("j" top-join-line "join-next-line" :color red)
+  ("J" delete-indentation "join-prev-line" :color red)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
@@ -1212,8 +1234,7 @@ _b_   _f_   _q_uit      _y_ank
     (mapconcat
      (lambda (x)
        (format "%d. %s" (cl-incf i) x))
-     list
-     ", ")))
+     list ", ")))
 
 (defvar my/last-buffers nil)
 
@@ -1230,17 +1251,23 @@ _b_   _f_   _q_uit      _y_ank
 
 (defhydra my/switch-to-buffer (:exit t
                                 :body-pre (setq my/last-buffers
-                                                (my/name-of-buffers 4)))
+                                                (my/name-of-buffers 5)))
 "
-other buffers: %s(my/number-names my/last-buffers)
-
+Other buffers: %s(my/number-names my/last-buffers)
 "
-   ("o" (my/switch-to-buffer 0))
+   ("o" (my/switch-to-buffer 1))
    ("1" (my/switch-to-buffer 1))
    ("2" (my/switch-to-buffer 2))
    ("3" (my/switch-to-buffer 3))
    ("4" (my/switch-to-buffer 4))
+   ("5" (my/switch-to-buffer 5))
    ("i" (ido-switch-buffer))
    ("q" nil))
 
 (global-set-key (kbd "C-x b") 'my/switch-to-buffer/body)
+
+(defhydra hydra-tags ()
+  "Navigate matching tags"
+  ("f" sgml-skip-tag-forward "Forward" :color red)
+  ("b" sgml-skip-tag-backward "Backward" :color red)
+  ("q" nil "quit"))
