@@ -788,8 +788,10 @@ Version 2015-02-07
 (require 'bm)
 (global-set-key (kbd "<C-f1>") 'bm-toggle)
 (global-set-key (kbd "<C-f2>") 'bm-next)
-(global-set-key (kbd "<C-f3>") 'bm-show)
-(global-set-key (kbd "<C-f4>") 'bm-show-all)
+(global-set-key (kbd "<C-f3>") 'bm-previous)
+(global-set-key (kbd "<C-f4>") 'bm-show)
+(global-set-key (kbd "<C-f5>") 'bm-show-all)
+(global-set-key (kbd "<C-f6>") 'bm-remove-all-current-buffer)
 
 ;; ask for annotation upon defining a bookmark
 (setq-default bm-annotate-on-create t)
@@ -1011,11 +1013,9 @@ Version 2015-02-07
   (back-to-indentation)
   ;; this preserves the correct indentation in case the line above
   ;; point is a nested block
-  (setq myStr (thing-at-point 'line))
-  (split-line)
   (insert python-pdb-breakpoint-string)
   (back-to-indentation)
-  (python-indent-line))
+)
 
 (defun python-insert-string(in-string)
   "Inserts string"
