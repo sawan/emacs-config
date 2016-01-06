@@ -150,7 +150,8 @@
   (let (kill-emacs-hook)
     (kill-emacs)))
 
-;; start native Emacs server ready for client connections                  .
+;; start native Emacs server ready for client connections.
+(setq server-socket-dir "~/.emacs.d/server/")
 (add-hook 'after-init-hook 'server-start)
 
 ;; save history
