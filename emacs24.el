@@ -952,6 +952,16 @@ Version 2015-02-07
     ad-do-it))
 
 
+;; http://endlessparentheses.com/faster-pop-to-mark-command.html
+;; When popping the mark, continue popping until the cursor
+;; actually moves
+(defadvice pop-to-mark-command (around ensure-new-position activate)
+  (let ((p (point)))
+    (dotimes (i 10)
+      (when (= p (point)) ad-do-it))))
+
+(setq set-mark-command-repeat-pop t)
+
 ;;;; iedit
 (require 'iedit)
 ;; http://www.masteringemacs.org/articles/2012/10/02/iedit-interactive-multi-occurrence-editing-in-your-buffer/
@@ -1149,6 +1159,7 @@ Version 2015-02-07
   ("c" thing-copy-line "copy" :color blue)
   ("e" thing-copy-to-line-end "copy-end" :color blue)
   ("b" thing-copy-to-line-beginning "copy-begin" :color blue)
+  ("D" djcb-duplicate-line "dup-line" :color blue)
   ("g" goto-line "goto-line")
   ("m" set-mark-command "mark" :bind nil)
   ("s" xah-select-current-line "Select current" :color red)
