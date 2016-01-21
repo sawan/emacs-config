@@ -1,0 +1,1 @@
+(define-package "tj-mode" "20150826.851" "Highlight JavaScript with Tern" '((emacs "24") (tern "0.0.1") (js2-mode "20150514")) :stars '("") :url "https://github.com/katspaugh/tj-mode" :keywords '("languages" "javascript"))

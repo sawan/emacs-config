@@ -18,6 +18,8 @@
 ;;;; package.el
 (require 'package)
 
+
+
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/")
@@ -91,6 +93,11 @@
           visual-regexp-steroids
           aggressive-indent
 	  beacon
+	  react-snippets
+	  jsx-mode
+	  tern
+	  tern-auto-complete
+	  tj-mode
 	  )))
 
 (defmacro after (mode &rest body)
@@ -99,6 +106,13 @@
   `(eval-after-load ,mode
      '(progn ,@body)))
 
+
+(when (eq system-type 'windows-nt)
+  (setq explicit-shell-file-name "C:/Cygwn/bin/bash.exe")
+  (setq shell-file-name explicit-shell-file-name)
+  (add-to-list 'exec-path "C:/Cygwn/bin")
+  (add-to-list 'exec-path "C:/Program Files/nodejs")
+  )
 
 ;;;; init.el
 
@@ -141,6 +155,7 @@
 (require 'thing-cmds)
 
 (wrap-region-mode t)
+(beacon-mode)
 
 (global-set-key [remap kill-ring-save] 'easy-kill)
 
@@ -1079,6 +1094,16 @@ Version 2015-02-07
 (key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
 (add-hook 'python-mode-hook 'which-function-mode)
+
+;;;; Javascript
+(after 'tern
+  (require 'tern-auto-complete)
+  (require 'tj-mode)
+  (tern-ac-setup)
+  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+  (add-hook 'jsx-mode-hook (lambda () (tern-mode t))))
+
+(require 'tern)
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
