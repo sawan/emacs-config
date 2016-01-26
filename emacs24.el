@@ -107,13 +107,6 @@
      '(progn ,@body)))
 
 
-(when (eq system-type 'windows-nt)
-  (setq explicit-shell-file-name "C:/Cygwn/bin/bash.exe")
-  (setq shell-file-name explicit-shell-file-name)
-  (add-to-list 'exec-path "C:/Cygwn/bin")
-  (add-to-list 'exec-path "C:/Program Files/nodejs")
-  )
-
 ;;;; init.el
 
 (add-to-list 'load-path "~/.emacs.d/vendors/")
@@ -1098,12 +1091,15 @@ Version 2015-02-07
 ;;;; Javascript
 (after 'tern
   (require 'tern-auto-complete)
-  (require 'tj-mode)
   (tern-ac-setup)
   (add-hook 'js-mode-hook (lambda () (tern-mode t)))
   (add-hook 'jsx-mode-hook (lambda () (tern-mode t))))
 
 (require 'tern)
+
+(defun delete-tern-process ()
+  (interactive)
+  (delete-process "Tern"))
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
