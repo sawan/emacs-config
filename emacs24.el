@@ -98,6 +98,7 @@
 	  tern
 	  tern-auto-complete
 	  tj-mode
+	  volatile-highlights
 	  )))
 
 (defmacro after (mode &rest body)
@@ -111,7 +112,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/vendors/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
-(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
+;(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
@@ -121,6 +122,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/no-easy-keys.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/thing-cmds.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/moccur-edit.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/electric-align.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -132,6 +134,7 @@
 (require 'highlight-tail)
 (require 'smyx-theme)
 (require 'moccur-edit)
+(require 'electric-align)
 
 (require 'back-button)
 (back-button-mode 1)
@@ -213,7 +216,12 @@
 (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
 
 ;; enable paren highliting for all files
-(add-hook 'find-file-hooks (lambda() (show-paren-mode t)))
+(add-hook 'find-file-hooks (
+			    lambda()
+				  (show-paren-mode t)
+				  (volatile-highlights-mode t)
+				  (electric-align t)
+				  ))
 
 (global-set-key (kbd "<C-f6>") 'linum-mode)
 
@@ -634,9 +642,9 @@ Position the cursor at its beginning, according to the current mode."
 (require 'crosshairs)
 (global-set-key (kbd "<M-f12>") 'flash-crosshairs)
 
-(require 'exec-abbrev-cmd)
-(exec-abbrev-cmd-mode 1)
-(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
+;(require 'exec-abbrev-cmd)
+;(exec-abbrev-cmd-mode 1)
+;(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
 
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
