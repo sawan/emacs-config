@@ -112,7 +112,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/vendors/")
 (add-to-list 'load-path "~/.emacs.d/vendors/DrewsLibraries/")
-;(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/exec-abbrev-cmd.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/revbufs.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/extraedit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/breadcrumb.el")
@@ -123,6 +123,10 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/thing-cmds.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/moccur-edit.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/electric-align.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/deep-blue-day-theme")
+(add-to-list 'load-path "~/.emacs.d/vendors/jadedragon-theme.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/mechanical-turq-theme.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/soothe-theme.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -220,7 +224,7 @@
 			    lambda()
 				  (show-paren-mode t)
 				  (volatile-highlights-mode t)
-				  (electric-align t)
+				  (electric-align-mode t)
 				  ))
 
 (global-set-key (kbd "<C-f6>") 'linum-mode)
@@ -642,9 +646,9 @@ Position the cursor at its beginning, according to the current mode."
 (require 'crosshairs)
 (global-set-key (kbd "<M-f12>") 'flash-crosshairs)
 
-;(require 'exec-abbrev-cmd)
-;(exec-abbrev-cmd-mode 1)
-;(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
+(require 'exec-abbrev-cmd)
+(exec-abbrev-cmd-mode 1)
+(global-set-key (kbd "C-x x") 'exec-abbrev-cmd)
 
 ;; http://www.emacswiki.org/emacs/ThingEdit
 ; copy and paste various types of data
