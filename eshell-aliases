@@ -1,4 +1,1 @@
-alias ff find-file $1
-alias japps cd /plink:d290036@pudl-wall-02.networks.in.telstra.com.au:/home/d290036/src/Ballstein/src/resource/twall/python/apps
-alias pudl  cd /d290036@pudl-wall-02.networks.in.telstra.com.au:/home/d290036
-alias new-pudl  cd /d290036@pudl-col-01.networks.in.telstra.com.au:/home/d290036
+alias dev-01 cd /plink:dev-01:/home/d290036/src/Ballstein/src/resource/twall/python/apps

@@ -776,6 +776,7 @@ Version 2015-02-07
       (setq tramp-default-method "plink"))
 (setq  tramp-completion-reread-directory-timeout 0)
 
+
 ;; (setq tramp-verbose 10)
 ;; (setq tramp-debug-buffer t)
 ;; (require 'trace)

@@ -1,0 +1,1 @@
+(define-package "ahungry-theme" "20160516.2058" "Ahungry color theme for Emacs.  Make sure to (load-theme 'ahungry)." '((emacs "24")) :stars '("") :url "https://github.com/ahungry/color-theme-ahungry" :keywords '("ahungry" "palette" "color" "theme" "emacs" "color-theme" "deftheme"))
