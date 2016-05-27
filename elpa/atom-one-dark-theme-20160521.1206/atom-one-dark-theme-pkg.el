@@ -1,0 +1,1 @@
+(define-package "atom-one-dark-theme" "20160521.1206" "Atom One Dark color theme" 'nil :stars '(#("40" 0 2 (font-lock-face paradox-star-face))) :url "https://github.com/jonathanchu/atom-one-dark-theme")

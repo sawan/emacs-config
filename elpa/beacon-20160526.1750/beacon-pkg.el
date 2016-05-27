@@ -1,0 +1,1 @@
+(define-package "beacon" "20160526.1750" "Highlight the cursor whenever the window scrolls" '((seq "2.14")) :stars '(#("128" 0 3 (font-lock-face paradox-star-face))) :url "https://github.com/Malabarba/beacon" :keywords '("convenience"))
