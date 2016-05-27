@@ -4,7 +4,11 @@
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
 ;;;### (autoloads nil "aggressive-indent" "aggressive-indent.el"
+<<<<<<< HEAD:elpa/aggressive-indent-20160518.1614/aggressive-indent-autoloads.el
 ;;;;;;  (22342 63118 0 0))
+=======
+;;;;;;  (22334 45475 0 0))
+>>>>>>> d946b38dc8004fffa247ff073cbe98951b4bc76e:elpa/aggressive-indent-20160518.1614/aggressive-indent-autoloads.el
 ;;; Generated autoloads from aggressive-indent.el
 
 (autoload 'aggressive-indent-indent-defun "aggressive-indent" "\

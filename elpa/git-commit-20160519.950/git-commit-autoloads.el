@@ -3,7 +3,11 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
+<<<<<<< HEAD:elpa/git-commit-20160519.950/git-commit-autoloads.el
 ;;;### (autoloads nil "git-commit" "git-commit.el" (22342 63070 0
+=======
+;;;### (autoloads nil "git-commit" "git-commit.el" (22334 45449 0
+>>>>>>> d946b38dc8004fffa247ff073cbe98951b4bc76e:elpa/git-commit-20160519.950/git-commit-autoloads.el
 ;;;;;;  0))
 ;;; Generated autoloads from git-commit.el
 

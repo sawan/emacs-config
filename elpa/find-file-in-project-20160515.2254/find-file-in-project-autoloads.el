@@ -4,7 +4,11 @@
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
 ;;;### (autoloads nil "find-file-in-project" "find-file-in-project.el"
+<<<<<<< HEAD:elpa/find-file-in-project-20160515.2254/find-file-in-project-autoloads.el
 ;;;;;;  (22342 63073 0 0))
+=======
+;;;;;;  (22334 45452 0 0))
+>>>>>>> d946b38dc8004fffa247ff073cbe98951b4bc76e:elpa/find-file-in-project-20160515.2254/find-file-in-project-autoloads.el
 ;;; Generated autoloads from find-file-in-project.el
 
 (autoload 'ffip-project-root "find-file-in-project" "\

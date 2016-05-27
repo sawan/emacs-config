@@ -3,7 +3,11 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
+<<<<<<< HEAD:elpa/avy-20160519.536/avy-autoloads.el
 ;;;### (autoloads nil "avy" "avy.el" (22342 63102 0 0))
+=======
+;;;### (autoloads nil "avy" "avy.el" (22334 45458 0 0))
+>>>>>>> d946b38dc8004fffa247ff073cbe98951b4bc76e:elpa/avy-20160519.536/avy-autoloads.el
 ;;; Generated autoloads from avy.el
 
 (autoload 'avy-goto-char "avy" "\
