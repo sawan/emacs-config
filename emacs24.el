@@ -1,24 +1,6 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("cc60d17db31a53adf93ec6fad5a9cfff6e177664994a52346f81f62840fe8e23" default)))
- '(paradox-github-token t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
 ;;;; package.el
 (require 'package)
-
-
 
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives
@@ -127,6 +109,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/jadedragon-theme.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/mechanical-turq-theme.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/soothe-theme.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/ixio.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -139,6 +122,7 @@
 (require 'smyx-theme)
 (require 'moccur-edit)
 (require 'electric-align)
+(require 'ixio)
 
 (require 'back-button)
 (back-button-mode 1)
@@ -156,6 +140,9 @@
 
 (wrap-region-mode t)
 (beacon-mode)
+
+(smooth-scrolling-mode t)
+(syntax-subword-mode t)
 
 (global-set-key [remap kill-ring-save] 'easy-kill)
 
