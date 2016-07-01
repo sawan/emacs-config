@@ -81,6 +81,8 @@
 	  tern-auto-complete
 	  tj-mode
 	  volatile-highlights
+	  wttrin
+	  boxquote
 	  )))
 
 (defmacro after (mode &rest body)
@@ -214,8 +216,6 @@
 				  (electric-align-mode t)
 				  ))
 
-(global-set-key (kbd "<C-f6>") 'linum-mode)
-
 ;; display path to file in frame title
 ;(setq-default mode-line-format
 (setq-default frame-title-format
@@ -223,7 +223,17 @@
                        (dired-directory
 			dired-directory
 			(revert-buffer-function " %b"
-			      ("%b - Dir:  " default-directory)))))))
+						("%b - Dir:  " default-directory)))))))
+
+
+(require 'wttrin)
+(setq wttrin-default-cities '("Melbourne"
+			      "London"
+			      "Mumbai"
+			      "Dar-es-salaam"
+			      ))
+
+
 ;;;; utility functions
 
 ;; http://www.emacswiki.org/emacs-en/PosTip
@@ -1191,6 +1201,7 @@ Version 2015-02-07
   ("u" move-text-up "move-up" :color red)
   ("d" move-text-down "move-down" :color red)
   ("k" kill-lines "kill-lines" :color blue)
+  ("l" linum-mode "linum" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("j" top-join-line "join-next-line" :color red)
   ("J" delete-indentation "join-prev-line" :color red)
