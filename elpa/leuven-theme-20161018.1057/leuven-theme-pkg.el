@@ -1,1 +1,0 @@
-(define-package "leuven-theme" "20161018.1057" "Awesome Emacs color theme on white background" 'nil :stars '(#("151" 0 3 (font-lock-face paradox-star-face))) :url "https://github.com/fniessen/emacs-leuven-theme" :keywords '("color" "theme"))
