@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "suscolors-theme" "suscolors-theme.el" (22536
-;;;;;;  41273 0 0))
+;;;### (autoloads nil "suscolors-theme" "suscolors-theme.el" (22389
+;;;;;;  57206 0 0))
 ;;; Generated autoloads from suscolors-theme.el
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))

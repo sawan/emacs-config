@@ -1,2 +1,3 @@
 alias dev-01 cd /plink:dev-01:/home/d290036/src/Ballstein/src/resource/twall/python/apps
 alias cd-apps cd /plink:dev-01:/home/d290036/src/Ballstein/src/apps
+alias cd-py cd /plink:dev-01:/home/d290036/src/Ballstein/src/resource/twall/python/apps

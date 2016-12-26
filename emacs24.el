@@ -1,24 +1,6 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("cc60d17db31a53adf93ec6fad5a9cfff6e177664994a52346f81f62840fe8e23" default)))
- '(paradox-github-token t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
 ;;;; package.el
 (require 'package)
-
-
 
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives
@@ -99,6 +81,8 @@
 	  tern-auto-complete
 	  tj-mode
 	  volatile-highlights
+	  wttrin
+	  boxquote
 	  )))
 
 (defmacro after (mode &rest body)
@@ -127,6 +111,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/jadedragon-theme.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/mechanical-turq-theme.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/soothe-theme.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/ixio.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -139,6 +124,7 @@
 (require 'smyx-theme)
 (require 'moccur-edit)
 (require 'electric-align)
+(require 'ixio)
 
 (require 'back-button)
 (back-button-mode 1)
@@ -156,6 +142,9 @@
 
 (wrap-region-mode t)
 (beacon-mode)
+
+(smooth-scrolling-mode t)
+(syntax-subword-mode t)
 
 (global-set-key [remap kill-ring-save] 'easy-kill)
 
@@ -227,8 +216,6 @@
 				  (electric-align-mode t)
 				  ))
 
-(global-set-key (kbd "<C-f6>") 'linum-mode)
-
 ;; display path to file in frame title
 ;(setq-default mode-line-format
 (setq-default frame-title-format
@@ -236,7 +223,17 @@
                        (dired-directory
 			dired-directory
 			(revert-buffer-function " %b"
-			      ("%b - Dir:  " default-directory)))))))
+						("%b - Dir:  " default-directory)))))))
+
+
+(require 'wttrin)
+(setq wttrin-default-cities '("Melbourne"
+			      "London"
+			      "Mumbai"
+			      "Dar-es-salaam"
+			      ))
+
+
 ;;;; utility functions
 
 ;; http://www.emacswiki.org/emacs-en/PosTip
@@ -1219,6 +1216,7 @@ Version 2015-02-07
   ("u" move-text-up "move-up" :color red)
   ("d" move-text-down "move-down" :color red)
   ("k" kill-lines "kill-lines" :color blue)
+  ("l" linum-mode "linum" :color blue)
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("j" top-join-line "join-next-line" :color red)
   ("J" delete-indentation "join-prev-line" :color red)
