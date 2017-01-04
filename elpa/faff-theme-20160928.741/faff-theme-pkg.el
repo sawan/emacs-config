@@ -1,0 +1,1 @@
+(define-package "faff-theme" "20160928.741" "Light Emacs color theme on ivory3 background" 'nil :stars '(#("10" 0 2 (font-lock-face paradox-star-face))) :url "https://github.com/WJCFerguson/emacs-faff-theme" :keywords '("color" "theme"))

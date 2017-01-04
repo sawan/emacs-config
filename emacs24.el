@@ -333,12 +333,26 @@ Continues until end of buffer.  Also display the count as a message."
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
-(defun indent-whole-buffer ()
-  "indent whole buffer"
+
+(defun indent-buffer ()
+  "Indent the currently visited buffer."
   (interactive)
   (delete-trailing-whitespace)
-  (indent-region (point-min) (point-max) nil)
+  (indent-region (point-min) (point-max))
   (untabify (point-min) (point-max)))
+
+(defun indent-region-or-buffer ()
+  "Indent a region if selected, otherwise the whole buffer."
+  (interactive)
+  (save-excursion
+    (if (region-active-p)
+        (progn
+          (indent-region (region-beginning) (region-end))
+          (message "Indented selected region."))
+      (progn
+        (indent-buffer)
+        (message "Indented buffer.")))))
+
 
 (defun djcb-duplicate-line (&optional commentfirst)
   "comment line at point; if COMMENTFIRST is non-nil, comment the original"
@@ -1061,7 +1075,7 @@ Version 2015-02-07
 
 (defun python-remove-debug-breaks ()
    "Removes all debug breakpoints"
-   (flush-lines "## DEBUG ##\\s-*$"))
+   (flush-lines  "## DEBUG ##\\s-*$"))
 
 (add-hook 'python-mode-hook 'python-remove-debug-breaks)
 
@@ -1102,8 +1116,9 @@ Version 2015-02-07
 (after 'tern
   (require 'tern-auto-complete)
   (tern-ac-setup)
-  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-  (add-hook 'jsx-mode-hook (lambda () (tern-mode t))))
+  ;; (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+  ;; (add-hook 'jsx-mode-hook (lambda () (tern-mode t)))
+  )
 
 (require 'tern)
 

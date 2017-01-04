@@ -1,0 +1,1 @@
+(define-package "suscolors-theme" "20161109.1215" "Colorful theme, inspired by Gruvbox." 'nil :stars '(#("3" 0 1 (font-lock-face paradox-star-face))) :url "https://github.com/TheSuspiciousWombat/SusColors-emacs")
