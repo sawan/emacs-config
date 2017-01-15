@@ -1,1 +1,0 @@
-(define-package "bm" "20161024.1006" "Visible bookmarks in buffer." 'nil :stars '(#("61" 0 2 (font-lock-face paradox-star-face))) :url "https://github.com/joodland/bm" :keywords '("bookmark" "highlight" "faces" "persistent"))

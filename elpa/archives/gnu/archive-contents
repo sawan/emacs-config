@@ -80,7 +80,7 @@
 	 ((:keywords "async")
 	  (:url . "http://elpa.gnu.org/packages/async.html"))])
  (auctex .
-	 [(11 89 8)
+	 [(11 90 0)
 	  nil "Integrated environment for *TeX*" tar
 	  ((:url . "http://www.gnu.org/software/auctex/"))])
  (aumix-mode .
@@ -136,10 +136,15 @@
 	      ((:url . "http://elpa.gnu.org/packages/cl-generic.html")
 	       (:keywords))])
  (cl-lib .
-	 [(0 5)
+	 [(0 6 1)
 	  nil "Properly prefixed CL functions and macros" single
 	  ((:url . "http://elpa.gnu.org/packages/cl-lib.html")
 	   (:keywords))])
+ (cobol-mode .
+	     [(1 0 0)
+	      nil "Mode for editing COBOL code" single
+	      ((:url . "http://elpa.gnu.org/packages/cobol-mode.html")
+	       (:keywords "languages"))])
  (coffee-mode .
 	      [(0 4 1 1)
 	       nil "Major mode for CoffeeScript files" single
@@ -151,11 +156,7 @@
 		      ((:url . "https://github.com/cpitclaudel/compact-docstrings")
 		       (:keywords "convenience" "faces" "lisp" "maint" "c"))])
  (company .
-<<<<<<< HEAD
 	  [(0 9 2)
-=======
-	  [(0 9 0)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
 	   ((emacs
 	     (24 1))
 	    (cl-lib
@@ -182,11 +183,7 @@
 		      ((:keywords "abbrev" "convenience" "matching")
 		       (:url . "https://github.com/company-mode/company-statistics"))])
  (context-coloring .
-<<<<<<< HEAD
 		   [(8 1 0)
-=======
-		   [(8 0 1)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
 		    ((emacs
 		      (24 3)))
 		    "Highlight by scope" tar
@@ -227,11 +224,7 @@
 		((:url . "http://elpa.gnu.org/packages/dbus-codegen.html")
 		 (:keywords "comm" "dbus" "convenience"))])
  (debbugs .
-<<<<<<< HEAD
 	  [(0 12)
-=======
-	  [(0 9 7)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
 	   ((soap-client
 	     (3 1 1))
 	    (cl-lib
@@ -303,11 +296,7 @@
 	     ((:url . "http://elpa.gnu.org/packages/ediprolog.html")
 	      (:keywords "languages" "processes"))])
  (el-search .
-<<<<<<< HEAD
-	    [(1 2 1)
-=======
-	    [(0 2 1)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
+	    [(1 2 3)
 	     ((emacs
 	       (25))
 	      (stream
@@ -345,11 +334,7 @@
 		  ((:keywords "convenience")
 		   (:url . "https://github.com/ergoemacs/ergoemacs-mode"))])
  (excorporate .
-<<<<<<< HEAD
 	      [(0 7 6)
-=======
-	      [(0 7 5)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
 	       ((emacs
 		 (24 1))
 		(fsm
@@ -665,11 +650,7 @@
 	     ((:url . "https://github.com/michael-heerdegen/on-screen.el")
 	      (:keywords "convenience"))])
  (org .
-<<<<<<< HEAD
       [(20161224)
-=======
-      [(20160627)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
        nil "Outline-based notes management and organizer" tar nil])
  (osc .
       [(0 1)
@@ -784,11 +765,7 @@
 	    ((:url . "http://elpa.gnu.org/packages/sed-mode.html")
 	     (:keywords))])
  (seq .
-<<<<<<< HEAD
       [(2 19)
-=======
-      [(2 16)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
        nil "Sequence manipulation functions" tar
        ((:keywords "sequences")
 	(:url . "http://elpa.gnu.org/packages/seq.html"))])
@@ -1021,18 +998,14 @@
        ((:keywords "multimedia" "xpm")
 	(:url . "http://www.gnuvola.org/software/xpm/"))])
  (yasnippet .
-<<<<<<< HEAD
 	    [(0 11 0)
-=======
-	    [(0 10 0)
->>>>>>> 7c1e829f51461b62fc23c5ec163084920a0605fe
 	     ((cl-lib
 	       (0 5)))
 	     "Yet another snippet extension for Emacs." tar
 	     ((:keywords "convenience" "emulation")
 	      (:url . "http://github.com/joaotavora/yasnippet"))])
  (ztree .
-	[(1 0 4)
+	[(1 0 5)
 	 ((cl-lib
 	   (0)))
 	 "Text mode directory tree" tar
