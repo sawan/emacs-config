@@ -1,17 +1,3 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(paradox-github-token t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
 ;;;; package.el
 (require 'package)
@@ -97,6 +83,8 @@
 	  volatile-highlights
 	  wttrin
 	  boxquote
+	  ov
+	  swoop
 	  )))
 
 (defmacro after (mode &rest body)
@@ -159,6 +147,8 @@
 
 (smooth-scrolling-mode t)
 (syntax-subword-mode t)
+
+(hl-line-mode t)
 
 (global-set-key [remap kill-ring-save] 'easy-kill)
 
@@ -248,7 +238,46 @@
 			      ))
 
 
+(require 'swoop)
+(setq swoop-window-split-current-window: t)
+(setq swoop-window-split-direction: 'split-window-vertically)
+(setq swoop-use-target-magnifier: t)
+(setq swoop-use-target-magnifier-around: 10)
+(setq swoop-use-target-magnifier-size: 1.2)
+
+
 ;;;; utility functions
+
+;; http://emacs.stackexchange.com/a/13122
+(require 'ov)
+(defun highlight-duplicate-lines-in-region-or-buffer ()
+  (interactive)
+
+  (let* (
+	($beg (if mark-active (region-beginning) (point-min)))
+	($end (if mark-active (region-end) (point-max)))
+	($st (buffer-substring-no-properties $beg $end))
+	($lines)
+	($dup))
+  (deactivate-mark t)
+  (save-excursion
+    (goto-char $beg)
+    (while (< (point) $end)
+      (let* (($b (point))
+	     ($e (point-at-eol))
+	     ($c (buffer-substring-no-properties $b $e))
+	     ($a (assoc $c $lines)))
+	(when (not (eq $b $e))
+	  (if $a
+	      (progn
+		(setq $dup (cons $b $dup))
+		(setq $dup (cons (cdr $a) $dup)))
+	    (setq $lines
+		  (cons (cons $c $b) $lines)))))
+      (forward-line 1))
+    (mapc (lambda ($p)
+	    (ov-set (ov-line $p) 'face '(:foreground "red")))
+	  (sort (delete-dups $dup) '<)))))
 
 ;; http://www.emacswiki.org/emacs-en/PosTip
 (defun describe-function (function)
@@ -347,26 +376,12 @@ Continues until end of buffer.  Also display the count as a message."
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
-
-(defun indent-buffer ()
-  "Indent the currently visited buffer."
+(defun indent-whole-buffer ()
+  "indent whole buffer"
   (interactive)
   (delete-trailing-whitespace)
-  (indent-region (point-min) (point-max))
+  (indent-region (point-min) (point-max) nil)
   (untabify (point-min) (point-max)))
-
-(defun indent-region-or-buffer ()
-  "Indent a region if selected, otherwise the whole buffer."
-  (interactive)
-  (save-excursion
-    (if (region-active-p)
-        (progn
-          (indent-region (region-beginning) (region-end))
-          (message "Indented selected region."))
-      (progn
-        (indent-buffer)
-        (message "Indented buffer.")))))
-
 
 (defun djcb-duplicate-line (&optional commentfirst)
   "comment line at point; if COMMENTFIRST is non-nil, comment the original"
@@ -1089,7 +1104,7 @@ Version 2015-02-07
 
 (defun python-remove-debug-breaks ()
    "Removes all debug breakpoints"
-   (flush-lines  "## DEBUG ##\\s-*$"))
+   (flush-lines "## DEBUG ##\\s-*$"))
 
 (add-hook 'python-mode-hook 'python-remove-debug-breaks)
 
@@ -1130,9 +1145,8 @@ Version 2015-02-07
 (after 'tern
   (require 'tern-auto-complete)
   (tern-ac-setup)
-  ;; (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-  ;; (add-hook 'jsx-mode-hook (lambda () (tern-mode t)))
-  )
+  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+  (add-hook 'jsx-mode-hook (lambda () (tern-mode t))))
 
 (require 'tern)
 
@@ -1219,7 +1233,7 @@ Version 2015-02-07
   ("c" thing-copy-line "copy" :color blue)
   ("e" thing-copy-to-line-end "copy-end" :color blue)
   ("b" thing-copy-to-line-beginning "copy-begin" :color blue)
-  ("D" djcb-duplicate-line "dup-line" :color blue)
+  ("D" djcb-duplicate-line "dup-line" :color red)
   ("g" goto-line "goto-line")
   ("m" set-mark-command "mark" :bind nil)
   ("s" xah-select-current-line "Select current" :color red)
@@ -1234,13 +1248,14 @@ Version 2015-02-07
   ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
   ("j" top-join-line "join-next-line" :color red)
   ("J" delete-indentation "join-prev-line" :color red)
+  ("h" highlight-duplicate-lines-in-region-or-buffer :color red)
+  ("o" ov-clear)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
 
 ;;;; fastnav
 (require 'fastnav)
-
 (defhydra hydra-fastnav ()
   "FastNav on chars"
   ("m" mark-to-char-forward "Mark forward" :color blue)
@@ -1348,3 +1363,16 @@ Other buffers: %s(my/number-names my/last-buffers)
   ("f" sgml-skip-tag-forward "Forward" :color red)
   ("b" sgml-skip-tag-backward "Backward" :color red)
   ("q" nil "quit"))
+(put 'downcase-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(paradox-github-token t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
