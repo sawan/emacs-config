@@ -4,7 +4,7 @@
 
 ;; Author: Jorgen Schaefer <contact@jorgenschaefer.de>
 ;; URL: https://github.com/jorgenschaefer/elpy
-;; Version: 1.13.0
+;; Version: 1.14.1
 ;; Keywords: Python, IDE, Languages, Tools
 ;; Package-Requires: ((company "0.8.2") (find-file-in-project "3.3")  (highlight-indentation "0.5.0") (pyvenv "1.3") (yasnippet "0.8.0") (s "1.10.0"))
 
@@ -47,7 +47,7 @@
 (require 'elpy-django)
 (require 'pyvenv)
 
-(defconst elpy-version "1.13.0"
+(defconst elpy-version "1.14.1"
   "The version of the Elpy lisp code.")
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -2356,7 +2356,7 @@ Also sort the imports in the import statement blocks."
         (let* ((prompt (format "How to import \"%s\": " object))
                (choice (elpy-importmagic--add-import-read-args object prompt nil)))
 	  (when (equal choice "")
-	    (add-to-list 'unresolved-aliases (car (split-string object "\\."))))
+	    (push (car (split-string object "\\.")) unresolved-aliases))
 	  (elpy-importmagic-add-import choice nil))))
     ;; ask for unresolved aliases real names and add import for them
     (dolist (alias unresolved-aliases)

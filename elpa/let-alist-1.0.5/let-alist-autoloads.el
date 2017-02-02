@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "let-alist" "let-alist.el" (21923 31320 0 0))
+;;;### (autoloads nil "let-alist" "let-alist.el" (22674 32484 0 0))
 ;;; Generated autoloads from let-alist.el
 
 (autoload 'let-alist "let-alist" "\
@@ -21,10 +21,10 @@ For instance, the following code
 
 essentially expands to
 
-  (let ((.title (cdr (assq 'title alist)))
-        (.body  (cdr (assq 'body alist)))
-        (.site  (cdr (assq 'site alist)))
-        (.site.contents (cdr (assq 'contents (cdr (assq 'site alist))))))
+  (let ((.title (cdr (assq \\='title alist)))
+        (.body  (cdr (assq \\='body alist)))
+        (.site  (cdr (assq \\='site alist)))
+        (.site.contents (cdr (assq \\='contents (cdr (assq \\='site alist))))))
     (if (and .title .body)
         .body
       .site
