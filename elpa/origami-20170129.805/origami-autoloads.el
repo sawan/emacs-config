@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "origami" "origami.el" (22670 40575 0 0))
+;;;### (autoloads nil "origami" "origami.el" (22684 15881 0 0))
 ;;; Generated autoloads from origami.el
 
 (autoload 'origami-mode "origami" "\
@@ -44,7 +44,7 @@ See `origami-mode' for more information on Origami mode.
 ;;;***
 
 ;;;### (autoloads nil nil ("origami-parsers.el" "origami-pkg.el")
-;;;;;;  (22670 40575 469985 600000))
+;;;;;;  (22684 15881 27661 0))
 
 ;;;***
 
