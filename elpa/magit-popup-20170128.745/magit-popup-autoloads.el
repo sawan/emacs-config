@@ -4,7 +4,7 @@
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
 ;;;### (autoloads nil nil ("magit-popup-pkg.el" "magit-popup.el")
-;;;;;;  (22670 40609 247185 600000))
+;;;;;;  (22684 15886 434509 0))
 
 ;;;***
 
