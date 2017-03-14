@@ -20,12 +20,13 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(browse-kill-ring
-          ido-ubiquitous
-          magit
-          paredit
-          smex
-          undo-tree
+        '(
+	  browse-kill-ring
+               ido-ubiquitous
+               magit
+               paredit
+               smex
+               undo-tree
 	  bm
 	  pos-tip
 	  auto-complete
@@ -35,7 +36,7 @@
 	  rainbow-mode
 	  fastnav
 	  cedet
-          hungry-delete
+               hungry-delete
 	  full-ack
 	  undo-tree
 	  visual-regexp
@@ -60,7 +61,7 @@
 	  google-this
 	  wrap-region
 	  git-timemachine
-          ace-jump-mode
+              ace-jump-mode
 	  ace-jump-buffer
 	  ace-jump-window
 	  move-text
@@ -72,8 +73,8 @@
 	  markdown-mode
 	  markdown-mode+
 	  paradox
-          visual-regexp-steroids
-          aggressive-indent
+              visual-regexp-steroids
+              aggressive-indent
 	  beacon
 	  react-snippets
 	  jsx-mode
@@ -199,6 +200,19 @@
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
+
+(defun bigger-text ()
+  (interactive)
+  (text-scale-increase 1.8)
+)
+
+(defun minibuffer-text-size ()
+  (set (make-local-variable 'face-remapping-alist)
+       '((default :height 1.5)))
+
+(add-hook 'find-file-hook 'bigger-text)
+(add-hook 'minibuffer-setup-hook 'minibuffer-text-size)
+
 
 ;; required on OS X -- pyflakes
 (add-to-list 'exec-path "/opt/local/bin/")
@@ -1296,14 +1310,14 @@ _b_   _f_   _q_uit      _y_ank
   ("d" delete-rectangle nil)
   ("r" (if (region-active-p)
            (deactivate-mark)
-         (rectangle-mark-mode 1)) nil)
+         (rectangle-mark-mode 1))
+   nil)
   ("y" yank-rectangle nil)
   ("u" undo nil)
   ("s" string-rectangle nil)
   ("p" kill-rectangle nil)
   ("q" nil nil))
 
-;; schema search function
 ;; (set-face-attribute 'default nil :font "Lucida Console-10")
 
 
@@ -1342,8 +1356,8 @@ _b_   _f_   _q_uit      _y_ank
 
 
 (defhydra my/switch-to-buffer (:exit t
-                                :body-pre (setq my/last-buffers
-                                                (my/name-of-buffers 5)))
+				     :body-pre (setq my/last-buffers
+						     (my/name-of-buffers 5)))
 "
 Other buffers: %s(my/number-names my/last-buffers)
 "
@@ -1366,15 +1380,19 @@ Other buffers: %s(my/number-names my/last-buffers)
 
 
 (put 'downcase-region 'disabled nil)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(paradox-github-token t))
+ '(paradox-github-token t)
+ )
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(minibuffer-prompt ((default (:foreground "blue")) (nil (:background "white"))))
  )
