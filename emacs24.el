@@ -18,15 +18,15 @@
   (interactive)
   (package-refresh-contents)
   (mapc #'(lambda (package)
-           (unless (package-installed-p package)
-             (package-install package)))
+	    (unless (package-installed-p package)
+	      (package-install package)))
         '(
 	  browse-kill-ring
-               ido-ubiquitous
-               magit
-               paredit
-               smex
-               undo-tree
+	  ido-ubiquitous
+	  magit
+	  paredit
+	  smex
+	  undo-tree
 	  bm
 	  pos-tip
 	  auto-complete
@@ -36,7 +36,7 @@
 	  rainbow-mode
 	  fastnav
 	  cedet
-               hungry-delete
+	  hungry-delete
 	  full-ack
 	  undo-tree
 	  visual-regexp
@@ -61,7 +61,7 @@
 	  google-this
 	  wrap-region
 	  git-timemachine
-              ace-jump-mode
+	  ace-jump-mode
 	  ace-jump-buffer
 	  ace-jump-window
 	  move-text
@@ -73,8 +73,8 @@
 	  markdown-mode
 	  markdown-mode+
 	  paradox
-              visual-regexp-steroids
-              aggressive-indent
+	  visual-regexp-steroids
+	  aggressive-indent
 	  beacon
 	  react-snippets
 	  jsx-mode
@@ -212,13 +212,21 @@
 )
 
 (defun minibuffer-text-size ()
-  (set (make-local-variable 'face-remapping-alist)
-       '((default :height 1.5))))
+  (setq-local  'face-remapping-alist
+	       '((default :height 1.5)))
+
+(defun echo-area-text-size()
+;; https://www.emacswiki.org/emacs/EchoArea
+  ;; Most strange.....
+  (interactive)
+  (with-current-buffer (get-buffer " *Echo Area 0*")
+    (setq-local face-remapping-alist
+		'((default (:height 1.5 variable-pitch)))))
+)
 
 (add-hook 'find-file-hook 'bigger-text)
 (add-hook 'minibuffer-setup-hook 'minibuffer-text-size)
-
-(run-hooks 'minibuffer-setup-hook)
+(echo-area-text-size)
 
 ;; required on OS X -- pyflakes
 (add-to-list 'exec-path "/opt/local/bin/")
@@ -272,7 +280,7 @@
 (require 'ov)
 (defun highlight-duplicate-lines-in-region-or-buffer ()
   (interactive)
-
+  (ov-clear)
   (let* (
 	($beg (if mark-active (region-beginning) (point-min)))
 	($end (if mark-active (region-end) (point-max)))
