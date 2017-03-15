@@ -114,7 +114,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendors/jadedragon-theme.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/mechanical-turq-theme.el")
 (add-to-list 'load-path "~/.emacs.d/vendors/soothe-theme.el")
-(add-to-list 'load-path "~/.emacs.d/vendors/ixio.el")
+(add-to-list 'load-path "~/.emacs.d/vendors/emacs-ixio.el")
 
 (require 'pos-tip)
 (require 'magit)
@@ -203,16 +203,22 @@
 
 (defun bigger-text ()
   (interactive)
-  (text-scale-increase 1.8)
+  (text-scale-increase 2.5)
+  )
+
+(defun smaller-text ()
+  (interactive)
+  (text-scale-decrease 2.5)
 )
 
 (defun minibuffer-text-size ()
   (set (make-local-variable 'face-remapping-alist)
-       '((default :height 1.5)))
+       '((default :height 1.5))))
 
 (add-hook 'find-file-hook 'bigger-text)
 (add-hook 'minibuffer-setup-hook 'minibuffer-text-size)
 
+(run-hooks 'minibuffer-setup-hook)
 
 ;; required on OS X -- pyflakes
 (add-to-list 'exec-path "/opt/local/bin/")
@@ -238,10 +244,10 @@
 ;(setq-default mode-line-format
 (setq-default frame-title-format
               (list '((buffer-file-name " %f"
-                       (dired-directory
-			dired-directory
-			(revert-buffer-function " %b"
-						("%b - Dir:  " default-directory)))))))
+		(dired-directory
+		dired-directory
+		(revert-buffer-function " %b"
+					("%b - Dir:  " default-directory)))))))
 
 
 (require 'wttrin)
@@ -1394,5 +1400,6 @@ Other buffers: %s(my/number-names my/last-buffers)
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(minibuffer-prompt ((default (:foreground "blue")) (nil (:background "white"))))
+ '(minibuffer-prompt ((default (:foreground "blue"))
+		      (nil (:background "grey"))))
  )
