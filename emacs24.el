@@ -1388,9 +1388,12 @@ Other buffers: %s(my/number-names my/last-buffers)
    ("4" (my/switch-to-buffer 4))
    ("5" (my/switch-to-buffer 5))
    ("i" (ido-switch-buffer))
-   ("q" nil))
+   ("I" (ibuffer))
+   ("q" nil)
+   )
 
 (global-set-key (kbd "C-x b") 'my/switch-to-buffer/body)
+(global-set-key (kbd "C-x C-b") 'my/switch-to-buffer/body)
 
 (defhydra hydra-tags ()
   "Navigate matching tags"
