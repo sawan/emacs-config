@@ -212,7 +212,7 @@
 )
 
 (defun minibuffer-text-size ()
-  (setq-local  'face-remapping-alist
+  (setq-local  face-remapping-alist
 	       '((default :height 1.5))))
 
 (defun echo-area-text-size()
