@@ -29,7 +29,6 @@
 	  undo-tree
 	  bm
 	  pos-tip
-	  auto-complete
 	  ecb
 	  yasnippet
 	  rainbow-delimiters
@@ -78,8 +77,6 @@
 	  beacon
 	  react-snippets
 	  jsx-mode
-	  tern
-	  tern-auto-complete
 	  tj-mode
 	  volatile-highlights
 	  wttrin
@@ -279,6 +276,8 @@
 ; if you want to set it only for a specific mode
 ;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
 
+(global-company-mode t)
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;;;; utility functions
 
@@ -1091,13 +1090,6 @@ Version 2015-02-07
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
 
-;;;; autocomplete
-(require 'auto-complete-config)
-(ac-config-default)
-(auto-complete-mode 1)
-(add-hook 'find-file-hook 'auto-complete-mode)
-(add-to-list 'ac-modes 'yaml-mode)
-
 ;;;; python mode
 (require 'python)
 
@@ -1169,24 +1161,12 @@ Version 2015-02-07
 
 ;;;elpy
 (elpy-enable)
-(setq elpy-rpc-backend "jedi")
+(pyvenv-activate "/Users/svithlani/src/sports-app")
+(setq elpy-rpc-backend "company-jedi")
 
 (key-chord-define python-mode-map "yi" 'yas-insert-snippet)
 
 (add-hook 'python-mode-hook 'which-function-mode)
-
-;;;; Javascript
-(after 'tern
-  (require 'tern-auto-complete)
-  (tern-ac-setup)
-  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-  (add-hook 'jsx-mode-hook (lambda () (tern-mode t))))
-
-(require 'tern)
-
-(defun delete-tern-process ()
-  (interactive)
-  (delete-process "Tern"))
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
