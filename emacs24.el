@@ -3,12 +3,11 @@
 (require 'package)
 
 (setq package-user-dir "~/.emacs.d/elpa/")
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/")
-	     '("marmalade" . "http://marmalade-repo.org/packages/"))
-
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+(add-to-list 'package-archives '(
+	     ("melpa" . "http://melpa.milkbox.net/packages/")
+	     ("marmalade" . "http://marmalade-repo.org/packages/")
+	     ("elpy" . "http://jorgenschaefer.github.io/packages/"))
+)
 
 
 (package-initialize)
@@ -29,7 +28,6 @@
 	  undo-tree
 	  bm
 	  pos-tip
-	  auto-complete
 	  ecb
 	  yasnippet
 	  rainbow-delimiters
@@ -79,7 +77,6 @@
 	  react-snippets
 	  jsx-mode
 	  tern
-	  tern-auto-complete
 	  tj-mode
 	  volatile-highlights
 	  wttrin
@@ -273,6 +270,8 @@
 (setq swoop-use-target-magnifier-around: 10)
 (setq swoop-use-target-magnifier-size: 1.2)
 
+;; Company mode
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;;;; utility functions
 
@@ -1085,13 +1084,6 @@ Version 2015-02-07
                              (define-key yaml-mode-map
                                (kbd "RET") 'newline-and-indent)))
 
-;;;; autocomplete
-(require 'auto-complete-config)
-(ac-config-default)
-(auto-complete-mode 1)
-(add-hook 'find-file-hook 'auto-complete-mode)
-(add-to-list 'ac-modes 'yaml-mode)
-
 ;;;; python mode
 (require 'python)
 
@@ -1165,22 +1157,8 @@ Version 2015-02-07
 (elpy-enable)
 (setq elpy-rpc-backend "jedi")
 
-(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
-
 (add-hook 'python-mode-hook 'which-function-mode)
 
-;;;; Javascript
-(after 'tern
-  (require 'tern-auto-complete)
-  (tern-ac-setup)
-  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-  (add-hook 'jsx-mode-hook (lambda () (tern-mode t))))
-
-(require 'tern)
-
-(defun delete-tern-process ()
-  (interactive)
-  (delete-process "Tern"))
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
@@ -1197,9 +1175,9 @@ Version 2015-02-07
   ("w" avy-goto-word-1 "word" :color blue)
   ("c" avy-goto-char   "char" :color blue)
   ("C" avy-goto-char-2 "char-2" :color blue)
-  ("r" avy-copy-region "region" :color red)
-  ("L" avy-copy-line "region" :color red)
-  ("m" avy-move-line "region" :color red)
+  ("r" avy-copy-region "copy-region" :color red)
+  ("l" avy-copy-line "copy-line" :color red)
+  ("m" avy-move-line "move-line" :color red)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f1>") 'hydra-avy/body)
