@@ -223,6 +223,11 @@
 (add-hook 'minibuffer-setup-hook 'minibuffer-text-size)
 (echo-area-text-size)
 
+(with-current-buffer (get-buffer  " *Minibuf-1*")
+  (setq-local  face-remapping-alist
+	       '((default :height 2.0))))
+
+
 ;; required on OS X -- pyflakes
 (add-to-list 'exec-path "/opt/local/bin/")
 
@@ -1162,11 +1167,9 @@ Version 2015-02-07
 
 ;;;elpy
 (elpy-enable)
-
+(setq elpy-rpc-backend "jedi")
 (when (window-system) 'ns
       (pyvenv-activate "/Users/svithlani/src/sports-app"))
-
-(setq elpy-rpc-backend "company-jedi")
 
 (add-hook 'python-mode-hook 'which-function-mode)
 
@@ -1319,8 +1322,6 @@ _b_   _f_   _q_uit      _y_ank
   ("s" string-rectangle nil)
   ("p" kill-rectangle nil)
   ("q" nil nil))
-
-;; (set-face-attribute 'default nil :font "Lucida Console-10")
 
 
 ;; https://github.com/abo-abo/hydra/wiki/Switch-to-buffer
