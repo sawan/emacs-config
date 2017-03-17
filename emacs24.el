@@ -209,13 +209,12 @@
 )
 
 (defun minibuffer-text-size ()
-  (setq-local  'face-remapping-alist
-	       '((default :height 1.5)))
+  (setq-local  face-remapping-alist
+	       '((default :height 1.5))))
 
 (defun echo-area-text-size()
 ;; https://www.emacswiki.org/emacs/EchoArea
   ;; Most strange.....
-  (interactive)
   (with-current-buffer (get-buffer " *Echo Area 0*")
     (setq-local face-remapping-alist
 		'((default (:height 1.5 variable-pitch)))))
@@ -272,6 +271,13 @@
 
 ;; Company mode
 (add-hook 'after-init-hook 'global-company-mode)
+
+(require 'pretty-mode)
+; if you want to set it globally
+(global-pretty-mode t)
+; if you want to set it only for a specific mode
+;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
+
 
 ;;;; utility functions
 
