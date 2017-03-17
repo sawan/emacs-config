@@ -3,12 +3,11 @@
 (require 'package)
 
 (setq package-user-dir "~/.emacs.d/elpa/")
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/")
-	     '("marmalade" . "http://marmalade-repo.org/packages/"))
-
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+(add-to-list 'package-archives '(
+	     ("melpa" . "http://melpa.milkbox.net/packages/")
+	     ("marmalade" . "http://marmalade-repo.org/packages/")
+	     ("elpy" . "http://jorgenschaefer.github.io/packages/"))
+)
 
 
 (package-initialize)
@@ -269,6 +268,8 @@
 (setq swoop-use-target-magnifier-around: 10)
 (setq swoop-use-target-magnifier-size: 1.2)
 
+;; Company mode
+(add-hook 'after-init-hook 'global-company-mode)
 
 (require 'pretty-mode)
 ; if you want to set it globally
@@ -1161,10 +1162,11 @@ Version 2015-02-07
 
 ;;;elpy
 (elpy-enable)
-(pyvenv-activate "/Users/svithlani/src/sports-app")
-(setq elpy-rpc-backend "company-jedi")
 
-(key-chord-define python-mode-map "yi" 'yas-insert-snippet)
+(when (window-system) 'ns
+      (pyvenv-activate "/Users/svithlani/src/sports-app"))
+
+(setq elpy-rpc-backend "company-jedi")
 
 (add-hook 'python-mode-hook 'which-function-mode)
 
@@ -1183,12 +1185,12 @@ Version 2015-02-07
   ("w" avy-goto-word-1 "word" :color blue)
   ("c" avy-goto-char   "char" :color blue)
   ("C" avy-goto-char-2 "char-2" :color blue)
-  ("r" avy-copy-region "region" :color red)
-  ("L" avy-copy-line "region" :color red)
-  ("m" avy-move-line "region" :color red)
+  ("r" avy-copy-region "copy-region" :color red)
+  ("L" avy-copy-line "copy-line" :color red)
+  ("m" avy-move-line "move-line" :color red)
   ("q" nil "quit"))
 
-(global-set-key (kbd "<f1>") 'hydra-avy/body)
+(global-set-key (kbd "<C-tab>") 'hydra-avy/body)
 
 (defhydra hydra-text-commands ()
   "Text commands"
