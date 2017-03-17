@@ -1182,11 +1182,11 @@ Version 2015-02-07
   ("c" avy-goto-char   "char" :color blue)
   ("C" avy-goto-char-2 "char-2" :color blue)
   ("r" avy-copy-region "copy-region" :color red)
-  ("l" avy-copy-line "copy-line" :color red)
+  ("L" avy-copy-line "copy-line" :color red)
   ("m" avy-move-line "move-line" :color red)
   ("q" nil "quit"))
 
-(global-set-key (kbd "<f1>") 'hydra-avy/body)
+(global-set-key (kbd "<C-tab>") 'hydra-avy/body)
 
 (defhydra hydra-text-commands ()
   "Text commands"
