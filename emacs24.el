@@ -1367,7 +1367,7 @@ _b_   _f_   _q_uit      _y_ank
 			       :body-pre (setq my/last-buffers
 		               (my/name-of-buffers 6)))
 "
-Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit
+Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit O: other-window
 "
    ("o" (my/switch-to-buffer 0))
    ("1" (my/switch-to-buffer 1))
@@ -1377,6 +1377,7 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit
    ("5" (my/switch-to-buffer 5))
    ("i" (ido-switch-buffer))
    ("I" (ibuffer) :color blue)
+   ("O" other-window :color red)
    ("q" nil :color red)
    )
 
