@@ -1181,13 +1181,10 @@ Version 2015-02-07
 	(kbd "<C-.>") 'pop-tag-mark
 )))
 
-;;;; ack
-;; http://nschum.de/src/emacs/full-ack/
-(autoload 'ack-same "full-ack" nil t)
-(autoload 'ack "full-ack" nil t)
-(autoload 'ack-find-same-file "full-ack" nil t)
-(autoload 'ack-find-file "full-ack" nil t)
-;(setq ack-executable "~/../../bin/ack")
+;;;; ag.el
+(require 'ag)
+(setq ag-executable "/opt/local/bin/ag")
+
 
 ;;;; Hydra configurations
 (defhydra hydra-avy ()
@@ -1367,20 +1364,20 @@ _b_   _f_   _q_uit      _y_ank
 
 
 (defhydra my/switch-to-buffer (:exit t
-				     :body-pre (setq my/last-buffers
-						     (my/name-of-buffers 5)))
+			       :body-pre (setq my/last-buffers
+		               (my/name-of-buffers 6)))
 "
 Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit
 "
-   ("o" (my/switch-to-buffer 1))
+   ("o" (my/switch-to-buffer 0))
    ("1" (my/switch-to-buffer 1))
    ("2" (my/switch-to-buffer 2))
    ("3" (my/switch-to-buffer 3))
    ("4" (my/switch-to-buffer 4))
    ("5" (my/switch-to-buffer 5))
    ("i" (ido-switch-buffer))
-   ("I" (ibuffer) "IBuffer" :color :blue)
-   ("q" nil)
+   ("I" (ibuffer) :color blue)
+   ("q" nil :color red)
    )
 
 (global-set-key (kbd "C-x b") 'my/switch-to-buffer/body)
@@ -1400,6 +1397,9 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(elpy-modules
+   (quote
+    (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(package-selected-packages
    (quote
     (company-dict company-emoji company-shell company-web zerodark-theme zenburn-theme zen-and-art-theme yaml-mode wttrin wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode company-jedi color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
