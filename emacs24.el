@@ -1013,13 +1013,6 @@ Version 2015-02-07
 ;(global-set-key (kbd "M-x") 'execute-extended-command)
 
 
-;; Set breadcrumbs in visited buffers for navigation
-(require 'breadcrumb)
-(key-chord-define-global "bs" 'bc-set)
-(key-chord-define-global "bp" 'bc-previous)
-(key-chord-define-global "bn" 'bc-next)
-(key-chord-define-global "bl" 'bc-list)
-
 ;;;; fastnav
 (require 'fastnav)
 (global-set-key "\M-r" 'replace-char-forward)
@@ -1187,6 +1180,18 @@ Version 2015-02-07
 
 
 ;;;; Hydra configurations
+
+(defhydra hydra-breadcrumb ()
+  "Breadcrumb"
+  ("s" bc-set :color blue)
+  ("n" bc-next :color red)
+  ("p" bc-previous :color red)
+  ("c" bc-clear :color red)
+  ("l" bc-list :color blue)
+  ("q" nil :color red)
+  )
+
+
 (defhydra hydra-avy ()
   "Avy"
   ("l" avy-goto-line "line" :color blue)
@@ -1199,6 +1204,7 @@ Version 2015-02-07
   ("q" nil "quit"))
 
 (global-set-key (kbd "<C-tab>") 'hydra-avy/body)
+
 
 (defhydra hydra-text-commands ()
   "Text commands"
@@ -1367,7 +1373,7 @@ _b_   _f_   _q_uit      _y_ank
 			       :body-pre (setq my/last-buffers
 		               (my/name-of-buffers 6)))
 "
-Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit O: other-window
+Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-window
 "
    ("o" (my/switch-to-buffer 0))
    ("1" (my/switch-to-buffer 1))
@@ -1377,7 +1383,7 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit O: other-w
    ("5" (my/switch-to-buffer 5))
    ("i" (ido-switch-buffer))
    ("I" (ibuffer) :color blue)
-   ("O" other-window :color red)
+   ("w" other-window :color red)
    ("q" nil :color red)
    )
 
