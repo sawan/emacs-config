@@ -3,11 +3,13 @@
 (require 'package)
 
 (setq package-user-dir "~/.emacs.d/elpa/")
-(add-to-list 'package-archives '(
-	     ("melpa" . "http://melpa.milkbox.net/packages/")
+(setq package-list-archives ())
+(setq package-archives '(
+	     ("gnu" . "https://elpa.gnu.org/packages/")
+             ("melpa" . "http://melpa.milkbox.net/packages/")
 	     ("marmalade" . "http://marmalade-repo.org/packages/")
-	     ("elpy" . "http://jorgenschaefer.github.io/packages/"))
-)
+	     ("elpy" . "http://jorgenschaefer.github.io/packages/")
+))
 
 
 (package-initialize)
@@ -139,6 +141,33 @@
 
 (require 'thing-cmds)
 
+
+(defun bigger-text ()
+  (interactive)
+  (text-scale-increase 2.5)
+  )
+
+(defun smaller-text ()
+  (interactive)
+  (text-scale-decrease 2.5)
+)
+
+(defun minibuffer-text-size ()
+  (setq-local  face-remapping-alist
+	       '((default :height 1.5))))
+
+(defun echo-area-text-size()
+;; https://www.emacswiki.org/emacs/EchoArea
+  ;; Most strange.....
+  (with-current-buffer (get-buffer " *Echo Area 0*")
+    (setq-local face-remapping-alist
+		'((default (:height 1.5 variable-pitch)))))
+)
+
+(add-hook 'find-file-hook 'bigger-text)
+(add-hook 'minibuffer-setup-hook 'minibuffer-text-size)
+(echo-area-text-size)
+
 (wrap-region-mode t)
 (beacon-mode)
 
@@ -197,35 +226,10 @@
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
 
-(defun bigger-text ()
-  (interactive)
-  (text-scale-increase 2.5)
-  )
 
-(defun smaller-text ()
-  (interactive)
-  (text-scale-decrease 2.5)
-)
-
-(defun minibuffer-text-size ()
-  (setq-local  face-remapping-alist
-	       '((default :height 1.5))))
-
-(defun echo-area-text-size()
-;; https://www.emacswiki.org/emacs/EchoArea
-  ;; Most strange.....
-  (with-current-buffer (get-buffer " *Echo Area 0*")
-    (setq-local face-remapping-alist
-		'((default (:height 1.5 variable-pitch)))))
-)
-
-(add-hook 'find-file-hook 'bigger-text)
-(add-hook 'minibuffer-setup-hook 'minibuffer-text-size)
-(echo-area-text-size)
-
-(with-current-buffer (get-buffer  " *Minibuf-1*")
-  (setq-local  face-remapping-alist
-	       '((default :height 2.0))))
+;; (with-current-buffer (get-buffer  " *Minibuf-1*")
+;;   (setq-local  face-remapping-alist
+;; 	       '((default :height 2.0))))
 
 
 ;; required on OS X -- pyflakes
@@ -241,7 +245,7 @@
 (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
 
 ;; enable paren highliting for all files
-(add-hook 'find-file-hooks (
+(add-hook 'find-file-hook (
 			    lambda()
 				  (show-paren-mode t)
 				  (volatile-highlights-mode t)
@@ -273,15 +277,13 @@
 (setq swoop-use-target-magnifier-around: 10)
 (setq swoop-use-target-magnifier-size: 1.2)
 
-;; Company mode
-(add-hook 'after-init-hook 'global-company-mode)
-
 (require 'pretty-mode)
 ; if you want to set it globally
 (global-pretty-mode t)
 ; if you want to set it only for a specific mode
 ;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
 
+;; Company mode
 (global-company-mode t)
 (add-hook 'after-init-hook 'global-company-mode)
 
@@ -474,6 +476,7 @@ instead of a char."
         (isearch-forward regexp-p no-recursive-edit)))))
 
 (global-set-key (kbd "M-s") 'isearch-forward-at-point)
+(define-key isearch-mode-map (kbd "<return>") 'isearch-exit)
 
 ;; jump to matching parenthesis -- currently seems to support () and []
 (defun goto-match-paren (arg)
@@ -1172,6 +1175,11 @@ Version 2015-02-07
       (pyvenv-activate "/Users/svithlani/src/sports-app"))
 
 (add-hook 'python-mode-hook 'which-function-mode)
+(add-hook 'elpy-mode-hook
+     (lambda ()
+       (local-set-key
+	(kbd "<C-.>") 'pop-tag-mark
+)))
 
 ;;;; ack
 ;; http://nschum.de/src/emacs/full-ack/
@@ -1362,7 +1370,7 @@ _b_   _f_   _q_uit      _y_ank
 				     :body-pre (setq my/last-buffers
 						     (my/name-of-buffers 5)))
 "
-Other buffers: %s(my/number-names my/last-buffers)
+Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit
 "
    ("o" (my/switch-to-buffer 1))
    ("1" (my/switch-to-buffer 1))
@@ -1371,7 +1379,7 @@ Other buffers: %s(my/number-names my/last-buffers)
    ("4" (my/switch-to-buffer 4))
    ("5" (my/switch-to-buffer 5))
    ("i" (ido-switch-buffer))
-   ("I" (ibuffer))
+   ("I" (ibuffer) "IBuffer" :color :blue)
    ("q" nil)
    )
 
@@ -1392,14 +1400,14 @@ Other buffers: %s(my/number-names my/last-buffers)
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(paradox-github-token t)
- )
+ '(package-selected-packages
+   (quote
+    (company-dict company-emoji company-shell company-web zerodark-theme zenburn-theme zen-and-art-theme yaml-mode wttrin wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode company-jedi color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
+ '(paradox-github-token t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(minibuffer-prompt ((default (:foreground "blue"))
-		      (nil (:background "grey"))))
- )
+ '(minibuffer-prompt ((default (:foreground "blue")) (nil (:background "grey")))))
