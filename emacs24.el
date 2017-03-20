@@ -858,10 +858,29 @@ Version 2015-02-07
 
 (load-file "~/.emacs.d/vendors/term-fix.el")
 
+;;;; Setup some MS Windows specific stuff
+(when (window-system) 'w32
+      (setq tramp-default-method "plink")
+      (setq w32-pass-lwindow-to-system nil)
+      (setq w32-lwindow-modifier 'super) ; Left Windows key
+
+      (setq w32-pass-rwindow-to-system nil)
+      (setq w32-rwindow-modifier 'super) ; Right Windows key
+
+      ;; ag.el
+      (setq ag-executable "c:/msys64/mingw64/bin/ag.exe")
+
+      (setq explicit-shell-file-name "c:/msys64/cygwin64/bin/bash.exe")
+      (setq shell-file-name "bash.exe")
+      (setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
+      (setenv "SHELL" shell-file-name)
+      (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+
+      ;; Make this behave the same was as on Mac OS X
+      (global-set-key (kbd "s-s") 'save-buffer))
+
 ;;;; Tramp
 (require 'tramp)
-(when (window-system) 'w32
-      (setq tramp-default-method "plink"))
 (setq  tramp-completion-reread-directory-timeout 0)
 
 
@@ -1182,7 +1201,9 @@ Version 2015-02-07
 
 ;;;; ag.el
 (require 'ag)
-(setq ag-executable "/opt/local/bin/ag")
+(when (window-system) 'ns
+      (setq ag-executable "/opt/local/bin/ag")
+)
 
 
 ;;;; Hydra configurations
@@ -1201,12 +1222,22 @@ Version 2015-02-07
 (defhydra hydra-avy ()
   "Avy"
   ("l" avy-goto-line "line" :color blue)
-  ("w" avy-goto-word-1 "word" :color blue)
-  ("c" avy-goto-char   "char" :color blue)
-  ("C" avy-goto-char-2 "char-2" :color blue)
-  ("r" avy-copy-region "copy-region" :color red)
-  ("L" avy-copy-line "copy-line" :color red)
-  ("m" avy-move-line "move-line" :color red)
+
+  ("C" avy-goto-char   "char" :color blue)
+  ("c" avy-goto-char-2 "char-2" :color blue)
+
+  ("r" avy-copy-region "copy-region" :color blue)
+  ("L" avy-copy-line "copy-line" :color blue)
+
+  ("m" avy-move-line "move-line" :color blue)
+  ("M" avy-move-region "move-region" :color blue)
+
+  ("w" avy-goto-word-1 "word-1" :color blue)
+  ("W" avy-goto-word-0 "word-0" :color blue)
+
+  ("k" avy-kill-region "kill-region" :color blue)
+  ("L" avy-kill-whole-line "kill-line" :color blue)
+
   ("q" nil "quit"))
 
 (global-set-key (kbd "<C-tab>") 'hydra-avy/body)
@@ -1390,6 +1421,7 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
    ("i" (ido-switch-buffer))
    ("I" (ibuffer) :color blue)
    ("w" other-window :color red)
+   ("d" delete-other-windows :color blue)
    ("q" nil :color red)
    )
 
