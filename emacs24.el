@@ -742,13 +742,9 @@ Position the cursor at its beginning, according to the current mode."
 ; copy and paste various types of data
 (require 'thing-edit)
 
-(require 'highlight-symbol)
-
 ;; revert all open buffers, useful when VC changes happen in the background
 (require 'revbufs)
 
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; http://endlessparentheses.com/implementing-comment-line.html and
 (defun endless/comment-line-or-region (n)
@@ -916,15 +912,11 @@ Version 2015-02-07
 (browse-kill-ring-default-keybindings)
 (global-set-key (kbd "C-c k") 'browse-kill-ring)
 
-;;;; bm.el config -- bookmarks
-(setq bm-restore-repository-on-load t)
+;;;; bm.el config
 (require 'bm)
-(global-set-key (kbd "<C-f1>") 'bm-toggle)
-(global-set-key (kbd "<C-f2>") 'bm-next)
-(global-set-key (kbd "<C-f3>") 'bm-previous)
-(global-set-key (kbd "<C-f4>") 'bm-show)
-(global-set-key (kbd "<C-f5>") 'bm-show-all)
-(global-set-key (kbd "<C-f6>") 'bm-remove-all-current-buffer)
+
+;; reload bookmarks
+(setq bm-restore-repository-on-load t)
 
 ;; ask for annotation upon defining a bookmark
 (setq-default bm-annotate-on-create t)
@@ -944,12 +936,37 @@ Version 2015-02-07
 ;; Saving bookmark data on killing a buffer
 (add-hook 'kill-buffer-hook 'bm-buffer-save)
 
+;; Restore on revert
+(add-hook 'after-revert-hook #'bm-buffer-restore)
+
 ;; Saving the repository to file when on exit.
 ;; kill-buffer-hook is not called when emacs is killed, so we
 ;; must save all bookmarks first.
 (add-hook 'kill-emacs-hook '(lambda nil
                               (bm-buffer-save-all)
                               (bm-repository-save)))
+
+(setq bm-marker 'bm-marker-right)
+
+(setq bm-highlight-style 'bm-highlight-line-and-fringe)
+
+
+(defhydra hydra-bookmarks ()
+  "Bookmarks"
+  ("s" bm-toggle "toggle" :color red)
+  ("n" bm-next   "next"   :color red)
+  ("p" bm-previous "previous" :color red)
+  ("a" bm-show "show" :color blue)
+  ("A" bm-show-all "SHOW" :color blue)
+  ("c" bm-remove-all-current-buffer "clear" :color blue)
+  ("l" bm-bookmark-line "line" :color blue)
+  ("r" bm-bookmark-regexp "regex" :color blue)
+  ("q" nil :color red)
+  )
+
+(defun bm()
+  (interactive)
+  (hydra-bookmarks/body))
 
 ;;;; ido mode
 (require 'ido)
@@ -1193,11 +1210,6 @@ Version 2015-02-07
       (pyvenv-activate "/Users/svithlani/src/sports-app/"))
 
 (add-hook 'python-mode-hook 'which-function-mode)
-(add-hook 'elpy-mode-hook
-     (lambda ()
-       (local-set-key
-	(kbd "<C-.>") 'pop-tag-mark
-)))
 
 ;;;; ag.el
 (require 'ag)
@@ -1262,6 +1274,8 @@ Version 2015-02-07
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
 
+
+(require 'highlight-symbol)
 (defhydra hydra-highlight-symbol ()
   "Highlight symbol"
   ("h" highlight-symbol-at-point "highlight-toggle" :color red)
@@ -1434,6 +1448,25 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("b" sgml-skip-tag-backward "Backward" :color red)
   ("q" nil "quit"))
 
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+
+(defhydra hydra-er()
+  "Expand Region"
+  ("w" er/mark-word "word" :color red)
+  ("s" er/mark-symbol "symbol" :color red)
+  ("m" er/mark-method-call "method-call" :color red)
+  ("i" er/mark-inside-quotes "i-quotes" :color red)
+  ("p" er/mark-inside-pairs "i-pairs" :color red)
+  ("P" er/mark-outside-pairs "o-pairs" :color red)
+  ("q" nil )
+  ("<return>" nil))
+
+(defun er()
+  (interactive)
+  (hydra-er/body))
 
 (put 'downcase-region 'disabled nil)
 
