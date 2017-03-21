@@ -38,7 +38,6 @@
 	  cedet
 	  hungry-delete
 	  full-ack
-	  undo-tree
 	  visual-regexp
 	  visual-regexp-steroids
 	  csv-mode
@@ -283,14 +282,30 @@
 (setq swoop-use-target-magnifier-around: 10)
 (setq swoop-use-target-magnifier-size: 1.2)
 
-(require 'pretty-mode)
-; if you want to set it globally
-(global-pretty-mode t)
-; if you want to set it only for a specific mode
+;; (require 'pretty-mode)
+;; if you want to set it globally
+;; (global-pretty-mode t)
+
+;; if you want to set it only for a specific mode
 ;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
 
 ;; Company mode
+(eval-after-load 'company
+  '(progn
+     (define-key company-active-map
+       (kbd "TAB") 'company-complete-common-or-cycle)
+     (define-key company-active-map (kbd "<tab>")
+       'company-complete-common-or-cycle)))
+
+(eval-after-load 'company
+  '(progn
+     (define-key company-active-map
+       (kbd "S-TAB") 'company-select-previous)
+     (define-key company-active-map
+       (kbd "<backtab>") 'company-select-previous)))
+
 (global-company-mode t)
+(setq company-minimum-prefix-length 1)
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;;;; utility functions
@@ -857,6 +872,8 @@ Version 2015-02-07
 ;;;; Setup some MS Windows specific stuff
 (when (window-system) 'w32
       (setq tramp-default-method "plink")
+      (add-to-list 'tramp-remote-path "~/bin")
+
       (setq w32-pass-lwindow-to-system nil)
       (setq w32-lwindow-modifier 'super) ; Left Windows key
 
@@ -878,7 +895,8 @@ Version 2015-02-07
 ;;;; Tramp
 (require 'tramp)
 (setq  tramp-completion-reread-directory-timeout 0)
-
+(add-hook 'tramp-mode-hook
+	  #'(setq ag-executable "~/bin/ag"))
 
 ;; (setq tramp-verbose 10)
 ;; (setq tramp-debug-buffer t)
