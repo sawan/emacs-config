@@ -1291,11 +1291,10 @@ ipdb.set_trace(); ## DEBUG ##"
   ("w" er/mark-word "word" :color red)
   ("s" er/mark-symbol "symbol" :color red)
   ("m" er/mark-method-call "method-call" :color red)
-  ("i" er/mark-inside-quotes "i-quotes" :color red)
+  ("q" er/mark-inside-quotes "i-quotes" :color red)
   ("p" er/mark-inside-pairs "i-pairs" :color red)
   ("P" er/mark-outside-pairs "o-pairs" :color red)
   ("c" copy-region-as-kill "copy-region" :color blue)
-  ("q" nil )
   ("<return>" nil))
 
 (defun er()
@@ -1500,12 +1499,14 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
    ("p" previous-line)
    ("f" forward-char)
    ("b" backward-char)
+   ("w" forward-word)
+   ("q" backward-word)
    ("a" beginning-of-line)
    ("e" move-end-of-line)
    ("d" scroll-up-command)
    ("u" scroll-down-command)
    ("l" recenter-top-bottom :color blue)
-   ("q" nil :color blue))
+   ("<return>" nil :color blue))
 
 (global-set-key (kbd "C-n") #'hydra-move/body)
 
