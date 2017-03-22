@@ -1283,23 +1283,66 @@ ipdb.set_trace(); ## DEBUG ##"
 (global-set-key (kbd "<C-tab>") 'hydra-avy/body)
 
 
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+(defhydra hydra-er()
+  "Expand Region"
+  ("w" er/mark-word "word" :color red)
+  ("s" er/mark-symbol "symbol" :color red)
+  ("m" er/mark-method-call "method-call" :color red)
+  ("i" er/mark-inside-quotes "i-quotes" :color red)
+  ("p" er/mark-inside-pairs "i-pairs" :color red)
+  ("P" er/mark-outside-pairs "o-pairs" :color red)
+  ("c" copy-region-as-kill "copy-region" :color blue)
+  ("q" nil )
+  ("<return>" nil))
+
+(defun er()
+  (interactive)
+  (hydra-er/body))
+
+
 (defhydra hydra-text-commands ()
   "Text commands"
-  ("r" copy-region-as-kill "copy-region" :color blue)
+  ("c" copy-region-as-kill "copy-region" :color blue)
   ("w" thing-copy-word "copy-word" :color blue)
   ("l" thing-copy-line "copy-line"  :color blue)
   ("s" thing-copy-symbol "copy-symbol" :color blue)
-  ("b" thing-copy-to-line-beginning "copy-line-beginning" :color blue)
-  ("e" thing-copy-to-line-end "copy-line-end" :color blue)
-  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
-  ("p" djcb-duplicate-line "dup-line" :color blue)
-  ("u" move-text-up "move-up" :color red)
-  ("d" move-text-down "move-down" :color red)
   ("y" yank-n-times "multiple paste" :color blue )
+  ("e" hydra-er/body "expand-region" :color blue)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
 
+
+(defhydra hydra-lines (goto-map ""
+                           :pre (linum-mode 1)
+                           :post (linum-mode -1))
+  "Lines"
+  ("c" thing-copy-line "copy" :color blue)
+  ("e" thing-copy-to-line-end "copy-end" :color blue)
+  ("b" thing-copy-to-line-beginning "copy-begin" :color blue)
+  ("D" djcb-duplicate-line "dup-line" :color red)
+  ("g" goto-line "goto-line")
+  ("m" set-mark-command "mark" :bind nil)
+  ("s" xah-select-current-line "Select current" :color red)
+  ("r" copy-region-as-kill "copy-region" :color blue)
+  ("R" join-region "join-region" :color blue)
+  ("n" forward-line "forward")
+  ("p" previous-line "backwards")
+  ("u" move-text-up "move-up" :color red)
+  ("d" move-text-down "move-down" :color red)
+  ("k" kill-lines "kill-lines" :color blue)
+  ("l" linum-mode "linum" :color blue)
+  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
+  ("j" top-join-line "join-next-line" :color red)
+  ("J" delete-indentation "join-prev-line" :color red)
+  ("h" highlight-duplicate-lines-in-region-or-buffer :color red)
+  ("o" ov-clear)
+  ("q" nil "quit"))
+
+(global-set-key (kbd "<f4>") 'hydra-lines/body)
 
 (require 'highlight-symbol)
 (defhydra hydra-highlight-symbol ()
@@ -1333,33 +1376,6 @@ ipdb.set_trace(); ## DEBUG ##"
 
 (global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
 
-(defhydra hydra-lines (goto-map ""
-                           :pre (linum-mode 1)
-                           :post (linum-mode -1))
-  "Lines"
-  ("c" thing-copy-line "copy" :color blue)
-  ("e" thing-copy-to-line-end "copy-end" :color blue)
-  ("b" thing-copy-to-line-beginning "copy-begin" :color blue)
-  ("D" djcb-duplicate-line "dup-line" :color red)
-  ("g" goto-line "goto-line")
-  ("m" set-mark-command "mark" :bind nil)
-  ("s" xah-select-current-line "Select current" :color red)
-  ("r" copy-region-as-kill "copy-region" :color blue)
-  ("R" join-region "join-region" :color blue)
-  ("n" forward-line "forward")
-  ("p" previous-line "backwards")
-  ("u" move-text-up "move-up" :color red)
-  ("d" move-text-down "move-down" :color red)
-  ("k" kill-lines "kill-lines" :color blue)
-  ("l" linum-mode "linum" :color blue)
-  ("x" kill-line-remove-blanks "kill-line-rb" :color blue)
-  ("j" top-join-line "join-next-line" :color red)
-  ("J" delete-indentation "join-prev-line" :color red)
-  ("h" highlight-duplicate-lines-in-region-or-buffer :color red)
-  ("o" ov-clear)
-  ("q" nil "quit"))
-
-(global-set-key (kbd "<f4>") 'hydra-lines/body)
 
 ;;;; fastnav
 (require 'fastnav)
@@ -1475,24 +1491,23 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("q" nil "quit"))
 
 
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
+(defhydra hydra-move
+  (:body-pre (next-line))
+   "move"
+   ("n" next-line)
+   ("p" previous-line)
+   ("f" forward-char)
+   ("b" backward-char)
+   ("a" beginning-of-line)
+   ("e" move-end-of-line)
+   ("d" scroll-up-command)
+   ("u" scroll-down-command)
+   ("l" recenter-top-bottom :color blue)
+   ("q" nil :color blue))
 
-(defhydra hydra-er()
-  "Expand Region"
-  ("w" er/mark-word "word" :color red)
-  ("s" er/mark-symbol "symbol" :color red)
-  ("m" er/mark-method-call "method-call" :color red)
-  ("i" er/mark-inside-quotes "i-quotes" :color red)
-  ("p" er/mark-inside-pairs "i-pairs" :color red)
-  ("P" er/mark-outside-pairs "o-pairs" :color red)
-  ("q" nil )
-  ("<return>" nil))
-
-(defun er()
-  (interactive)
-  (hydra-er/body))
+(global-set-key (kbd "C-n") #'hydra-move/body)
 
 (put 'downcase-region 'disabled nil)
 
