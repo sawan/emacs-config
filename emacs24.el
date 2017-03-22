@@ -1266,7 +1266,7 @@ Version 2015-02-07
   ("W" avy-goto-word-0 "word-0" :color blue)
 
   ("k" avy-kill-region "kill-region" :color blue)
-  ("L" avy-kill-whole-line "kill-line" :color blue)
+  ("K" avy-kill-whole-line "kill-line" :color blue)
 
   ("q" nil "quit"))
 
