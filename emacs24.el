@@ -334,6 +334,15 @@
 	    (ov-set (ov-line $p) 'face '(:foreground "red")))
 	  (sort (delete-dups $dup) '<)))))
 
+(defhydra hydra-dup-lines ()
+  "Duplicate lines"
+  ("h" highlight-duplicate-lines-in-region-or-buffer :color red)
+  ("n" ov-goto-next :color red)
+  ("p" ov-goto-previous :color red)
+  ("c" ov-clear :color blue)
+  ("q" nil :color blue)
+  )
+
 ;; http://www.emacswiki.org/emacs-en/PosTip
 (defun describe-function (function)
    "Display the full documentation of FUNCTION (a symbol) in tooltip."
@@ -1287,8 +1296,6 @@ ipdb.set_trace(); ## DEBUG ##"
   ("u" move-text-up "move-up" :color red)
   ("d" move-text-down "move-down" :color red)
   ("y" yank-n-times "multiple paste" :color blue )
-  ("u" move-text-up "move-up" :color :red)
-  ("d" move-text-down "move-down" :color red)
   ("q" nil "quit"))
 
 (global-set-key (kbd "<f2>") 'hydra-text-commands/body)
