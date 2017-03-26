@@ -1497,8 +1497,12 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("e" move-end-of-line)
   ("d" scroll-up-command)
   ("u" scroll-down-command)
+  ("t" beginning-of-buffer)
+  ("g" avy-goto-line)
+  ("c" avy-goto-char-2)
+  ("T" end-of-buffer)
   ("l" recenter-top-bottom "re-center" :color blue)
-  ("<return>" nil "quit" :color blue))
+  ("<ESC>" nil "quit" :color blue))
 
 (global-set-key (kbd "C-n") #'hydra-move/next-line)
 (global-set-key (kbd "C-p") #'hydra-move/previous-line)
