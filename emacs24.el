@@ -266,14 +266,6 @@
 					("%b - Dir:  " default-directory)))))))
 
 
-(require 'wttrin)
-(setq wttrin-default-cities '("Melbourne"
-			      "London"
-			      "Mumbai"
-			      "Dar-es-salaam"
-			      ))
-
-
 (require 'swoop)
 (setq swoop-window-split-current-window: t)
 (setq swoop-window-split-direction: 'split-window-vertically)
@@ -1488,26 +1480,32 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("b" sgml-skip-tag-backward "Backward" :color red)
   ("q" nil "quit"))
 
-
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
 (defhydra hydra-move
   (:body-pre (next-line))
-   "move"
-   ("n" next-line)
-   ("p" previous-line)
-   ("f" forward-char)
-   ("b" backward-char)
-   ("w" forward-word)
-   ("q" backward-word)
-   ("a" beginning-of-line)
-   ("e" move-end-of-line)
-   ("d" scroll-up-command)
-   ("u" scroll-down-command)
-   ("l" recenter-top-bottom :color blue)
-   ("<return>" nil "quit" :color blue))
+  "move"
+  ("a" smarter-move-beginning-of-line)
+  ("e" move-end-of-line)
+  ("n" next-line)
+  ("p" previous-line)
+  ("f" forward-char)
+  ("b" backward-char)
+  ("w" forward-word)
+  ("q" backward-word)
+  ("a" beginning-of-line)
+  ("e" move-end-of-line)
+  ("d" scroll-up-command)
+  ("u" scroll-down-command)
+  ("l" recenter-top-bottom "re-center" :color blue)
+  ("<return>" nil "quit" :color blue))
 
-(global-set-key (kbd "C-n") #'hydra-move/body)
+(global-set-key (kbd "C-n") #'hydra-move/next-line)
+(global-set-key (kbd "C-p") #'hydra-move/previous-line)
+(global-set-key (kbd "C-f") #'hydra-move/forward-char)
+(global-set-key (kbd "C-b") #'hydra-move/backward-char)
+(global-set-key (kbd "M-f") #'hydra-move/forward-word)
+(global-set-key (kbd "M-b") #'hydra-move/backward-word)
 
 
 (defhydra hydra-macro (:hint nil :color pink
