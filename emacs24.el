@@ -79,7 +79,6 @@
 	  jsx-mode
 	  tj-mode
 	  volatile-highlights
-	  wttrin
 	  boxquote
 	  ov
 	  swoop
@@ -265,14 +264,6 @@
 		dired-directory
 		(revert-buffer-function " %b"
 					("%b - Dir:  " default-directory)))))))
-
-
-(require 'wttrin)
-(setq wttrin-default-cities '("Melbourne"
-			      "London"
-			      "Mumbai"
-			      "Dar-es-salaam"
-			      ))
 
 
 (require 'swoop)
@@ -1276,11 +1267,11 @@ ipdb.set_trace(); ## DEBUG ##"
   ("W" avy-goto-word-0 "word-0" :color blue)
 
   ("k" avy-kill-region "kill-region" :color blue)
-  ("L" avy-kill-whole-line "kill-line" :color blue)
+  ("K" avy-kill-whole-line "kill-line" :color blue)
 
   ("q" nil "quit"))
 
-(global-set-key (kbd "<C-tab>") 'hydra-avy/body)
+(global-set-key (kbd "<f1>") 'hydra-avy/body)
 
 
 (require 'expand-region)
@@ -1489,26 +1480,34 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("b" sgml-skip-tag-backward "Backward" :color red)
   ("q" nil "quit"))
 
-
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
 (defhydra hydra-move
   (:body-pre (next-line))
-   "move"
-   ("n" next-line)
-   ("p" previous-line)
-   ("f" forward-char)
-   ("b" backward-char)
-   ("w" forward-word)
-   ("q" backward-word)
-   ("a" beginning-of-line)
-   ("e" move-end-of-line)
-   ("d" scroll-up-command)
-   ("u" scroll-down-command)
-   ("l" recenter-top-bottom :color blue)
-   ("<return>" nil :color blue))
+  "move"
+  ("a" smarter-move-beginning-of-line)
+  ("e" move-end-of-line)
+  ("n" next-line)
+  ("p" previous-line)
+  ("f" forward-char)
+  ("b" backward-char)
+  ("w" forward-word)
+  ("q" backward-word)
+  ("d" scroll-up-command)
+  ("u" scroll-down-command)
+  ("t" beginning-of-buffer)
+  ("T" end-of-buffer)
+  ("g" avy-goto-line)
+  ("c" avy-goto-char-2)
+  ("l" recenter-top-bottom "re-center")
+  ("<ESC>" nil "quit" :color blue))
 
-(global-set-key (kbd "C-n") #'hydra-move/body)
+(global-set-key (kbd "C-n") #'hydra-move/next-line)
+(global-set-key (kbd "C-p") #'hydra-move/previous-line)
+(global-set-key (kbd "C-f") #'hydra-move/forward-char)
+(global-set-key (kbd "C-b") #'hydra-move/backward-char)
+(global-set-key (kbd "M-f") #'hydra-move/forward-word)
+(global-set-key (kbd "M-b") #'hydra-move/backward-word)
 
 
 (defhydra hydra-macro (:hint nil :color pink
@@ -1553,13 +1552,13 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
- ;; If          there is more than one, they won't work right.
+ ;; If there is more than one, they won't work right.
  '(elpy-modules
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(package-selected-packages
    (quote
-    (color-theme-actress color-theme-approximate color-theme-cobalt color-theme-complexity color-theme-dg color-theme-dpaste color-theme-eclipse color-theme-emacs-revert-theme color-theme-github color-theme-gruber-darker color-theme-heroku color-theme-ir-black color-theme-library color-theme-modern color-theme-molokai color-theme-monokai color-theme-railscasts color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow color-theme-tango color-theme-tangotango color-theme-twilight color-theme-vim-insert-mode color-theme-wombat color-theme-x color-theme-zenburn colour-region color-theme-buffer-local company-dict company-emoji company-shell zerodark-theme zenburn-theme zen-and-art-theme yaml-mode wttrin wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
+    (monky color-theme-actress color-theme-approximate color-theme-cobalt color-theme-complexity color-theme-dg color-theme-dpaste color-theme-eclipse color-theme-emacs-revert-theme color-theme-github color-theme-gruber-darker color-theme-heroku color-theme-ir-black color-theme-library color-theme-modern color-theme-molokai color-theme-monokai color-theme-railscasts color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow color-theme-tango color-theme-tangotango color-theme-twilight color-theme-vim-insert-mode color-theme-wombat color-theme-x color-theme-zenburn colour-region color-theme-buffer-local company-dict company-emoji company-shell zerodark-theme zenburn-theme zen-and-art-theme yaml-mode wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
  '(paradox-github-token t))
 
 (custom-set-faces
