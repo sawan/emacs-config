@@ -1511,12 +1511,25 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("<RETURN>" nil "quit" :color blue)
 )
 
-(global-set-key (kbd "C-n") #'hydra-move/next-line)
-(global-set-key (kbd "C-p") #'hydra-move/previous-line)
-(global-set-key (kbd "C-f") #'hydra-move/forward-char)
-(global-set-key (kbd "C-b") #'hydra-move/backward-char)
-(global-set-key (kbd "M-f") #'hydra-move/forward-word)
-(global-set-key (kbd "M-b") #'hydra-move/backward-word)
+(defun hydra-move-keys()
+  (interactive)
+  (global-set-key (kbd "C-n") #'hydra-move/next-line)
+  (global-set-key (kbd "C-p") #'hydra-move/previous-line)
+  (global-set-key (kbd "C-f") #'hydra-move/forward-char)
+  (global-set-key (kbd "C-b") #'hydra-move/backward-char)
+  (global-set-key (kbd "M-f") #'hydra-move/forward-word)
+  (global-set-key (kbd "M-b") #'hydra-move/backward-word))
+
+(defun hydra-move-no-keys()
+  (interactive)
+  (global-set-key (kbd "C-n") #'next-line)
+  (global-set-key (kbd "C-p") #'previous-line)
+  (global-set-key (kbd "C-f") #'forward-char)
+  (global-set-key (kbd "C-b") #'backward-char)
+  (global-set-key (kbd "M-f") #'forward-word)
+  (global-set-key (kbd "M-b") #'backward-word))
+
+(hydra-move-keys)
 
 (global-origami-mode 1)
 
