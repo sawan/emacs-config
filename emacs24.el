@@ -1512,7 +1512,6 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("g" avy-goto-line "goto-line")
   ("c" avy-goto-char-2 "goto-char-2")
   ("l" recenter-top-bottom "re-center")
-  ("<ESC>" nil "quit" :color blue)
   ("<return>" nil "quit" :color blue)
   ("<RETURN>" nil "quit" :color blue)
 )
