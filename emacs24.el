@@ -775,7 +775,6 @@ Position the cursor at its beginning, according to the current mode."
 
 (global-set-key (kbd "M-;") #'endless/comment-line-or-region)
 
-
 (defun yank-n-times (n)
   "yank n number of times."
   (interactive "nPaste how many times? ")
@@ -1175,15 +1174,21 @@ ipdb.set_trace(); ## DEBUG ##"
 
 (defun python-remove-debug-breaks ()
    "Removes all debug breakpoints"
-   (flush-lines "\#\# DEBUG \#\#"))
+   (flush-lines "\#\# DEBUG \#\#")
+   (flush-lines "import ipdb")
+   (flush-lines "pp = pprint")
+   (flush-lines "ipdb.set"))
 
 (defun pdb ()
   (interactive)
-  (python-insert-breakpoint))
+  (save-excursion
+  (python-insert-string python-pdb-breakpoint-string)))
 
 (defun rpdb()
   (interactive)
-  (python-remove-debug-breaks))
+  (save-excursion
+    (beginning-of-buffer)
+    (python-remove-debug-breaks)))
 
 (defun python-insert-string(in-string)
   "Inserts string"
@@ -1482,17 +1487,24 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
+
+(defun move-and-ov(fn)
+  (funcall fn 1)
+  (ov-set (ov-line (point)) 'face '(:foreground "red"))
+  (sit-for 0.3)
+  (ov-clear))
+
 (defhydra hydra-move
-  (:timeout 5)
+  (:timeout 5 :post (ov-clear))
   "move"
-  ("a" smarter-move-beginning-of-line)
-  ("e" move-end-of-line)
-  ("n" next-line)
-  ("p" previous-line)
-  ("f" forward-char)
-  ("b" backward-char)
-  ("w" forward-word)
-  ("q" backward-word)
+  ("a" (move-and-ov #'smarter-move-beginning-of-line))
+  ("e" (move-and-ov #'move-end-of-line))
+  ("n" (move-and-ov #'next-line))
+  ("p" (move-and-ov #'previous-line))
+  ("f" (move-and-ov #'forward-char))
+  ("b" (move-and-ov #'backward-char))
+  ("w" (move-and-ov #'forward-word))
+  ("q" (move-and-ov #'backward-word))
   ("d" scroll-up)
   ("u" scroll-down)
   ("t" beginning-of-buffer)
@@ -1502,14 +1514,45 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("l" recenter-top-bottom "re-center")
   ("<ESC>" nil "quit" :color blue)
   ("<return>" nil "quit" :color blue)
-  ("<RETURN>" nil "quit" :color blue))
+  ("<RETURN>" nil "quit" :color blue)
+)
 
-(global-set-key (kbd "C-n") #'hydra-move/next-line)
-(global-set-key (kbd "C-p") #'hydra-move/previous-line)
-(global-set-key (kbd "C-f") #'hydra-move/forward-char)
-(global-set-key (kbd "C-b") #'hydra-move/backward-char)
-(global-set-key (kbd "M-f") #'hydra-move/forward-word)
-(global-set-key (kbd "M-b") #'hydra-move/backward-word)
+(defun hydra-move-keys()
+  (interactive)
+  (global-set-key (kbd "C-n") #'hydra-move/next-line)
+  (global-set-key (kbd "C-p") #'hydra-move/previous-line)
+  (global-set-key (kbd "C-f") #'hydra-move/forward-char)
+  (global-set-key (kbd "C-b") #'hydra-move/backward-char)
+  (global-set-key (kbd "M-f") #'hydra-move/forward-word)
+  (global-set-key (kbd "M-b") #'hydra-move/backward-word))
+
+(defun hydra-move-no-keys()
+  (interactive)
+  (global-set-key (kbd "C-n") #'next-line)
+  (global-set-key (kbd "C-p") #'previous-line)
+  (global-set-key (kbd "C-f") #'forward-char)
+  (global-set-key (kbd "C-b") #'backward-char)
+  (global-set-key (kbd "M-f") #'forward-word)
+  (global-set-key (kbd "M-b") #'backward-word))
+
+(hydra-move-keys)
+
+(global-origami-mode 1)
+
+(defhydra hydra-origami()
+  "Origami"
+  ("o" origami-open-node)
+  ("c" origami-close-node)
+  ("t" origami-toggle-node)
+  ("O" origami-open-all-nodes "Open")
+  ("C" origami-close-all-nodes "Close")
+  ("p" origami-previous-fold)
+  ("n" origami-next-fold)
+  ("u" origami-undo "undo")
+  ("r" origami-redo "redo")
+  ("R" origami-reset "Reset")
+  ("q" nil :color blue)
+  )
 
 
 (defhydra hydra-macro (:hint nil :color pink
