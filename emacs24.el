@@ -1174,15 +1174,21 @@ ipdb.set_trace(); ## DEBUG ##"
 
 (defun python-remove-debug-breaks ()
    "Removes all debug breakpoints"
-   (flush-lines "\#\# DEBUG \#\#"))
+   (flush-lines "\#\# DEBUG \#\#")
+   (flush-lines "import ipdb")
+   (flush-lines "pp = pprint")
+   (flush-lines "ipdb.set"))
 
 (defun pdb ()
   (interactive)
-  (python-insert-breakpoint))
+  (save-excursion
+  (python-insert-string python-pdb-breakpoint-string)))
 
 (defun rpdb()
   (interactive)
-  (python-remove-debug-breaks))
+  (save-excursion
+    (beginning-of-buffer)
+    (python-remove-debug-breaks)))
 
 (defun python-insert-string(in-string)
   "Inserts string"
