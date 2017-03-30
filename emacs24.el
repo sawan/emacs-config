@@ -775,7 +775,6 @@ Position the cursor at its beginning, according to the current mode."
 
 (global-set-key (kbd "M-;") #'endless/comment-line-or-region)
 
-
 (defun yank-n-times (n)
   "yank n number of times."
   (interactive "nPaste how many times? ")
@@ -1482,8 +1481,16 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
+
+(defun warn-hydra-move()
+  (ov-set (ov-line (point)) 'face '(:foreground "red"))
+  (sit-for 0.3)
+  (ov-clear))
+
 (defhydra hydra-move
-  (:timeout 5)
+  (:timeout 5
+	    :pre (warn-hydra-move)
+	    :post (ov-clear))
   "move"
   ("a" smarter-move-beginning-of-line)
   ("e" move-end-of-line)
@@ -1502,7 +1509,8 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("l" recenter-top-bottom "re-center")
   ("<ESC>" nil "quit" :color blue)
   ("<return>" nil "quit" :color blue)
-  ("<RETURN>" nil "quit" :color blue))
+  ("<RETURN>" nil "quit" :color blue)
+)
 
 (global-set-key (kbd "C-n") #'hydra-move/next-line)
 (global-set-key (kbd "C-p") #'hydra-move/previous-line)
@@ -1510,7 +1518,6 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 (global-set-key (kbd "C-b") #'hydra-move/backward-char)
 (global-set-key (kbd "M-f") #'hydra-move/forward-word)
 (global-set-key (kbd "M-b") #'hydra-move/backward-word)
-
 
 (defhydra hydra-macro (:hint nil :color pink
 			     :pre
