@@ -1488,23 +1488,27 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
 
-(defun move-and-ov(fn)
+(defun hydra-flash(fn)
   (funcall fn 1)
   (ov-set (ov-line (point)) 'face '(:foreground "red"))
   (sit-for 0.3)
-  (ov-clear))
+  (ov-clear)
+  (set-cursor-color "#5BFF33")
+  (hydra-move/body))
 
 (defhydra hydra-move
-  (:timeout 5 :post (ov-clear))
+  (:timeout 5
+	    :pre (set-cursor-color "#5BFF33")
+	    :post (set-cursor-color "#ffffff"))
   "move"
-  ("a" (move-and-ov #'smarter-move-beginning-of-line))
-  ("e" (move-and-ov #'move-end-of-line))
-  ("n" (move-and-ov #'next-line))
-  ("p" (move-and-ov #'previous-line))
-  ("f" (move-and-ov #'forward-char))
-  ("b" (move-and-ov #'backward-char))
-  ("w" (move-and-ov #'forward-word))
-  ("q" (move-and-ov #'backward-word))
+  ("a" smarter-move-beginning-of-line)
+  ("e" move-end-of-line)
+  ("n" next-line)
+  ("p" previous-line)
+  ("f" forward-char)
+  ("b" backward-char)
+  ("w" forward-word)
+  ("q" backward-word)
   ("d" scroll-up)
   ("u" scroll-down)
   ("t" beginning-of-buffer)
