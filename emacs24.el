@@ -199,6 +199,8 @@
 
 ;; use y/n for all yes-no answers
 (defalias 'yes-or-no-p 'y-or-n-p)
+;; less beeping
+(setq-default visible-bell t)
 
 ;; control how Emacs backup files are handled
 (setq
@@ -983,7 +985,16 @@ Version 2015-02-07
 (require 'ido)
 (ido-mode t)
 (setq ido-everywhere t)
+
+(require 'flx-ido)
+(flx-ido-mode 1)
 (setq ido-enable-flex-matching t)
+;; disable ido faces to see flx highlights.
+(setq ido-enable-flex-matching t)
+(setq ido-use-faces nil)
+
+;; Set GC parameter as reccommended: https://github.com/lewang/flx
+(setq gc-cons-threshold 20000000)
 
 (add-hook 'ido-setup-hook
  (lambda ()
@@ -1459,7 +1470,7 @@ _b_   _f_   _q_uit      _y_ank
 
 (defhydra my/switch-to-buffer (:exit t
 			       :body-pre (setq my/last-buffers
-		               (my/name-of-buffers 6)))
+		               (my/name-of-buffers 5)))
 "
 Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-window
 "
@@ -1507,17 +1518,18 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("p" previous-line)
   ("f" forward-char)
   ("b" backward-char)
-  ("w" forward-word)
-  ("q" backward-word)
+  ("k" forward-word)
+  ("m" backward-word)
   ("d" scroll-up)
   ("u" scroll-down)
-  ("t" beginning-of-buffer)
+  ("t" begiknning-of-buffer)
   ("T" end-of-buffer)
   ("g" avy-goto-line "goto-line")
   ("c" avy-goto-char-2 "goto-char-2")
   ("l" recenter-top-bottom "re-center")
   ("<return>" nil "quit" :color blue)
   ("<RETURN>" nil "quit" :color blue)
+  ("q" nil "quit" :color blue)
 )
 
 (defun hydra-move-keys()
