@@ -1499,17 +1499,17 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
 
-(defun hydra-flash(fn)
+(defun move-and-hydra(fn)
   (funcall fn 1)
   (ov-set (ov-line (point)) 'face '(:foreground "red"))
   (sit-for 0.3)
   (ov-clear)
-  (set-cursor-color "#5BFF33")
   (hydra-move/body))
+
 
 (defhydra hydra-move
   (:timeout 5
-	    :pre (set-cursor-color "#5BFF33")
+	    :body-pre (set-cursor-color "#5BFF33")
 	    :post (set-cursor-color "#ffffff"))
   "move"
   ("a" smarter-move-beginning-of-line)
@@ -1522,7 +1522,7 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("m" backward-word)
   ("d" scroll-up)
   ("u" scroll-down)
-  ("t" begiknning-of-buffer)
+  ("t" beginning-of-buffer)
   ("T" end-of-buffer)
   ("g" avy-goto-line "goto-line")
   ("c" avy-goto-char-2 "goto-char-2")
@@ -1534,12 +1534,18 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 
 (defun hydra-move-keys()
   (interactive)
-  (global-set-key (kbd "C-n") #'hydra-move/next-line)
-  (global-set-key (kbd "C-p") #'hydra-move/previous-line)
-  (global-set-key (kbd "C-f") #'hydra-move/forward-char)
-  (global-set-key (kbd "C-b") #'hydra-move/backward-char)
-  (global-set-key (kbd "M-f") #'hydra-move/forward-word)
-  (global-set-key (kbd "M-b") #'hydra-move/backward-word))
+  (global-set-key (kbd "C-n") (lambda() (interactive)
+				(move-and-hydra #'next-line)))
+  (global-set-key (kbd "C-p") (lambda() (interactive)
+				(move-and-hydra #'previous-line)))
+  (global-set-key (kbd "C-f") (lambda() (interactive)
+				(move-and-hydra #'forward-char)))
+  (global-set-key (kbd "C-b") (lambda() (interactive)
+				(move-and-hydra #'backward-char)))
+  (global-set-key (kbd "M-f") (lambda() (interactive)
+				(move-and-hydra #'forward-word)))
+  (global-set-key (kbd "M-b") (lambda() (interactive)
+				(move-and-hydra #'backward-word))))
 
 (defun hydra-move-no-keys()
   (interactive)
