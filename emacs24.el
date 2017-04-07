@@ -924,62 +924,64 @@ Version 2015-02-07
 (browse-kill-ring-default-keybindings)
 (global-set-key (kbd "C-c k") 'browse-kill-ring)
 
-;;;; bm.el config
-(require 'bm)
+;; This only seems to work in GUIs
+(when (display-graphic-p)
+  ;;;; bm.el config
+  (require 'bm)
 
-;; reload bookmarks
-(setq bm-restore-repository-on-load t)
+  ;; reload bookmarks
+  (setq bm-restore-repository-on-load t)
 
-;; ask for annotation upon defining a bookmark
-(setq-default bm-annotate-on-create t)
+  ;; ask for annotation upon defining a bookmark
+  (setq-default bm-annotate-on-create t)
 
-;; bookmark indicator
-(setq bm-highlight-style 'bm-highlight-only-fringe)
+  ;; bookmark indicator
+  (setq bm-highlight-style 'bm-highlight-only-fringe)
 
-;; make bookmarks persistent as default
-(setq-default bm-buffer-persistence t)
+  ;; make bookmarks persistent as default
+  (setq-default bm-buffer-persistence t)
 
-;; Loading the repository from file when on start up.
-(add-hook' after-init-hook 'bm-repository-load)
+  ;; Loading the repository from file when on start up.
+  (add-hook' after-init-hook 'bm-repository-load)
 
-;; Restoring bookmarks when on file find.
-(add-hook 'find-file-hooks 'bm-buffer-restore)
+  ;; Restoring bookmarks when on file find.
+  (add-hook 'find-file-hooks 'bm-buffer-restore)
 
-;; Saving bookmark data on killing a buffer
-(add-hook 'kill-buffer-hook 'bm-buffer-save)
+  ;; Saving bookmark data on killing a buffer
+  (add-hook 'kill-buffer-hook 'bm-buffer-save)
 
-;; Restore on revert
-(add-hook 'after-revert-hook #'bm-buffer-restore)
+  ;; Restore on revert
+  (add-hook 'after-revert-hook #'bm-buffer-restore)
 
-;; Saving the repository to file when on exit.
-;; kill-buffer-hook is not called when emacs is killed, so we
-;; must save all bookmarks first.
-(add-hook 'kill-emacs-hook '(lambda nil
-                              (bm-buffer-save-all)
-                              (bm-repository-save)))
+  ;; Saving the repository to file when on exit.
+  ;; kill-buffer-hook is not called when emacs is killed, so we
+  ;; must save all bookmarks first.
+  (add-hook 'kill-emacs-hook '(lambda nil
+				(bm-buffer-save-all)
+				(bm-repository-save)))
 
-(setq bm-marker 'bm-marker-right)
+  (setq bm-marker 'bm-marker-right)
 
-(setq bm-highlight-style 'bm-highlight-line-and-fringe)
+  (setq bm-highlight-style 'bm-highlight-line-and-fringe)
 
+  (defhydra hydra-bookmarks ()
+    "Bookmarks"
+    ("t" bm-toggle "toggle" :color red)
+    ("n" bm-next   "next"   :color red)
+    ("p" bm-previous "previous" :color red)
+    ("s" bm-show "show" :color blue)
+    ("S" bm-show-all "SHOW" :color blue)
+    ("c" bm-remove-all-current-buffer "clear" :color blue)
+    ("l" bm-bookmark-line "line" :color blue)
+    ("r" bm-bookmark-regexp "regex" :color blue)
+    ("w" bm-save "save" :color blue)
+    ("q" nil :color red)
+    )
 
-(defhydra hydra-bookmarks ()
-  "Bookmarks"
-  ("t" bm-toggle "toggle" :color red)
-  ("n" bm-next   "next"   :color red)
-  ("p" bm-previous "previous" :color red)
-  ("s" bm-show "show" :color blue)
-  ("S" bm-show-all "SHOW" :color blue)
-  ("c" bm-remove-all-current-buffer "clear" :color blue)
-  ("l" bm-bookmark-line "line" :color blue)
-  ("r" bm-bookmark-regexp "regex" :color blue)
-  ("w" bm-save "save" :color blue)
-  ("q" nil :color red)
-  )
-
-(defun bm()
-  (interactive)
-  (hydra-bookmarks/body))
+  (defun bm()
+    (interactive)
+    (hydra-bookmarks/body))
+)
 
 ;;;; ido mode
 (require 'ido)
@@ -1251,7 +1253,6 @@ ipdb.set_trace(); ## DEBUG ##"
 (when (window-system) 'ns
       (setq ag-executable "/opt/local/bin/ag")
 )
-
 
 ;;;; Hydra configurations
 
