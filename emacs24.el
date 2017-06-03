@@ -966,7 +966,7 @@ Version 2015-02-07
 
   (defhydra hydra-bookmarks ()
     "Bookmarks"
-    ("t" bm-toggle "toggle" :color red)
+    ("t" bm-toggle "toggle" :color blue)
     ("n" bm-next   "next"   :color red)
     ("p" bm-previous "previous" :color red)
     ("s" bm-show "show" :color blue)
@@ -1503,11 +1503,8 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 
 (defun move-and-hydra(fn)
   (funcall fn 1)
-  (ov-set (ov-line (point)) 'face '(:foreground "red"))
-  (sit-for 0.3)
-  (ov-clear)
+  (flash-line-highlight 0.5)
   (hydra-move/body))
-
 
 (defhydra hydra-move
   (:timeout 5
