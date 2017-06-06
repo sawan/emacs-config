@@ -967,7 +967,7 @@ Version 2015-02-07
 
   (defhydra hydra-bookmarks ()
     "Bookmarks"
-    ("t" bm-toggle "toggle" :color red)
+    ("t" bm-toggle "toggle" :color blue)
     ("n" bm-next   "next"   :color red)
     ("p" bm-previous "previous" :color red)
     ("s" bm-show "show" :color blue)
@@ -1503,10 +1503,8 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
 
 
 (defun move-and-hydra(fn)
-  (hl-spotlight-mode 1)
+  (flash-line-highlight 0.5)
   (funcall fn 1)
-  (sit-for 0.5)
-  (hl-spotlight-mode -1)
   (hydra-move/body))
 
 (defun hydra-move-post()
