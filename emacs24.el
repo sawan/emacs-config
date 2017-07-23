@@ -864,6 +864,26 @@ Version 2015-02-07
 
 (load-file "~/.emacs.d/vendors/term-fix.el")
 
+
+;;;; Tramp
+(require 'tramp)
+(setq  tramp-completion-reread-directory-timeout 0)
+(add-hook 'tramp-mode-hook
+	  #'(setq ag-executable "~/bin/ag"))
+
+;; (setq tramp-verbose 10)
+;; (setq tramp-debug-buffer t)
+;; (require 'trace)
+;;      (dolist (elt (all-completions "tramp-" obarray 'functionp))
+;;        (trace-function-background (intern elt)))
+;;      (untrace-function 'tramp-read-passwd)
+;;      (untrace-function 'tramp-gw-basic-authentication)
+
+;; clean up after Tramp
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (tramp-cleanup-all-connections)
+                              (tramp-cleanup-all-buffers) ))
+
 ;;;; Setup some MS Windows specific stuff
 (when (window-system) 'w32
       (setq tramp-default-method "plink")
@@ -887,24 +907,6 @@ Version 2015-02-07
       ;; Make this behave the same was as on Mac OS X
       (global-set-key (kbd "s-s") 'save-buffer))
 
-;;;; Tramp
-(require 'tramp)
-(setq  tramp-completion-reread-directory-timeout 0)
-(add-hook 'tramp-mode-hook
-	  #'(setq ag-executable "~/bin/ag"))
-
-;; (setq tramp-verbose 10)
-;; (setq tramp-debug-buffer t)
-;; (require 'trace)
-;;      (dolist (elt (all-completions "tramp-" obarray 'functionp))
-;;        (trace-function-background (intern elt)))
-;;      (untrace-function 'tramp-read-passwd)
-;;      (untrace-function 'tramp-gw-basic-authentication)
-
-;; clean up after Tramp
-(add-hook 'kill-emacs-hook '(lambda nil
-                              (tramp-cleanup-all-connections)
-                              (tramp-cleanup-all-buffers) ))
 
 ;;;; key-chord
 (require 'key-chord)
