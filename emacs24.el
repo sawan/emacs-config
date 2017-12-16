@@ -1625,7 +1625,7 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("355e1c0eb7cd20794e983b4c6f5c0c978a85b159d6aadb2fae15faa25fb344e5" "c442464ca37a1cc2b6bc1c3b815d9944a7c66b608b7021308de1ebd9ae37aa75" "b7a112711a92e540425c5270f7b3e41f8e357911ef9cdefd970d9662fcf01e74" "c18112b0999ffea6f8d21d86ab76f43f28448ff1969947c8a9d168e674a0d01d" "80050f721c3abddb96e775a5dd2517dd8f93f71349e8f300f7240ab18827e616" default)))
+    ("33119c11708b5e5fe0b97bcce0b0565e456cf9c1172f3c08fad9282330325667" "355e1c0eb7cd20794e983b4c6f5c0c978a85b159d6aadb2fae15faa25fb344e5" "c442464ca37a1cc2b6bc1c3b815d9944a7c66b608b7021308de1ebd9ae37aa75" "b7a112711a92e540425c5270f7b3e41f8e357911ef9cdefd970d9662fcf01e74" "c18112b0999ffea6f8d21d86ab76f43f28448ff1969947c8a9d168e674a0d01d" "80050f721c3abddb96e775a5dd2517dd8f93f71349e8f300f7240ab18827e616" default)))
  '(elpy-modules
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
