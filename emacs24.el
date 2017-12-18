@@ -229,6 +229,9 @@
 ;; control how to move between windows
 (windmove-default-keybindings 'meta)
 
+(global-visual-line-mode t)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
 ;; wrap lines at 80 columns
 (setq-default fill-column 80)
 (add-hook 'find-file-hook 'turn-on-auto-fill)
@@ -985,6 +988,22 @@ Version 2015-02-07
     (interactive)
     (hydra-bookmarks/body))
 )
+
+;; http://acidwords.com/posts/2017-10-19-closing-all-parentheses-at-once.html
+(defun close-all-parentheses ()
+  (interactive "*")
+  (let ((closing nil))
+    (save-excursion
+      (while (condition-case nil
+         (progn
+           (backward-up-list)
+           (let ((syntax (syntax-after (point))))
+             (case (car syntax)
+               ((4) (setq closing (cons (cdr syntax) closing)))
+               ((7 8) (setq closing (cons (char-after (point)) closing)))))
+           t)
+           ((scan-error) nil))))
+    (apply #'insert (nreverse closing))))
 
 ;;;; ido mode
 (require 'ido)
