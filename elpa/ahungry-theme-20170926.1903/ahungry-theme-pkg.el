@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "ahungry-theme" "20170926.1903" "Ahungry color theme for Emacs.  Make sure to (load-theme 'ahungry)." '((emacs "24")) :stars '(#("7" 0 1 (font-lock-face paradox-star-face))) :commit "85a1af27541f6a73a63120fac2cfbb7ba39531c9" :url "https://github.com/ahungry/color-theme-ahungry" :keywords '("ahungry" "palette" "color" "theme" "emacs" "color-theme" "deftheme"))
