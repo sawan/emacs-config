@@ -1552,6 +1552,8 @@ Other buffers: %s(my/number-names my/last-buffers) I: ibuffer q: quit w: other-w
   ("<return>" nil "quit" :color blue)
   ("<RETURN>" nil "quit" :color blue)
   ("q" nil "quit" :color blue)
+  ("<ESC>" nil "quit" :color blue)
+
 )
 
 (defun hydra-move-keys()
