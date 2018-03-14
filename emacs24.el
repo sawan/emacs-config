@@ -574,6 +574,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
+(global-set-key (kbd "C-a") 'smarter-move-beginning-of-line)
 ;; http://oremacs.com/2014/12/23/upcase-word-you-silly/
 (defadvice upcase-word (before upcase-word-advice activate)
   (unless (looking-back "\\b")
