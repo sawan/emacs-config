@@ -179,7 +179,7 @@
 (smooth-scrolling-mode t)
 (syntax-subword-mode t)
 
-(hl-line-mode t)
+(global-hl-spotlight-mode t)
 
 (global-set-key [remap kill-ring-save] 'easy-kill)
 
@@ -1562,8 +1562,8 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
   ("b" backward-char)
   ("w" forward-word)
   ("q" backward-word)
-  ("d" scroll-up)
-  ("u" scroll-down)
+  ("d" scroll-up-command)
+  ("u" scroll-down-command)
   ("t" beginning-of-buffer)
   ("T" end-of-buffer)
   ("g" avy-goto-line "goto-line")
