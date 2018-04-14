@@ -7,8 +7,8 @@
 (setq package-archives '(
 	     ("gnu" . "https://elpa.gnu.org/packages/")
              ("melpa" . "http://melpa.milkbox.net/packages/")
+	     ("melpa-stable" . "https://stable.melpa.org/packages/")
 	     ("marmalade" . "http://marmalade-repo.org/packages/")
-	     ("elpy" . "http://jorgenschaefer.github.io/packages/")
 ))
 
 
@@ -179,8 +179,6 @@
 (smooth-scrolling-mode t)
 (syntax-subword-mode t)
 
-(global-hl-spotlight-mode t)
-
 (global-set-key [remap kill-ring-save] 'easy-kill)
 
 (defun really-kill-emacs ()
@@ -188,10 +186,6 @@
   (interactive)
   (let (kill-emacs-hook)
     (kill-emacs)))
-
-;; start native Emacs server ready for client connections.
-(setq server-socket-dir "~/.emacs.d/server/")
-(add-hook 'after-init-hook 'server-start)
 
 ;; save history
 (savehist-mode 1)
@@ -695,6 +689,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; start native Emacs server ready for client connections                  .
 (add-hook 'after-init-hook 'server-start)
+(setq server-socket-dir "~/.emacs.d/server/")
 
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
@@ -1327,7 +1322,11 @@ ipdb.set_trace(); ## DEBUG ##"
   ("k" avy-kill-region "kill-region" :color blue)
   ("K" avy-kill-whole-line "kill-line" :color blue)
 
-  ("q" nil "quit"))
+  ("<return>" nil "quit" :color blue)
+  ("<RETURN>" nil "quit" :color blue)
+  ("<ESC>" nil "quit" :color blue)
+  ("q" nil "quit")
+  )
 
 (global-set-key (kbd "<f1>") 'hydra-avy/body)
 
@@ -1387,7 +1386,11 @@ ipdb.set_trace(); ## DEBUG ##"
   ("J" delete-indentation "join-prev-line" :color red)
   ("h" highlight-duplicate-lines-in-region-or-buffer "dup-line" :color red)
   ("o" ov-clear "ov-clear")
-  ("q" nil "quit"))
+  ("q" nil "quit")
+  ("<return>" nil "quit" :color blue)
+  ("<RETURN>" nil "quit" :color blue)
+  ("<ESC>" nil "quit" :color blue)
+)
 
 (global-set-key (kbd "<f4>") 'hydra-lines/body)
 
@@ -1542,7 +1545,7 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
 
 
 (defun move-and-hydra(fn)
-  (flash-line-highlight 0.5)
+  (crosshairs-flash)
   (funcall fn 1)
   (hydra-move/body))
 
@@ -1566,9 +1569,9 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
   ("u" scroll-down-command)
   ("t" beginning-of-buffer)
   ("T" end-of-buffer)
-  ("g" avy-goto-line "goto-line")
+  ("l" avy-goto-line "goto-line")
   ("c" avy-goto-char-2 "goto-char-2")
-  ("l" recenter-top-bottom "re-center")
+  ("r" recenter-top-bottom "re-center")
   ("<return>" nil "quit" :color blue)
   ("<RETURN>" nil "quit" :color blue)
   ("<ESC>" nil "quit" :color blue)
@@ -1664,13 +1667,13 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("9b402e9e8f62024b2e7f516465b63a4927028a7055392290600b776e4a5b9905" "6dd2b995238b4943431af56c5c9c0c825258c2de87b6c936ee88d6bb1e577cb9" "c9ddf33b383e74dac7690255dd2c3dfa1961a8e8a1d20e401c6572febef61045" "8ad35d6c2b35eacc328b732f0a4fe263abd96443a5075aa53b8535a9e8cb7eaf" "9a58c408a001318ce9b4eab64c620c8e8ebd55d4c52327e354f24d298fb6978f" "50b66fad333100cc645a27ada899a7b1d44f1ceb32140ab8e88fedabfb7d0daf" "a9d2ed6e4266ea7f8c1f4a0d1af34a6282ad6ff91754bee5ec7c3b260ec721f4" "293b55c588c56fe062afe4b7a3a4b023712a26d26dc69ee89c347b30283a72eb" "fec6c786b1d3088091715772839ac6051ed972b17991af04b50e9285a98c7463" "e6370c4899d463555a6aecf2da2700e2e039f93273212ce1836e9f94ad4af278" "0ca5a450034c92069769e071e63a3d2b2346c304bf186245467f59d993f5b979" "0e6e456b15dbeb6e7bcad4131f029e027cceecc3cf1598fc49141343860bfce6" "7f6796a9b925f727bbe1781dc65f7f23c0aa4d4dc19613aa3cf96e41a96651e4" "5b388add509c423e4ac275668662486628690e7ffe0050998615fc4c3669c16c" "473c69b2e448e37861e2051f793a8981ac419cc06ac66b2be6c08fddcf898175" "55baf0e5235a0268ea0b9b32f7099eb5e85a8e347fa63d6e2c9d6046362e1efb" "f142c876b896c6ca19149cacd80ddd68a351f67f7fe3b786274ceee970276780" "e3f648bb477a2e2332124f5ca8bd070e8624f152be6b4478668a69e5de7510ff" "33119c11708b5e5fe0b97bcce0b0565e456cf9c1172f3c08fad9282330325667" "355e1c0eb7cd20794e983b4c6f5c0c978a85b159d6aadb2fae15faa25fb344e5" "c442464ca37a1cc2b6bc1c3b815d9944a7c66b608b7021308de1ebd9ae37aa75" "b7a112711a92e540425c5270f7b3e41f8e357911ef9cdefd970d9662fcf01e74" "c18112b0999ffea6f8d21d86ab76f43f28448ff1969947c8a9d168e674a0d01d" "80050f721c3abddb96e775a5dd2517dd8f93f71349e8f300f7240ab18827e616" default)))
+    ("7e1fa2fd97e792390d0c2347f0eefa2d1679c68da56e6baf983b057cefa400b4" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "9b402e9e8f62024b2e7f516465b63a4927028a7055392290600b776e4a5b9905" "6dd2b995238b4943431af56c5c9c0c825258c2de87b6c936ee88d6bb1e577cb9" "c9ddf33b383e74dac7690255dd2c3dfa1961a8e8a1d20e401c6572febef61045" "8ad35d6c2b35eacc328b732f0a4fe263abd96443a5075aa53b8535a9e8cb7eaf" "9a58c408a001318ce9b4eab64c620c8e8ebd55d4c52327e354f24d298fb6978f" "50b66fad333100cc645a27ada899a7b1d44f1ceb32140ab8e88fedabfb7d0daf" "a9d2ed6e4266ea7f8c1f4a0d1af34a6282ad6ff91754bee5ec7c3b260ec721f4" "293b55c588c56fe062afe4b7a3a4b023712a26d26dc69ee89c347b30283a72eb" "fec6c786b1d3088091715772839ac6051ed972b17991af04b50e9285a98c7463" "e6370c4899d463555a6aecf2da2700e2e039f93273212ce1836e9f94ad4af278" "0ca5a450034c92069769e071e63a3d2b2346c304bf186245467f59d993f5b979" "0e6e456b15dbeb6e7bcad4131f029e027cceecc3cf1598fc49141343860bfce6" "7f6796a9b925f727bbe1781dc65f7f23c0aa4d4dc19613aa3cf96e41a96651e4" "5b388add509c423e4ac275668662486628690e7ffe0050998615fc4c3669c16c" "473c69b2e448e37861e2051f793a8981ac419cc06ac66b2be6c08fddcf898175" "55baf0e5235a0268ea0b9b32f7099eb5e85a8e347fa63d6e2c9d6046362e1efb" "f142c876b896c6ca19149cacd80ddd68a351f67f7fe3b786274ceee970276780" "e3f648bb477a2e2332124f5ca8bd070e8624f152be6b4478668a69e5de7510ff" "33119c11708b5e5fe0b97bcce0b0565e456cf9c1172f3c08fad9282330325667" "355e1c0eb7cd20794e983b4c6f5c0c978a85b159d6aadb2fae15faa25fb344e5" "c442464ca37a1cc2b6bc1c3b815d9944a7c66b608b7021308de1ebd9ae37aa75" "b7a112711a92e540425c5270f7b3e41f8e357911ef9cdefd970d9662fcf01e74" "c18112b0999ffea6f8d21d86ab76f43f28448ff1969947c8a9d168e674a0d01d" "80050f721c3abddb96e775a5dd2517dd8f93f71349e8f300f7240ab18827e616" default)))
  '(elpy-modules
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(package-selected-packages
    (quote
-    (zerodark-theme kaolin-themes flatui-dark-theme flatui-theme hl-spotlight idle-highlight-mode 0xc monky color-theme-actress color-theme-approximate color-theme-cobalt color-theme-complexity color-theme-dg color-theme-dpaste color-theme-eclipse color-theme-emacs-revert-theme color-theme-github color-theme-gruber-darker color-theme-heroku color-theme-ir-black color-theme-library color-theme-modern color-theme-molokai color-theme-monokai color-theme-railscasts color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow color-theme-tango color-theme-tangotango color-theme-twilight color-theme-vim-insert-mode color-theme-wombat color-theme-x color-theme-zenburn colour-region color-theme-buffer-local company-dict company-emoji company-shell zenburn-theme zen-and-art-theme yaml-mode wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
+    (elpygen zerodark-theme kaolin-themes flatui-dark-theme flatui-theme hl-spotlight idle-highlight-mode 0xc monky color-theme-actress color-theme-approximate color-theme-cobalt color-theme-complexity color-theme-dg color-theme-dpaste color-theme-eclipse color-theme-emacs-revert-theme color-theme-github color-theme-gruber-darker color-theme-heroku color-theme-ir-black color-theme-library color-theme-modern color-theme-molokai color-theme-monokai color-theme-railscasts color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow color-theme-tango color-theme-tangotango color-theme-twilight color-theme-vim-insert-mode color-theme-wombat color-theme-x color-theme-zenburn colour-region color-theme-buffer-local company-dict company-emoji company-shell zenburn-theme zen-and-art-theme yaml-mode wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
  '(paradox-github-token t))
 
 (custom-set-faces
