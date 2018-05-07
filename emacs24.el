@@ -1545,7 +1545,6 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
 
 
 (defun move-and-hydra(fn)
-  (crosshairs-flash)
   (funcall fn 1)
   (hydra-move/body))
 
@@ -1578,12 +1577,20 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
 
 )
 
+(defun next-line-and-avy (n)
+  (next-line n)
+  (avy-goto-line))
+
+(defun previous-line-and-avy (n)
+  (previous-line n)
+  (avy-goto-line))
+
 (defun hydra-move-keys()
   (interactive)
   (global-set-key (kbd "C-n") (lambda() (interactive)
-				(move-and-hydra #'next-line)))
+				(move-and-hydra #'next-line-and-avy)))
   (global-set-key (kbd "C-p") (lambda() (interactive)
-				(move-and-hydra #'previous-line)))
+				(move-and-hydra #'previous-line-and-avy)))
   (global-set-key (kbd "C-f") (lambda() (interactive)
 				(move-and-hydra #'forward-char)))
   (global-set-key (kbd "C-b") (lambda() (interactive)
@@ -1605,6 +1612,43 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
 (hydra-move-keys)
 
 (global-origami-mode 1)
+
+(defun origami-parser-imenu-flat (create)
+    "Origami parser producing folds for each imenu entry, without nesting."
+    (lambda (content)
+      (let ((orig-major-mode major-mode))
+        (with-temp-buffer
+          (insert content)
+          (funcall orig-major-mode)
+          (let* ((items
+                  (-as-> (imenu--make-index-alist t) items
+                         (-flatten items)
+                         (-filter 'listp items)))
+                 (positions
+                  (-as-> (-map #'cdr items) positions
+                         (-filter 'identity positions)
+                         (-map-when 'markerp 'marker-position positions)
+                         (-filter 'natnump positions)
+                         (cons (point-min) positions)
+                         (-snoc positions (point-max))
+                         (-sort '< positions)
+                         (-uniq positions)))
+                 (ranges
+                  (-zip-pair positions (-map '1- (cdr positions))))
+                 (fold-nodes
+                  (--map
+                   (-let*
+                       (((range-beg . range-end) it)
+                        (line-beg
+                         (progn (goto-char range-beg)
+                                (line-beginning-position)))
+                        (offset
+                         (- (min (line-end-position) range-end) line-beg))
+                        (fold-node
+                         (funcall create line-beg range-end offset nil)))
+                     fold-node)
+                   ranges)))
+            fold-nodes)))))
 
 (defhydra hydra-origami()
   "Origami"
@@ -1667,13 +1711,42 @@ Other buffers: %s(my/number-names my/last-buffers) b: ibuffer q: quit w: other-w
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("7e1fa2fd97e792390d0c2347f0eefa2d1679c68da56e6baf983b057cefa400b4" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "9b402e9e8f62024b2e7f516465b63a4927028a7055392290600b776e4a5b9905" "6dd2b995238b4943431af56c5c9c0c825258c2de87b6c936ee88d6bb1e577cb9" "c9ddf33b383e74dac7690255dd2c3dfa1961a8e8a1d20e401c6572febef61045" "8ad35d6c2b35eacc328b732f0a4fe263abd96443a5075aa53b8535a9e8cb7eaf" "9a58c408a001318ce9b4eab64c620c8e8ebd55d4c52327e354f24d298fb6978f" "50b66fad333100cc645a27ada899a7b1d44f1ceb32140ab8e88fedabfb7d0daf" "a9d2ed6e4266ea7f8c1f4a0d1af34a6282ad6ff91754bee5ec7c3b260ec721f4" "293b55c588c56fe062afe4b7a3a4b023712a26d26dc69ee89c347b30283a72eb" "fec6c786b1d3088091715772839ac6051ed972b17991af04b50e9285a98c7463" "e6370c4899d463555a6aecf2da2700e2e039f93273212ce1836e9f94ad4af278" "0ca5a450034c92069769e071e63a3d2b2346c304bf186245467f59d993f5b979" "0e6e456b15dbeb6e7bcad4131f029e027cceecc3cf1598fc49141343860bfce6" "7f6796a9b925f727bbe1781dc65f7f23c0aa4d4dc19613aa3cf96e41a96651e4" "5b388add509c423e4ac275668662486628690e7ffe0050998615fc4c3669c16c" "473c69b2e448e37861e2051f793a8981ac419cc06ac66b2be6c08fddcf898175" "55baf0e5235a0268ea0b9b32f7099eb5e85a8e347fa63d6e2c9d6046362e1efb" "f142c876b896c6ca19149cacd80ddd68a351f67f7fe3b786274ceee970276780" "e3f648bb477a2e2332124f5ca8bd070e8624f152be6b4478668a69e5de7510ff" "33119c11708b5e5fe0b97bcce0b0565e456cf9c1172f3c08fad9282330325667" "355e1c0eb7cd20794e983b4c6f5c0c978a85b159d6aadb2fae15faa25fb344e5" "c442464ca37a1cc2b6bc1c3b815d9944a7c66b608b7021308de1ebd9ae37aa75" "b7a112711a92e540425c5270f7b3e41f8e357911ef9cdefd970d9662fcf01e74" "c18112b0999ffea6f8d21d86ab76f43f28448ff1969947c8a9d168e674a0d01d" "80050f721c3abddb96e775a5dd2517dd8f93f71349e8f300f7240ab18827e616" default)))
+    ("604648621aebec024d47c352b8e3411e63bdb384367c3dd2e8db39df81b475f5" "790e74b900c074ac8f64fa0b610ad05bcfece9be44e8f5340d2d94c1e47538de" "e9460a84d876da407d9e6accf9ceba453e2f86f8b86076f37c08ad155de8223c" "732b807b0543855541743429c9979ebfb363e27ec91e82f463c91e68c772f6e3" "a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "0b7ee9bac81558c11000b65100f29b09488ff9182c083fb303c7f13fd0ec8d2b" "873d8b58357aecbeedd0acdda2aca3f3f5b92ceb4a5dbe9384a4837fe1e34aa3" "2cfc1cab46c0f5bae8017d3603ea1197be4f4fff8b9750d026d19f0b9e606fae" "3edbdd0ad45cb8f7c2575c0ad8f6625540283c6e928713c328b0bacf4cfbb60f" "0e33022384e4db1374827f51e3d9e9a2d56282c2e3568c22f1c12ad80e20cf0c" "61a1e541d51262c86ac14faa90ed300163be8bdd22edb0a738654cb1da740845" "45caeeb594422c20499f96b51c73f9bc04d666983d0a1d16f5b9f51a9ec874fa" "dcb9fd142d390bb289fee1d1bb49cb67ab7422cd46baddf11f5c9b7ff756f64c" "b79104a19e95f10698badb711bd4ab25565af3ffcf18fa7d3c7db4de7d759ac8" "d5b121d69e48e0f2a84c8e4580f0ba230423391a78fcb4001ccb35d02494d79e" "5b340b4eb24c3c006972f3bc3aee26b7068f89ba9580d9a4211c1db5d0a70ea2" "c30d153e623dfe32184857790a0cad243b979e8b1104e057c4a6ffe2210856f7" "08f5da7e1f5064a2917af94f0dab946adfb25665b25450168ded749ec78a1145" "1177fe4645eb8db34ee151ce45518e47cc4595c3e72c55dc07df03ab353ad132" "7e1fa2fd97e792390d0c2347f0eefa2d1679c68da56e6baf983b057cefa400b4" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "9b402e9e8f62024b2e7f516465b63a4927028a7055392290600b776e4a5b9905" "6dd2b995238b4943431af56c5c9c0c825258c2de87b6c936ee88d6bb1e577cb9" "c9ddf33b383e74dac7690255dd2c3dfa1961a8e8a1d20e401c6572febef61045" "8ad35d6c2b35eacc328b732f0a4fe263abd96443a5075aa53b8535a9e8cb7eaf" "9a58c408a001318ce9b4eab64c620c8e8ebd55d4c52327e354f24d298fb6978f" "50b66fad333100cc645a27ada899a7b1d44f1ceb32140ab8e88fedabfb7d0daf" "a9d2ed6e4266ea7f8c1f4a0d1af34a6282ad6ff91754bee5ec7c3b260ec721f4" "293b55c588c56fe062afe4b7a3a4b023712a26d26dc69ee89c347b30283a72eb" "fec6c786b1d3088091715772839ac6051ed972b17991af04b50e9285a98c7463" "e6370c4899d463555a6aecf2da2700e2e039f93273212ce1836e9f94ad4af278" "0ca5a450034c92069769e071e63a3d2b2346c304bf186245467f59d993f5b979" "0e6e456b15dbeb6e7bcad4131f029e027cceecc3cf1598fc49141343860bfce6" "7f6796a9b925f727bbe1781dc65f7f23c0aa4d4dc19613aa3cf96e41a96651e4" "5b388add509c423e4ac275668662486628690e7ffe0050998615fc4c3669c16c" "473c69b2e448e37861e2051f793a8981ac419cc06ac66b2be6c08fddcf898175" "55baf0e5235a0268ea0b9b32f7099eb5e85a8e347fa63d6e2c9d6046362e1efb" "f142c876b896c6ca19149cacd80ddd68a351f67f7fe3b786274ceee970276780" "e3f648bb477a2e2332124f5ca8bd070e8624f152be6b4478668a69e5de7510ff" "33119c11708b5e5fe0b97bcce0b0565e456cf9c1172f3c08fad9282330325667" "355e1c0eb7cd20794e983b4c6f5c0c978a85b159d6aadb2fae15faa25fb344e5" "c442464ca37a1cc2b6bc1c3b815d9944a7c66b608b7021308de1ebd9ae37aa75" "b7a112711a92e540425c5270f7b3e41f8e357911ef9cdefd970d9662fcf01e74" "c18112b0999ffea6f8d21d86ab76f43f28448ff1969947c8a9d168e674a0d01d" "80050f721c3abddb96e775a5dd2517dd8f93f71349e8f300f7240ab18827e616" default)))
  '(elpy-modules
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
+ '(origami-parser-alist
+   (quote
+    ((java-mode . origami-java-parser)
+     (c-mode . origami-c-parser)
+     (c++-mode . origami-c-style-parser)
+     (perl-mode . origami-c-style-parser)
+     (cperl-mode . origami-c-style-parser)
+     (js-mode . origami-c-style-parser)
+     (js2-mode . origami-c-style-parser)
+     (js3-mode . origami-c-style-parser)
+     (go-mode . origami-c-style-parser)
+     (php-mode . origami-c-style-parser)
+     (python-mode . origami-parser-imenu-flat)
+     (emacs-lisp-mode . origami-elisp-parser)
+     (lisp-interaction-mode . origami-elisp-parser)
+     (clojure-mode . origami-clj-parser)
+     (triple-braces closure
+		    ((regex . "\\(?:\\(?:{{{\\|}}}\\)\\)")
+		     (end-marker . "}}}")
+		     (start-marker . "{{{")
+		     t)
+		    (create)
+		    (function
+		     (lambda
+		       (content)
+		       (let
+			   ((positions
+			     (origami-get-positions content regex)))
+			 (origami-build-pair-tree create start-marker end-marker positions))))))))
  '(package-selected-packages
    (quote
-    (elpygen zerodark-theme kaolin-themes flatui-dark-theme flatui-theme hl-spotlight idle-highlight-mode 0xc monky color-theme-actress color-theme-approximate color-theme-cobalt color-theme-complexity color-theme-dg color-theme-dpaste color-theme-eclipse color-theme-emacs-revert-theme color-theme-github color-theme-gruber-darker color-theme-heroku color-theme-ir-black color-theme-library color-theme-modern color-theme-molokai color-theme-monokai color-theme-railscasts color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow color-theme-tango color-theme-tangotango color-theme-twilight color-theme-vim-insert-mode color-theme-wombat color-theme-x color-theme-zenburn colour-region color-theme-buffer-local company-dict company-emoji company-shell zenburn-theme zen-and-art-theme yaml-mode wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
+    (imenu-anywhere json-mode assemblage-theme avk-emacs-themes badwolf-theme blackboard-theme caroline-theme challenger-deep-theme clues-theme colonoscopy-theme dark-krystal-theme darktooth-theme exotica-theme github-modern-theme gotham-theme madhat2r-theme material-theme elpygen zerodark-theme kaolin-themes flatui-dark-theme flatui-theme hl-spotlight idle-highlight-mode 0xc monky color-theme-actress color-theme-approximate color-theme-cobalt color-theme-complexity color-theme-dg color-theme-dpaste color-theme-eclipse color-theme-emacs-revert-theme color-theme-github color-theme-gruber-darker color-theme-heroku color-theme-ir-black color-theme-library color-theme-modern color-theme-molokai color-theme-monokai color-theme-railscasts color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow color-theme-tango color-theme-tangotango color-theme-twilight color-theme-vim-insert-mode color-theme-wombat color-theme-x color-theme-zenburn colour-region color-theme-buffer-local company-dict company-emoji company-shell zenburn-theme zen-and-art-theme yaml-mode wrap-region wide-n volatile-highlights visual-regexp-steroids visible-mark virtualenv undo-tree twilight-theme twilight-bright-theme twilight-anti-bright-theme tommyh-theme tj-mode tangotango-theme syntax-subword swoop swiper suscolors-theme soothe-theme solarized-theme soft-morning-theme smyx-theme smooth-scrolling smooth-scroll smex smart-mode-line-powerline-theme react-snippets rainbow-mode rainbow-delimiters pretty-mode pos-tip plur paredit paradox ov origami nose noctilux-theme nginx-mode names multiple-cursors move-text moe-theme markdown-mode+ magit-push-remote macrostep macros+ leuven-theme key-chord jsx-mode jedi jazz-theme itail iregister iedit idomenu ido-ubiquitous hungry-delete hemisu-theme hc-zenburn-theme guide-key gruber-darker-theme grandshell-theme google-this git-timemachine fuzzy full-ack firecode-theme firebelly-theme fastnav faff-theme expand-region espresso-theme emmet-mode elpy ecb easy-kill-extras doom-themes django-theme django-snippets django-mode django-manage distinguished-theme display-theme deft darkmine-theme darkburn-theme darkane-theme dark-mint-theme danneskjold-theme cyberpunk-theme csv-mode color-theme-solarized color-moccur cherry-blossom-theme bug-hunter bubbleberry-theme browse-kill-ring boxquote bm bliss-theme birds-of-paradise-plus-theme beacon basic-theme badger-theme back-button autumn-light-theme autopair aurora-theme atom-one-dark-theme atom-dark-theme angry-police-captain ample-zen-theme ample-theme ample-regexps ahungry-theme aggressive-indent ag ace-window ace-link ace-jump-zap ace-jump-buffer ace-isearch)))
  '(paradox-github-token t))
 
 (custom-set-faces
