@@ -13,3 +13,11 @@ server/
 *~
 *.elc
 *.pyc
+emacs-desktop-24
+eshell/
+ido.last
+places
+recentf
+telstra.el
+url/
+var/
