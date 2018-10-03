@@ -2,3 +2,4 @@ alias dev-01 cd /plink:dev-01:/home/d290036/src/Ballstein/src/resource/twall/pyt
 alias cd-apps cd /plink:dev-01:/home/d290036/src/Ballstein/src/apps
 alias cd-py cd /plink:dev-01:/home/d290036/src/Ballstein/src/resource/twall/python/apps
 alias ll ls -lrth
+alias dev-04 cd /ssh:dev-04-blackhawk:/volumes/data2/home/blackhawk/install/new-py-blackhawk/src/py3/collectors
